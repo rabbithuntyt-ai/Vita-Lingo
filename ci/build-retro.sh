@@ -5,7 +5,7 @@ set -euxo pipefail
 export PATH="$VITASDK/bin:$PATH"
 ROOT="$PWD"
 CC=arm-vita-eabi-gcc
-CFLAGS="-O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I$ROOT/retro -I$ROOT/src"
+CFLAGS="-O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I$ROOT/retro -I$ROOT/src -I$VITASDK/arm-vita-eabi/include/freetype2"
 B=/tmp/retro-build; rm -rf $B && mkdir -p $B/obj $B/self/cores
 for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c; do
 	$CC $CFLAGS -c "$f" -o "$B/obj/$(basename "${f%.c}").o"
