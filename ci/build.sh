@@ -20,7 +20,7 @@ gcc -O2 -Wall -o /tmp/test_kaku tests/test_kaku.c src/psp2-kaku-core.c src/psp2-
 gcc -O2 -Wall -o /tmp/test_rom tests/test_rom.c src/psp2-lingo-rom.c src/psp2-lingo-text.c
 /tmp/test_rom
 gcc -O2 -Wall -o /tmp/test_quiz tests/test_quiz.c src/psp2-lingo-quiz.c src/psp2-lingo-dict.c src/psp2-lingo-text.c
-/tmp/test_quiz assets/lingo.dic
+/tmp/test_quiz assets/lingo.dic /tmp/lingo-book-test.bin
 
 # 2. Assets: font, art, licences
 git clone -q --depth 1 --filter=blob:none --sparse https://github.com/google/fonts /tmp/gfonts

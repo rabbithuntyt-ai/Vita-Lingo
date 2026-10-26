@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
 	CHECK(!strcmp(q[0].prompt, q2[0].prompt), "not deterministic");
 
 	/* persistence */
-	const char* path = "/tmp/claude-0/-home-claude/74f62b01-87a4-5952-ab90-475fe34455f6/scratchpad/book.bin";
+	const char* path = argc > 2 ? argv[2] : "book-test.bin";
 	CHECK(lingoBookSave(&b, path), "save failed");
 	struct LingoBook r; lingoBookInit(&r);
 	CHECK(lingoBookLoad(&r, path) && r.n == b.n && r.wordsSince == b.wordsSince && !strcmp(r.items[0].ctx, b.items[0].ctx), "reload mismatch");
