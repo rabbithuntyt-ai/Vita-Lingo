@@ -62,6 +62,9 @@ int uiTextWrap(float x, float y, float w, float px, float lineH, uint32_t c, con
 int uiJp(float x, float y, float px, uint32_t c, const char* s);
 int uiJpW(float px, const char* s);
 void uiJpCentered(float cx, float y, float px, uint32_t c, const char* s);
+/* Only draw inside a rectangle until uiNoClip. */
+void uiClip(float x, float y, float w, float h);
+void uiNoClip(void);
 
 /* ---- input ---- */
 struct UiInput {
@@ -126,9 +129,20 @@ void lingoNoteLookup(const uint32_t* cp, int len, const struct LingoToken* tok);
 /* Type-what-you-see dictionary lookup, for any game. */
 void lingoLookupRun(void);
 int lingoRecentLookups(const char** words, const char** meanings, int max);
+/* The gojūon keyboard (Look up, Teach). Returns true when Done is tapped. */
+bool lingoKeyboard(float ky, uint32_t* buf, int* n, int max, bool* kata, bool space);
 
-/* Side panel for consoles without live text reading. */
-enum LingoPanelAction { LPA_NONE, LPA_KAKU, LPA_LOOKUP, LPA_MENU };
+/* The study panel for libretro consoles (same panel, plus a Menu button). */
+enum LingoPanelAction {
+	LPA_NONE,
+	LPA_KAKU,
+	LPA_LOOKUP,
+	LPA_MENU,
+	LPA_TEACH,
+	LPA_HEAR,
+	LPA_HEAR_SLOW,
+	LPA_TRANSCRIBE,
+};
 enum LingoPanelAction lingoRetroPanelDraw(float gx, float gy, float gw, float gh, const char* system, const char* game);
 
 /* True when a checkpoint test is owed; run it with lingoCheckpointRun. */
@@ -141,5 +155,19 @@ void lingoSetCheckpointsEnabled(bool on);
 bool lingoPanelDraw(float gx, float gy, float gw, float gh);
 /* Set when the GBA panel's Look up button was tapped (cleared on read). */
 bool lingoPanelWantsLookup(void);
+bool lingoPanelWantsTeach(void);
+/* Where text comes from for games other than Gen 3 Pokémon: the console,
+ * the game file's name, and the ROM (for built-in tables). */
+struct LingoRegions;
+void lingoPanelSetSource(const char* system, const char* baseName, const uint8_t* rom, size_t romSize);
+/* Every frame: the game's memory, for live text reading. */
+void lingoPanelSetRegions(const struct LingoRegions* rs);
+/* Front ends that can replay game audio show Hear / Slow / Text buttons. */
+void lingoPanelSetVoice(bool on);
+/* The line on show, and adding a line from elsewhere (speech recognition). */
+const struct LingoText* lingoPanelCurrentText(void);
+void lingoPanelAddText(const uint32_t* cp, int len);
+/* The file the launcher last started. */
+const char* lingoLastGamePath(void);
 
 #endif

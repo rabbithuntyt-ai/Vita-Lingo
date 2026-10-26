@@ -14,7 +14,7 @@ pick() { # first package name that exists
 	for n in "$@"; do if vdpm info "$n" >/dev/null 2>&1; then echo "$n"; return; fi; done
 	echo "none of: $*" >&2; return 1
 }
-PKGS="$(pick libvita2d vita2d) $(pick libpng png) $(pick zlib libz)"
+PKGS="$(pick libvita2d vita2d) $(pick libpng png) $(pick zlib libz) $(pick openssl) $(pick curl)"
 vdpm install --noconfirm $PKGS < /dev/null || vdpm install $PKGS < <(yes)
-ls "$VITASDK/arm-vita-eabi/lib" | grep -Ei "vita2d|png|libz" || true
+ls "$VITASDK/arm-vita-eabi/lib" | grep -Ei "vita2d|png|libz|curl|ssl|crypto" || true
 ls "$VITASDK/arm-vita-eabi/include" | grep -Ei "vita2d|png|zlib" || true

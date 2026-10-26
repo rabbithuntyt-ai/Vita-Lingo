@@ -15,4 +15,7 @@ bool lingoNetUp(char* ip, size_t n);
  * none). name may be a title or a file name. */
 struct vita2d_texture* lingoCover(const char* system, const char* name);
 
+/* Why the last download failed (empty after a success). */
+const char* lingoNetLastError(void);
+
 #endif

@@ -13,6 +13,7 @@ struct LingoUploadSystem {
 	const char* id;
 	const char* label; /* shown in the phone's picker */
 	const char* exts;  /* ".a.b.c" */
+	const char* dir;   /* where files go; NULL for <root>/<id> */
 };
 
 #define LINGO_UPLOAD_RECENT 8

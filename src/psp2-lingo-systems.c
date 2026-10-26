@@ -2,6 +2,8 @@
  * GBA go to mGBA in this app; everything else launches the matching
  * libretro core packed alongside it in app0:cores/. */
 #include "psp2-lingo-systems.h"
+#include "psp2-lingo-net.h"
+#include "psp2-lingo-shot.h"
 #include "psp2-lingo-ui.h"
 
 #include <math.h>
@@ -90,6 +92,8 @@ static int cmpEntry(const void* a, const void* b) {
 	}
 	return strcasecmp(x->name, y->name);
 }
+
+#define LIST_W 600
 
 static int listDir(const char* path, const struct LingoSystem* sys, struct Entry** out) {
 	int cap = 128, n = 0;
@@ -220,17 +224,37 @@ static bool browse(const struct LingoSystem* sys, char* path, size_t pathSize) {
 				continue;
 			}
 			if (i == sel) {
-				uiRound(24, y + 2, SCREEN_W - 48, rowH - 4, 10, uiAlpha(C_YELLOW, 0.16f));
+				uiRound(24, y + 2, LIST_W - 24, rowH - 4, 10, uiAlpha(C_YELLOW, 0.16f));
 			}
-			uiText(44, y + 30, 17, list[i].dir ? C_YELLOW : C_CHALK, list[i].dir ? "▸" : "•");
-			uiTextWrap(70, y + 30, SCREEN_W - 120, 17, 22, list[i].dir ? C_YELLOW : C_CHALK, list[i].name, 1);
+			uiText(44, y + 30, 17, list[i].dir ? C_YELLOW : C_CHALK, list[i].dir ? "▶" : "•");
+			uiTextWrap(70, y + 30, LIST_W - 90, 17, 22, list[i].dir ? C_YELLOW : C_CHALK, list[i].name, 1);
 			if (IN.released && fabsf(IN.y - IN.sy) < 12 && IN.y > y && IN.y < y + rowH && IN.y > top && IN.y < bottom) {
 				go = i;
 			}
 		}
 		vita2d_disable_clipping();
 		if (!n) {
-			uiTextCentered(SCREEN_W / 2, 280, 17, C_SOFT, "Nothing here for this console.");
+			uiTextCentered(LIST_W / 2, 280, 17, C_SOFT, "Nothing here for this console.");
+		} else if (!list[sel].dir) {
+			/* the game's picture: box art if Lingo has it, else a frame from your own play */
+			float bx = LIST_W + 24, bw = SCREEN_W - bx - 24, by = top + 4, bh = bottom - top - 8;
+			uiRound(bx, by, bw, bh, 14, C_SHEET);
+			vita2d_texture* art = lingoCover(sys->id, list[sel].name);
+			bool shot = false;
+			if (!art) {
+				art = lingoShotTexture(list[sel].name);
+				shot = art != NULL;
+			}
+			if (art) {
+				float tw = vita2d_texture_get_width(art), th = vita2d_texture_get_height(art);
+				float k = fminf((bw - 24) / tw, (bh - 60) / th);
+				vita2d_draw_texture_scale(art, bx + (bw - tw * k) / 2, by + 12 + (bh - 60 - th * k) / 2, k, k);
+				uiTextCentered(bx + bw / 2, by + bh - 18, 12, C_MUTED, shot ? "from your last session" : "box art");
+			} else {
+				uiJpCentered(bx + bw / 2, by + bh / 2, 60, uiAlpha(sys->color, 0.35f), sys->jp);
+				uiTextWrap(bx + 16, by + bh - 40, bw - 32, 12, 16, C_MUTED,
+				           "No picture yet. Box art loads on Wi-Fi; otherwise Lingo keeps a frame after a minute of play.", 2);
+			}
 		}
 		uiText(32, 536, 14, C_SOFT, "✕ Open    ○ Up a folder    Tap to choose");
 		uiFrameEnd();

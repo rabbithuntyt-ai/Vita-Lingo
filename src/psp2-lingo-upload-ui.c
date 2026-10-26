@@ -47,12 +47,15 @@ void lingoUploadRun(void) {
 	uiInit();
 	static struct LingoUploadSystem sys[32];
 	int ns = 0;
-	for (int i = 0; i < LINGO_SYSTEM_COUNT && ns < 32; ++i) {
+	for (int i = 0; i < LINGO_SYSTEM_COUNT && ns < 30; ++i) {
 		static char labels[32][96];
 		snprintf(labels[ns], sizeof(labels[ns]), "%s (%s)", LINGO_SYSTEMS[i].en, LINGO_SYSTEMS[i].jp);
-		sys[ns] = (struct LingoUploadSystem) { LINGO_SYSTEMS[i].id, labels[ns], LINGO_SYSTEMS[i].exts };
+		sys[ns] = (struct LingoUploadSystem) { LINGO_SYSTEMS[i].id, labels[ns], LINGO_SYSTEMS[i].exts, NULL };
 		++ns;
 	}
+	/* not games: a game's character table, and a bigger speech model */
+	sys[ns++] = (struct LingoUploadSystem) { "tables", "Text table for a game (.tbl)", ".tbl", "ux0:data/lingo/tables" };
+	sys[ns++] = (struct LingoUploadSystem) { "models", "Speech model (whisper.cpp ggml .bin)", ".bin", "ux0:data/lingo/models" };
 	char ip[32] = "";
 	bool online = lingoNetUp(ip, sizeof(ip));
 	char token[12];

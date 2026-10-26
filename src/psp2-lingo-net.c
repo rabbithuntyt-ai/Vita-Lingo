@@ -1,4 +1,10 @@
-/* Lingo: Wi-Fi start-up and box art downloads (HTTPS, certificates checked). */
+/* Lingo: Wi-Fi start-up and box art downloads.
+ *
+ * Downloads go through libcurl with OpenSSL and the Mozilla certificate list
+ * shipped in the app (app0:lingo/cacert.pem), so certificates are checked
+ * against current roots. The Vita's own HTTPS library only knows the roots
+ * its firmware shipped with, which no longer cover most sites; that is why
+ * box art never appeared before. */
 #include "psp2-lingo-covermatch.h"
 #include "psp2-lingo-net.h"
 
@@ -11,11 +17,10 @@
 #include <psp2/io/stat.h>
 #include <psp2/kernel/processmgr.h>
 #include <psp2/kernel/threadmgr.h>
-#include <psp2/libssl.h>
-#include <psp2/net/http.h>
 #include <psp2/net/net.h>
 #include <psp2/net/netctl.h>
 #include <psp2/sysmodule.h>
+#include <curl/curl.h>
 #include <vita2d.h>
 
 #define COVERS "ux0:data/lingo/covers"
@@ -48,6 +53,8 @@ bool lingoNetUp(char* ip, size_t n) {
 	return true;
 }
 
+#define CA_FILE "app0:lingo/cacert.pem"
+
 static bool httpUp(void) {
 	if (sHttp) {
 		return true;
@@ -55,68 +62,93 @@ static bool httpUp(void) {
 	if (!lingoNetUp(NULL, 0)) {
 		return false;
 	}
-	sceSysmoduleLoadModule(SCE_SYSMODULE_HTTP);
-	sceSysmoduleLoadModule(SCE_SYSMODULE_SSL);
-	sceSysmoduleLoadModule(SCE_SYSMODULE_HTTPS);
-	sceSslInit(300 * 1024);
-	sceHttpInit(1024 * 1024);
+	if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK) {
+		return false;
+	}
 	sHttp = true;
 	return true;
 }
 
+struct Buf {
+	char* d;
+	size_t n, cap;
+	bool failed;
+};
+
+static size_t onData(void* p, size_t size, size_t count, void* user) {
+	struct Buf* b = user;
+	size_t len = size * count;
+	if (b->n + len + 1 > b->cap) {
+		size_t cap = b->cap ? b->cap * 2 : 256 * 1024;
+		while (cap < b->n + len + 1) {
+			cap *= 2;
+		}
+		if (cap > 16 * 1024 * 1024) {
+			b->failed = true;
+			return 0;
+		}
+		char* d = realloc(b->d, cap);
+		if (!d) {
+			b->failed = true;
+			return 0;
+		}
+		b->d = d;
+		b->cap = cap;
+	}
+	memcpy(b->d + b->n, p, len);
+	b->n += len;
+	b->d[b->n] = 0;
+	return len;
+}
+
+static char sNetError[160];
+
+const char* lingoNetLastError(void) {
+	return sNetError;
+}
+
 /* GET url into a malloc'd, NUL-terminated buffer. NULL on any failure,
- * including a certificate the Vita cannot verify. */
+ * including a certificate that doesn't check out. */
 static char* httpGet(const char* url, size_t* len) {
 	*len = 0;
 	if (!httpUp()) {
+		snprintf(sNetError, sizeof(sNetError), "not connected to Wi-Fi");
 		return NULL;
 	}
-	int tpl = sceHttpCreateTemplate("Lingo/1.0 (PS Vita)", SCE_HTTP_VERSION_1_1, 1);
-	if (tpl < 0) {
+	CURL* c = curl_easy_init();
+	if (!c) {
 		return NULL;
 	}
-	sceHttpSetResolveTimeOut(tpl, 10 * 1000000);
-	sceHttpSetConnectTimeOut(tpl, 10 * 1000000);
-	sceHttpSetRecvTimeOut(tpl, 20 * 1000000);
-	char* data = NULL;
-	int conn = sceHttpCreateConnectionWithURL(tpl, url, 0);
-	int req = conn >= 0 ? sceHttpCreateRequestWithURL(conn, SCE_HTTP_METHOD_GET, url, 0) : -1;
-	int status = 0;
-	if (req >= 0 && sceHttpSendRequest(req, NULL, 0) >= 0 && sceHttpGetStatusCode(req, &status) >= 0 && status == 200) {
-		size_t cap = 256 * 1024;
-		data = malloc(cap + 1);
-		while (data) {
-			if (*len == cap) {
-				cap *= 2;
-				char* d = realloc(data, cap + 1);
-				if (!d) {
-					free(data);
-					data = NULL;
-					break;
-				}
-				data = d;
-			}
-			int r = sceHttpReadData(req, data + *len, (unsigned) (cap - *len));
-			if (r < 0) {
-				free(data);
-				data = NULL;
-				break;
-			}
-			if (r == 0) {
-				data[*len] = 0;
-				break;
-			}
-			*len += (size_t) r;
-		}
+	struct Buf b = { NULL, 0, 0, false };
+	char err[CURL_ERROR_SIZE] = "";
+	curl_easy_setopt(c, CURLOPT_URL, url);
+	curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, onData);
+	curl_easy_setopt(c, CURLOPT_WRITEDATA, &b);
+	curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
+	curl_easy_setopt(c, CURLOPT_MAXREDIRS, 4L);
+	curl_easy_setopt(c, CURLOPT_USERAGENT, "Lingo/1.1 (PS Vita)");
+	curl_easy_setopt(c, CURLOPT_CAINFO, CA_FILE);
+	curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER, 1L);
+	curl_easy_setopt(c, CURLOPT_SSL_VERIFYHOST, 2L);
+	curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 12L);
+	curl_easy_setopt(c, CURLOPT_TIMEOUT, 40L);
+	curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
+	curl_easy_setopt(c, CURLOPT_ERRORBUFFER, err);
+	CURLcode r = curl_easy_perform(c);
+	long code = 0;
+	curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
+	curl_easy_cleanup(c);
+	if (r != CURLE_OK || code != 200 || b.failed) {
+		snprintf(sNetError, sizeof(sNetError), "%s (HTTP %ld)", err[0] ? err : curl_easy_strerror(r), code);
+		free(b.d);
+		return NULL;
 	}
-	if (req >= 0) {
-		sceHttpDeleteRequest(req);
+	sNetError[0] = 0;
+	*len = b.n;
+	if (!b.d) {
+		b.d = calloc(1, 1);
 	}
-	if (conn >= 0) {
-		sceHttpDeleteConnection(conn);
-	}
-	sceHttpDeleteTemplate(tpl);
-	return data;
+	return b.d;
 }
 
 static void urlEncode(const char* in, char* out, size_t n) {

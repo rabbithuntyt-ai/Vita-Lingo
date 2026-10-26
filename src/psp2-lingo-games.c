@@ -259,6 +259,18 @@ void lingoGamesRun(void) {
 			uiCircle(SCREEN_W / 2 - (NGAMES - 1) * 9 + i * 18, 538 - 14, i == cur ? 5 : 3.5f, i == cur ? C_YELLOW : C_LINE);
 		}
 		uiText(36, 534, 14, C_SOFT, "○ Back    ◀ ▶ Browse");
+		{
+			/* why there is no box art, if a download failed */
+			const char* err = lingoNetLastError();
+			char net[32];
+			if (!lingoNetUp(net, sizeof(net))) {
+				uiText(SCREEN_W - 36 - uiTextW(12, "Box art needs Wi-Fi"), 534, 12, C_MUTED, "Box art needs Wi-Fi");
+			} else if (err && err[0]) {
+				char line[200];
+				snprintf(line, sizeof(line), "Box art: %s", err);
+				uiTextWrap(SCREEN_W - 436, 534, 400, 12, 14, C_MUTED, line, 1);
+			}
+		}
 		uiFrameEnd();
 		if (uiBack()) {
 			return;

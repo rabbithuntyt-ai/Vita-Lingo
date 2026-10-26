@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 	CHECK(!lingoUploadSafeName("..", name, sizeof name), "dots rejected");
 	char dec[64]; lingoUrlDecode("a%20b%E3%81%82+c", dec, sizeof dec);
 	CHECK(!strcmp(dec, "a bあ c"), "url decode: %s", dec);
-	static const struct LingoUploadSystem sys[] = { { "gba", "Game Boy Advance", ".gba" }, { "ps1", "PlayStation", ".cue.bin" } };
+	static const struct LingoUploadSystem sys[] = { { "gba", "Game Boy Advance", ".gba", NULL }, { "ps1", "PlayStation", ".cue.bin", NULL } };
 	struct LingoUpload* u = lingoUploadStart(0, root, "tok123", sys, 2);
 	CHECK(u != NULL, "server did not start");
 	if (!u) return 1;

@@ -1,5 +1,5 @@
 diff --git a/src/platform/psp2/CMakeLists.txt b/src/platform/psp2/CMakeLists.txt
-index 9653205..6119a5b 100644
+index 9653205..11655c7 100644
 --- a/src/platform/psp2/CMakeLists.txt
 +++ b/src/platform/psp2/CMakeLists.txt
 @@ -13,7 +13,8 @@ source_group("PS Vita-specific code" FILES ${OS_SRC})
@@ -8,11 +8,11 @@ index 9653205..6119a5b 100644
  
 -set(OS_LIB -lvita2d -l${M_LIBRARY}
 +set(OS_LIB -lvita2d -lfreetype -lpng -lbz2 -lz -l${M_LIBRARY}
-+    -lSceNet_stub -lSceHttp_stub -lSceSsl_stub -lpthread
++    -lcurl -lssl -lcrypto -lz -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lpthread
      -lSceAppMgr_stub
      -lSceAppUtil_stub
      -lSceAudio_stub
-@@ -57,13 +58,18 @@ vita_create_self(${BINARY_NAME}.self ${BINARY_NAME}.elf)
+@@ -57,13 +58,20 @@ vita_create_self(${BINARY_NAME}.self ${BINARY_NAME}.elf)
  
  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/template.xml.in ${CMAKE_CURRENT_BINARY_DIR}/template.xml)
  
@@ -34,6 +34,8 @@ index 9653205..6119a5b 100644
 +                FILE ${CMAKE_CURRENT_BINARY_DIR}/template.xml sce_sys/livearea/contents/template.xml
 +                FILE ${LINGO_ASSETS}/lingo.dic lingo/lingo.dic
 +                FILE ${LINGO_ASSETS}/klee.ttf lingo/klee.ttf
++                FILE ${LINGO_ASSETS}/ui.ttf lingo/ui.ttf
++                FILE ${LINGO_ASSETS}/cacert.pem lingo/cacert.pem
 +                FILE ${LINGO_ASSETS}/LICENSES.txt lingo/LICENSES.txt)
  
  if(BUILD_PERF)
@@ -77,21 +79,24 @@ index ad07bc9..98a5d89 100644
  		mGUILoadInputMaps(&runner);
  		mGUIRun(&runner, initialPath);
 diff --git a/src/platform/psp2/psp2-context.c b/src/platform/psp2/psp2-context.c
-index 4035d07..53cf114 100644
+index 4035d07..7674098 100644
 --- a/src/platform/psp2/psp2-context.c
 +++ b/src/platform/psp2/psp2-context.c
-@@ -4,6 +4,10 @@
+@@ -4,6 +4,13 @@
   * License, v. 2.0. If a copy of the MPL was not distributed with this
   * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
  #include "psp2-context.h"
 +#include "psp2-lingo-ui.h"
++#include "psp2-lingo-reader.h"
++#include "psp2-lingo-textsrc.h"
++#include "psp2-lingo-shot.h"
 +
 +#include <psp2/io/fcntl.h>
 +#include <psp2/io/stat.h>
  
  #include <mgba/core/core.h>
  
-@@ -47,6 +51,7 @@ static enum ScreenMode {
+@@ -47,6 +54,7 @@ static enum ScreenMode {
  	SM_PLAIN,
  	SM_FULL,
  	SM_ASPECT,
@@ -99,7 +104,7 @@ index 4035d07..53cf114 100644
  	SM_MAX
  } screenMode;
  
-@@ -372,6 +377,20 @@ void mPSP2Setup(struct mGUIRunner* runner) {
+@@ -372,6 +380,20 @@ void mPSP2Setup(struct mGUIRunner* runner) {
  	if (mCoreConfigGetUIntValue(&runner->config, "screenMode", &mode) && mode < SM_MAX) {
  		screenMode = mode;
  	}
@@ -120,7 +125,7 @@ index 4035d07..53cf114 100644
  	if (mCoreConfigGetUIntValue(&runner->config, "camera", &mode)) {
  		camera.cam = mode;
  	}
-@@ -401,6 +420,11 @@ void mPSP2LoadROM(struct mGUIRunner* runner) {
+@@ -401,6 +423,38 @@ void mPSP2LoadROM(struct mGUIRunner* runner) {
  
  	mCoreConfigGetBoolValue(&runner->config, "interframeBlending", &interframeBlending);
  
@@ -128,11 +133,38 @@ index 4035d07..53cf114 100644
 +	memset(&info, 0, sizeof(info));
 +	runner->core->getGameInfo(runner->core, &info);
 +	lingoPanelGameLoaded(info.code, info.title);
++	{
++		/* text reading for games other than Gen 3 Pokémon: tables, learning, teaching */
++		const char* sys = "gba";
++		const uint8_t* rom = NULL;
++		size_t romSize = 0;
++		switch (runner->core->platform(runner->core)) {
++#ifdef M_CORE_GBA
++		case mPLATFORM_GBA:
++			rom = (const uint8_t*) ((struct GBA*) runner->core->board)->memory.rom;
++			romSize = ((struct GBA*) runner->core->board)->memory.romSize;
++			break;
++#endif
++#ifdef M_CORE_GB
++		case mPLATFORM_GB:
++			sys = "gb";
++			rom = ((struct GB*) runner->core->board)->memory.rom;
++			romSize = ((struct GB*) runner->core->board)->memory.romSize;
++			break;
++#endif
++		default:
++			break;
++		}
++		const char* path = lingoLastGamePath();
++		const char* base = strrchr(path, '/');
++		lingoPanelSetSource(sys, base ? base + 1 : path, rom, romSize);
++		lingoShotGame(path);
++	}
 +
  	MutexInit(&audioContext.mutex);
  	ConditionInit(&audioContext.cond);
  	mAudioBufferClear(&audioContext.buffer);
-@@ -442,6 +466,7 @@ void mPSP2UnloadROM(struct mGUIRunner* runner) {
+@@ -442,6 +496,7 @@ void mPSP2UnloadROM(struct mGUIRunner* runner) {
  	}
  	audioContext.running = false;
  	ThreadJoin(&audioThread);
@@ -140,7 +172,7 @@ index 4035d07..53cf114 100644
  }
  
  void mPSP2Paused(struct mGUIRunner* runner) {
-@@ -479,6 +504,7 @@ void mPSP2Unpaused(struct mGUIRunner* runner) {
+@@ -479,6 +534,7 @@ void mPSP2Unpaused(struct mGUIRunner* runner) {
  }
  
  void mPSP2Teardown(struct mGUIRunner* runner) {
@@ -148,7 +180,7 @@ index 4035d07..53cf114 100644
  	UNUSED(runner);
  	mAudioResamplerDeinit(&audioContext.resampler);
  	mAudioBufferDeinit(&audioContext.buffer);
-@@ -514,7 +540,17 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
+@@ -514,7 +570,17 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
  		tint |= 0x20000000;
  	}
  
@@ -166,7 +198,7 @@ index 4035d07..53cf114 100644
  	case SM_BACKDROP:
  	default:
  		vita2d_draw_texture_tint(backdrop, 0, 0, tint);
-@@ -582,8 +618,12 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
+@@ -582,8 +648,12 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
  			memcpy(&texpixels[height * 256], &texpixels[(height - 1) * 256], 1024);
  		}
  	}
@@ -180,7 +212,7 @@ index 4035d07..53cf114 100644
  	                                    0, 0, width, height,
  	                                    scalex, scaley,
  	                                    tint);
-@@ -614,10 +654,66 @@ void mPSP2Swap(struct mGUIRunner* runner) {
+@@ -614,10 +684,83 @@ void mPSP2Swap(struct mGUIRunner* runner) {
  void mPSP2Draw(struct mGUIRunner* runner, bool faded) {
  	unsigned width, height;
  	runner->core->currentVideoSize(runner->core, &width, &height);
@@ -189,6 +221,8 @@ index 4035d07..53cf114 100644
 +		/* Lingo: text, play time and the save flag, every frame of play */
 +		struct LingoMem mem;
 +		memset(&mem, 0, sizeof(mem));
++		struct LingoRegions rs;
++		lingoRegionsClear(&rs);
 +		int dirty = 0;
 +		switch (runner->core->platform(runner->core)) {
 +#ifdef M_CORE_GBA
@@ -199,18 +233,28 @@ index 4035d07..53cf114 100644
 +			mem.rom = (const uint8_t*) gba->memory.rom;
 +			mem.romSize = (uint32_t) gba->memory.romSize;
 +			dirty = gba->memory.savedata.dirty;
++			lingoRegionsAdd(&rs, "ewram", gba->memory.wram, GBA_SIZE_EWRAM);
++			lingoRegionsAdd(&rs, "iwram", gba->memory.iwram, GBA_SIZE_IWRAM);
++			lingoRegionsAdd(&rs, "vram", gba->video.vram, GBA_SIZE_VRAM);
 +			break;
 +		}
 +#endif
 +#ifdef M_CORE_GB
-+		case mPLATFORM_GB:
-+			dirty = ((struct GB*) runner->core->board)->sramDirty;
++		case mPLATFORM_GB: {
++			struct GB* gb = runner->core->board;
++			dirty = gb->sramDirty;
++			lingoRegionsAdd(&rs, "wram", gb->memory.wram, GB_SIZE_WORKING_RAM);
++			lingoRegionsAdd(&rs, "vram", gb->video.vram, GB_SIZE_VRAM);
 +			break;
++		}
 +#endif
 +		default:
 +			break;
 +		}
++		lingoPanelSetRegions(&rs);
 +		lingoPanelFrame(&mem, dirty);
++		/* a picture of the game for the browser, once, after a minute of play */
++		lingoShotFrame(vita2d_texture_get_datap(tex[currentTex]), width, height, 256 * 4, LSF_RGBX8888);
 +	}
  	if (interframeBlending) {
  		_drawTex(tex[!currentTex], width, height, faded, false);
@@ -226,6 +270,9 @@ index 4035d07..53cf114 100644
 +	if (study && lingoPanelWantsLookup()) {
 +		action = 3;
 +	}
++	if (study && lingoPanelWantsTeach()) {
++		action = 4;
++	}
 +	if (!faded && lingoCheckpointDue()) {
 +		action = 2;
 +	}
@@ -238,6 +285,8 @@ index 4035d07..53cf114 100644
 +			kakuRun();
 +		} else if (action == 3) {
 +			lingoLookupRun();
++		} else if (action == 4) {
++			lingoTextTeachRun();
 +		} else {
 +			lingoCheckpointRun();
 +		}

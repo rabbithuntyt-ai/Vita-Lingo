@@ -194,7 +194,8 @@ static void receive(struct LingoUpload* u, int fd, const char* query, uint64_t l
 	char sys[16] = "", rawName[256] = "", name[200];
 	queryParam(query, "sys", sys, sizeof(sys));
 	queryParam(query, "name", rawName, sizeof(rawName));
-	if (!findSystem(u, sys) || !lingoUploadSafeName(rawName, name, sizeof(name))) {
+	const struct LingoUploadSystem* target = findSystem(u, sys);
+	if (!target || !lingoUploadSafeName(rawName, name, sizeof(name))) {
 		respond(fd, 400, "text/plain", "unknown console or file name");
 		return;
 	}
@@ -203,8 +204,12 @@ static void receive(struct LingoUpload* u, int fd, const char* query, uint64_t l
 		return;
 	}
 	char dir[400], path[640], part[660];
-	snprintf(dir, sizeof(dir), "%s/%s", u->root, sys);
-	mkdir(u->root, 0777);
+	if (target->dir) {
+		snprintf(dir, sizeof(dir), "%s", target->dir);
+	} else {
+		snprintf(dir, sizeof(dir), "%s/%s", u->root, sys);
+		mkdir(u->root, 0777);
+	}
 	mkdir(dir, 0777);
 	snprintf(path, sizeof(path), "%s/%s", dir, name);
 	snprintf(part, sizeof(part), "%s.part", path);

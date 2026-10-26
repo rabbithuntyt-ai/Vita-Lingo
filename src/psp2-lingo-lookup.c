@@ -72,20 +72,6 @@ static void retokenize(void) {
 	sChangedAt = uiTime();
 }
 
-static void typeChar(uint32_t cp) {
-	if (sN < MAXIN) {
-		sIn[sN++] = sKata ? lingoKanaSwapScript(cp) : cp;
-		retokenize();
-	}
-}
-
-static void editLast(uint32_t (*f)(uint32_t)) {
-	if (sN) {
-		sIn[sN - 1] = f(sIn[sN - 1]);
-		retokenize();
-	}
-}
-
 static bool key(float x, float y, float w, float h, const char* label, uint32_t col, bool jp, float px) {
 	bool held = uiHeld(x, y, w, h);
 	uiRound(x, y + (held ? 2 : 0), w, h, 10, held ? C_SHEET_HI : C_SHEET);
@@ -96,6 +82,53 @@ static bool key(float x, float y, float w, float h, const char* label, uint32_t 
 		uiTextCentered(x + w / 2, y + h / 2 + px * 0.4f + (held ? 2 : 0), px, col, label);
 	}
 	return uiTapped(x, y, w, h);
+}
+
+/* The gojūon keyboard shared by Look up and Teach. Edits buf in place;
+ * returns true when Done is tapped. With space, a Space key replaces half of Clear. */
+bool lingoKeyboard(float ky, uint32_t* buf, int* n, int max, bool* kata, bool space) {
+	float kx = 24, kw = 62, kh = 58, gap = 4;
+	/* columns read right to left, like a Japanese chart */
+	for (int c = 0; c < 10; ++c) {
+		uint32_t cps[5];
+		lingoUtf8Decode(COLS[c], cps, 5);
+		for (int r = 0; r < 5; ++r) {
+			if (cps[r] == 0x3000) {
+				continue;
+			}
+			float x = kx + (9 - c) * (kw + gap), y = ky + r * (kh + gap);
+			char lab[8] = { 0 };
+			lingoUtf8Encode(*kata ? lingoKanaSwapScript(cps[r]) : cps[r], lab);
+			if (key(x, y, kw, kh, lab, C_CHALK, true, 26) && *n < max) {
+				buf[(*n)++] = *kata ? lingoKanaSwapScript(cps[r]) : cps[r];
+			}
+		}
+	}
+	float fx = kx + 10 * (kw + gap) + 10, fw = SCREEN_W - fx - 24;
+	float hw2 = (fw - gap) / 2;
+	if (key(fx, ky, hw2, kh, "゛゜", C_YELLOW, true, 24) && *n) {
+		buf[*n - 1] = lingoKanaCycleMarks(buf[*n - 1]);
+	}
+	if (key(fx + hw2 + gap, ky, hw2, kh, "小", C_YELLOW, true, 24) && *n) {
+		buf[*n - 1] = lingoKanaToggleSmall(buf[*n - 1]);
+	}
+	if (key(fx, ky + (kh + gap), hw2, kh, *kata ? "かな" : "カナ", C_BLUE, true, 22)) {
+		*kata = !*kata;
+	}
+	if ((key(fx + hw2 + gap, ky + (kh + gap), hw2, kh, "←", C_RED, false, 22) || (IN.buttonsPressed & SCE_CTRL_SQUARE)) && *n) {
+		--*n;
+	}
+	if (space) {
+		if (key(fx, ky + 2 * (kh + gap), hw2, kh, "Space", C_SOFT, false, 15) && *n < max) {
+			buf[(*n)++] = 0x3000;
+		}
+		if (key(fx + hw2 + gap, ky + 2 * (kh + gap), hw2, kh, "Clear", C_SOFT, false, 15)) {
+			*n = 0;
+		}
+	} else if (key(fx, ky + 2 * (kh + gap), fw, kh, "Clear", C_SOFT, false, 17)) {
+		*n = 0;
+	}
+	return key(fx, ky + 3 * (kh + gap), fw, kh * 2 + gap, "Done", C_GREEN, false, 19);
 }
 
 static void drawResult(float x, float y, float w, float h) {
@@ -206,45 +239,12 @@ void lingoLookupRun(void) {
 			cx += w + 6;
 		}
 		drawResult(492, 24, 444, 196);
-		/* keyboard: columns read right to left, like a Japanese chart */
-		float kx = 24, ky = 230, kw = 62, kh = 58, gap = 4;
-		for (int c = 0; c < 10; ++c) {
-			uint32_t cps[5];
-			lingoUtf8Decode(COLS[c], cps, 5);
-			for (int r = 0; r < 5; ++r) {
-				if (cps[r] == 0x3000) {
-					continue;
-				}
-				float x = kx + (9 - c) * (kw + gap), y = ky + r * (kh + gap);
-				char lab[8] = { 0 };
-				lingoUtf8Encode(sKata ? lingoKanaSwapScript(cps[r]) : cps[r], lab);
-				if (key(x, y, kw, kh, lab, C_CHALK, true, 26)) {
-					typeChar(cps[r]);
-				}
-			}
-		}
-		float fx = kx + 10 * (kw + gap) + 10, fw = SCREEN_W - fx - 24;
-		float hw2 = (fw - gap) / 2;
-		if (key(fx, ky, hw2, kh, "゛゜", C_YELLOW, true, 24)) {
-			editLast(lingoKanaCycleMarks);
-		}
-		if (key(fx + hw2 + gap, ky, hw2, kh, "小", C_YELLOW, true, 24)) {
-			editLast(lingoKanaToggleSmall);
-		}
-		if (key(fx, ky + (kh + gap), hw2, kh, sKata ? "かな" : "カナ", C_BLUE, true, 22)) {
-			sKata = !sKata;
-		}
-		if (key(fx + hw2 + gap, ky + (kh + gap), hw2, kh, "⌫", C_RED, false, 22) || (IN.buttonsPressed & SCE_CTRL_SQUARE)) {
-			if (sN) {
-				--sN;
-				retokenize();
-			}
-		}
-		if (key(fx, ky + 2 * (kh + gap), fw, kh, "Clear", C_SOFT, false, 17)) {
-			sN = 0;
+		int before = sN;
+		uint32_t lastCh = sN ? sIn[sN - 1] : 0;
+		bool done = lingoKeyboard(230, sIn, &sN, MAXIN, &sKata, false);
+		if (sN != before || (sN && sIn[sN - 1] != lastCh)) {
 			retokenize();
 		}
-		bool done = key(fx, ky + 3 * (kh + gap), fw, kh * 2 + gap, "Done", C_GREEN, false, 19);
 		uiDustDraw();
 		uiFrameEnd();
 		/* a word that has been on screen a moment counts as met in this game */

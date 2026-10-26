@@ -3,8 +3,8 @@
 
 Source: JMdict (EDRDG, CC BY-SA 4.0) as packaged in jamdict-data's SQLite
 database. Every kana reading becomes a lookup key (katakana folded to
-hiragana, since games write the same word either way), pointing at its
-entries ranked common-first.
+hiragana, since games write the same word either way), and so does every
+written (kanji) form, each pointing at its entries ranked common-first.
 
 Usage: build_dict.py jamdict.db lingo.dic
 """
@@ -177,6 +177,12 @@ def main(db_path, out_path):
             if any((k, kj) in PREFER for kj in kanji.get(idseq, [])):
                 r -= 0.5
             keys[k].append((r, idseq, idx))
+        # written forms too, for games (and speech recognition) that use kanji
+        for kj in kanji.get(idseq, []):
+            if kj in seen:
+                continue
+            seen.add(kj)
+            keys[kj].append((prank(kanji_p) + boost, idseq, idx))
 
     print(f"{len(entries)} entries, {len(keys)} keys", flush=True)
 

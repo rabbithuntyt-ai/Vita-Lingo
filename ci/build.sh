@@ -13,13 +13,19 @@ echo "$(cat ci/jamdict.sha256)  /tmp/jamdict.tgz" | sha256sum -c -
 tar xzf /tmp/jamdict.tgz -C /tmp jamdict_data-1.5/jamdict_data/jamdict.db.xz
 xz -dc /tmp/jamdict_data-1.5/jamdict_data/jamdict.db.xz > /tmp/jamdict.db
 python3 tools/build_dict.py /tmp/jamdict.db assets/lingo.dic
-gcc -O2 -Wall -o /tmp/test_lingo tests/test_lingo.c src/psp2-lingo-text.c src/psp2-lingo-dict.c
+READER="src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c"
+gcc -O2 -Wall -o /tmp/test_lingo tests/test_lingo.c src/psp2-lingo-text.c src/psp2-lingo-dict.c $READER -lm
 /tmp/test_lingo assets/lingo.dic
+gcc -O2 -Wall -Wno-format-truncation -o /tmp/test_reader tests/test_reader.c src/psp2-lingo-text.c $READER -lm
+/tmp/test_reader
+gcc -O2 -Wall -Wno-unused-result -o /tmp/test_frontend tests/test_frontend.c retro/retro-zip.c retro/retro-options.c \
+	retro/retro-rewind.c retro/retro-voice.c -lz -lm
+/tmp/test_frontend
 gcc -O2 -Wall -o /tmp/test_kaku tests/test_kaku.c src/psp2-kaku-core.c src/psp2-kaku-data.c -lm
 /tmp/test_kaku
-gcc -O2 -Wall -o /tmp/test_rom tests/test_rom.c src/psp2-lingo-rom.c src/psp2-lingo-text.c
+gcc -O2 -Wall -o /tmp/test_rom tests/test_rom.c src/psp2-lingo-rom.c src/psp2-lingo-text.c $READER -lm
 /tmp/test_rom
-gcc -O2 -Wall -o /tmp/test_quiz tests/test_quiz.c src/psp2-lingo-quiz.c src/psp2-lingo-dict.c src/psp2-lingo-text.c
+gcc -O2 -Wall -o /tmp/test_quiz tests/test_quiz.c src/psp2-lingo-quiz.c src/psp2-lingo-dict.c src/psp2-lingo-text.c $READER -lm
 /tmp/test_quiz assets/lingo.dic /tmp/lingo-book-test.bin
 for t in kana retro covers; do
 	extra=""; [ $t = kana ] && extra="src/psp2-lingo-kana.c src/psp2-lingo-text.c"
@@ -32,8 +38,12 @@ mkdir -p /tmp/uptest && /tmp/test_upload /tmp/uptest
 
 # 2. Assets: font, art, licences
 git clone -q --depth 1 --filter=blob:none --sparse https://github.com/google/fonts /tmp/gfonts
-git -C /tmp/gfonts sparse-checkout set --no-cone /ofl/kleeone/
+git -C /tmp/gfonts sparse-checkout set --no-cone /ofl/kleeone/ /ofl/mplusrounded1c/
 cp /tmp/gfonts/ofl/kleeone/KleeOne-SemiBold.ttf assets/klee.ttf
+cp /tmp/gfonts/ofl/mplusrounded1c/MPLUSRounded1c-Medium.ttf assets/ui.ttf
+# Mozilla's root certificates (MPL 2.0), as published by the curl project, for box art downloads
+curl -sSfL -o assets/cacert.pem https://curl.se/ca/cacert.pem
+grep -q "BEGIN CERTIFICATE" assets/cacert.pem
 cp art/*.png assets/
 cp LICENSES.txt assets/
 

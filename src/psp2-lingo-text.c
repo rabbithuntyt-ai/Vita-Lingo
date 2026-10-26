@@ -1,5 +1,6 @@
 /* Lingo: Gen 3 Japanese text decoding and the text-pointer scanner. */
 #include "psp2-lingo.h"
+#include "psp2-lingo-reader.h"
 
 #include <string.h>
 
@@ -260,6 +261,10 @@ bool lingoExtractMessage(const struct LingoMem* mem, uint32_t addr, uint32_t kno
 	if (kana < 3 || kana * 10 < visible * 6) {
 		return false;
 	}
+	/* and reads like Japanese, not a table that happens to decode */
+	if (!lingoJudgeText(out->cp, n, true)) {
+		return false;
+	}
 	out->len = n;
 	out->start = start;
 	out->hash = hashText(out);
@@ -290,7 +295,8 @@ static struct LingoCandidate* findCandidate(struct LingoScanner* s, uint32_t add
 	return oldest;
 }
 
-static bool plausiblePointer(const struct LingoMem* mem, uint32_t v) {
+static bool plausiblePointer(struct LingoScanner* s, const struct LingoMem* mem, uint32_t v) {
+	(void) s;
 	size_t avail;
 	const uint8_t* p = lingoResolve(mem, v - 1, &avail);
 	return p && isTextByte(*p);
@@ -310,8 +316,35 @@ static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const
 			continue;
 		}
 		uint32_t addr = base + (uint32_t) (i * 4);
+		/* Ruby and Sapphire: struct Window keeps "u16 textIndex" (the high half
+		 * of this word) and, right after it, "const u8 *text". The index walks
+		 * forward while the pointer stays put. */
+		uint32_t di = (v >> 16) - (p >> 16);
+		if (!found && i + 1 < words && di >= 1 && di <= 4 && cur[i + 1] == prev[i + 1]) {
+			uint32_t text = cur[i + 1];
+			uint32_t region = text >> 24;
+			if ((region == 0x02 || region == 0x03 || region == 0x08 || region == 0x09) && plausiblePointer(s, mem, text + 1)) {
+				struct LingoCandidate* c = findCandidate(s, addr | 1, true);
+				if (c->value != text || s->frame - c->lastFrame > 45) {
+					c->steps = 0;
+					c->value = text;
+				}
+				c->steps++;
+				c->lastFrame = s->frame;
+				if (c->steps >= 3) {
+					struct LingoText t;
+					if (lingoExtractMessage(mem, text, text, &t) &&
+					    (t.start != s->currentStart || t.hash != s->currentHash)) {
+						*out = t;
+						s->currentStart = t.start;
+						s->currentHash = t.hash;
+						found = true;
+					}
+				}
+			}
+		}
 		uint32_t delta = v - p;
-		if (delta >= 1 && delta <= 4 && (v >> 24) == (p >> 24) && plausiblePointer(mem, v)) {
+		if (delta >= 1 && delta <= 4 && (v >> 24) == (p >> 24) && plausiblePointer(s, mem, v)) {
 			struct LingoCandidate* c = findCandidate(s, addr, true);
 			if (s->frame - c->lastFrame > 45) {
 				c->steps = 0;
