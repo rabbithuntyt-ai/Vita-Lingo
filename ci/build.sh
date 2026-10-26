@@ -28,7 +28,7 @@ gcc -O2 -Wall -o /tmp/test_rom tests/test_rom.c src/psp2-lingo-rom.c src/psp2-li
 gcc -O2 -Wall -o /tmp/test_quiz tests/test_quiz.c src/psp2-lingo-quiz.c src/psp2-lingo-dict.c src/psp2-lingo-text.c $READER -lm
 /tmp/test_quiz assets/lingo.dic /tmp/lingo-book-test.bin
 for t in kana retro covers; do
-	extra=""; [ $t = kana ] && extra="src/psp2-lingo-kana.c src/psp2-lingo-text.c"
+	extra=""; [ $t = kana ] && extra="src/psp2-lingo-kana.c src/psp2-lingo-text.c $READER -lm"
 	[ $t = retro ] && extra="retro/retro-util.c -lm"
 	[ $t = covers ] && extra="src/psp2-lingo-covermatch.c"
 	gcc -O2 -Wall -o /tmp/test_$t tests/test_$t.c $extra && /tmp/test_$t

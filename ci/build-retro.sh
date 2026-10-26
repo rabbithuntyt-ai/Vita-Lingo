@@ -44,7 +44,7 @@ mkdir -p $B/self/lingo
 curl -sSfL --retry 3 -o $B/self/lingo/whisper.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny-q5_1.bin \
 	|| { echo "speech model download failed: shipping without it"; rm -f $B/self/lingo/whisper.bin; }
 ls -la $B/self/lingo || true
-LIBS="-lvita2d -lfreetype -lpng -lbz2 -lcurl -lssl -lcrypto -lz -lm -lstdc++ -lpthread \
+LIBS="-lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread \
  -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub \
  -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub \
  -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub"
