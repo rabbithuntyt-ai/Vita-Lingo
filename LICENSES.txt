@@ -1,0 +1,31 @@
+Lingo bundles or derives from the following. Thank you to everyone involved.
+
+mGBA
+  Copyright (c) 2013-2026 Jeffrey Pfau and contributors.
+  Mozilla Public License 2.0. https://mgba.io  Source: https://github.com/mgba-emu/mgba
+  Lingo's changes to mGBA are in patches/ in the Lingo repository and are also MPL 2.0.
+
+JMdict (lingo.dic)
+  Electronic Dictionary Research and Development Group (EDRDG), Creative Commons
+  Attribution-ShareAlike 4.0. https://www.edrdg.org/edrdg/licence.html
+  Packaged for Python as jamdict-data. lingo.dic is a converted, shortened copy and
+  is shared under the same licence.
+
+KANJIDIC (kanji meanings and readings in Kaku)
+  EDRDG, Creative Commons Attribution-ShareAlike 4.0.
+
+KanjiVG (stroke order and shapes in Kaku)
+  Copyright (C) 2009-2011 Ulrich Apel. Creative Commons Attribution-ShareAlike 3.0.
+  https://kanjivg.tagaini.net
+
+Klee One (klee.ttf)
+  Copyright 2020 The Klee Project Authors. SIL Open Font License 1.1.
+  https://github.com/fontworks-fonts/Klee
+
+Stroke matching
+  Follows the approach of Hanzi Writer by David Chanin (MIT licence).
+
+Lingo and Kaku
+  By Troy Stokoe.
+
+No games are included. Use dumps of cartridges you own.
