@@ -69,7 +69,7 @@ index ad07bc9..01ad849 100644
  		mGUILoadInputMaps(&runner);
  		mGUIRun(&runner, initialPath);
 diff --git a/src/platform/psp2/psp2-context.c b/src/platform/psp2/psp2-context.c
-index 4035d07..bf09600 100644
+index 4035d07..68747ba 100644
 --- a/src/platform/psp2/psp2-context.c
 +++ b/src/platform/psp2/psp2-context.c
 @@ -4,6 +4,10 @@
@@ -91,13 +91,15 @@ index 4035d07..bf09600 100644
  	SM_MAX
  } screenMode;
  
-@@ -372,6 +377,18 @@ void mPSP2Setup(struct mGUIRunner* runner) {
+@@ -372,6 +377,20 @@ void mPSP2Setup(struct mGUIRunner* runner) {
  	if (mCoreConfigGetUIntValue(&runner->config, "screenMode", &mode) && mode < SM_MAX) {
  		screenMode = mode;
  	}
 +	/* Lingo starts in the study layout the first time it runs */
-+	SceIoStat st;
-+	if (sceIoGetstat("ux0:data/lingo/layout-chosen", &st) < 0) {
++	SceUID seen = sceIoOpen("ux0:data/lingo/layout-chosen", SCE_O_RDONLY, 0);
++	if (seen >= 0) {
++		sceIoClose(seen);
++	} else {
 +		sceIoMkdir("ux0:data/lingo", 0777);
 +		SceUID fd = sceIoOpen("ux0:data/lingo/layout-chosen", SCE_O_WRONLY | SCE_O_CREAT, 0666);
 +		if (fd >= 0) {
@@ -110,7 +112,7 @@ index 4035d07..bf09600 100644
  	if (mCoreConfigGetUIntValue(&runner->config, "camera", &mode)) {
  		camera.cam = mode;
  	}
-@@ -401,6 +418,11 @@ void mPSP2LoadROM(struct mGUIRunner* runner) {
+@@ -401,6 +420,11 @@ void mPSP2LoadROM(struct mGUIRunner* runner) {
  
  	mCoreConfigGetBoolValue(&runner->config, "interframeBlending", &interframeBlending);
  
@@ -122,7 +124,7 @@ index 4035d07..bf09600 100644
  	MutexInit(&audioContext.mutex);
  	ConditionInit(&audioContext.cond);
  	mAudioBufferClear(&audioContext.buffer);
-@@ -479,6 +501,7 @@ void mPSP2Unpaused(struct mGUIRunner* runner) {
+@@ -479,6 +503,7 @@ void mPSP2Unpaused(struct mGUIRunner* runner) {
  }
  
  void mPSP2Teardown(struct mGUIRunner* runner) {
@@ -130,7 +132,7 @@ index 4035d07..bf09600 100644
  	UNUSED(runner);
  	mAudioResamplerDeinit(&audioContext.resampler);
  	mAudioBufferDeinit(&audioContext.buffer);
-@@ -514,7 +537,17 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
+@@ -514,7 +539,17 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
  		tint |= 0x20000000;
  	}
  
@@ -148,7 +150,7 @@ index 4035d07..bf09600 100644
  	case SM_BACKDROP:
  	default:
  		vita2d_draw_texture_tint(backdrop, 0, 0, tint);
-@@ -582,8 +615,12 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
+@@ -582,8 +617,12 @@ void _drawTex(vita2d_texture* t, unsigned width, unsigned height, bool faded, bo
  			memcpy(&texpixels[height * 256], &texpixels[(height - 1) * 256], 1024);
  		}
  	}
@@ -162,7 +164,7 @@ index 4035d07..bf09600 100644
  	                                    0, 0, width, height,
  	                                    scalex, scaley,
  	                                    tint);
-@@ -614,10 +651,35 @@ void mPSP2Swap(struct mGUIRunner* runner) {
+@@ -614,10 +653,35 @@ void mPSP2Swap(struct mGUIRunner* runner) {
  void mPSP2Draw(struct mGUIRunner* runner, bool faded) {
  	unsigned width, height;
  	runner->core->currentVideoSize(runner->core, &width, &height);

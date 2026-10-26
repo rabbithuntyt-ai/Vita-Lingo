@@ -9,7 +9,9 @@
 
 #include <psp2/ctrl.h>
 #include <psp2/io/stat.h>
+#include <psp2/io/fcntl.h>
 #include <psp2/kernel/processmgr.h>
+#include <psp2/kernel/sysmem.h>
 #include <psp2/rtc.h>
 #include <psp2/touch.h>
 #include <vita2d.h>
@@ -767,6 +769,42 @@ struct Msg {
 };
 
 static struct LingoDict* sDict;
+
+/* The dictionary is 20 MB, too much for newlib's default heap, so it gets its
+ * own memory block like mGBA's ROM buffer. */
+static struct LingoDict* loadDictBlock(const char* path) {
+	SceUID fd = sceIoOpen(path, SCE_O_RDONLY, 0);
+	if (fd < 0) {
+		return NULL;
+	}
+	SceOff size = sceIoLseek(fd, 0, SCE_SEEK_END);
+	sceIoLseek(fd, 0, SCE_SEEK_SET);
+	if (size <= 0) {
+		sceIoClose(fd);
+		return NULL;
+	}
+	size_t alloc = ((size_t) size + 0xFFF) & ~(size_t) 0xFFF;
+	SceUID block = sceKernelAllocMemBlock("lingo-dict", SCE_KERNEL_MEMBLOCK_TYPE_USER_RW, alloc, NULL);
+	void* base = NULL;
+	if (block < 0 || sceKernelGetMemBlockBase(block, &base) < 0) {
+		sceIoClose(fd);
+		return NULL;
+	}
+	size_t got = 0;
+	while (got < (size_t) size) {
+		int r = sceIoRead(fd, (uint8_t*) base + got, (size_t) size - got > 0x100000 ? 0x100000 : (size_t) size - got);
+		if (r <= 0) {
+			break;
+		}
+		got += r;
+	}
+	sceIoClose(fd);
+	struct LingoDict* d = got == (size_t) size ? lingoDictFromMemory(base, got, false) : NULL;
+	if (!d) {
+		sceKernelFreeMemBlock(block);
+	}
+	return d;
+}
 static bool sDictTried;
 static struct LingoScanner* sScanner;
 static struct Msg* sHist; /* ring */
@@ -790,7 +828,7 @@ void lingoPanelInit(void) {
 	}
 	if (!sDictTried) {
 		sDictTried = true;
-		sDict = lingoDictLoad(DICT_PATH);
+		sDict = loadDictBlock(DICT_PATH);
 	}
 }
 
