@@ -1,0 +1,669 @@
++ sudo apt-get update -q
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Get:7 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [598 kB]
+Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [661 kB]
+Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1400 kB]
+Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [310 kB]
+Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1706 kB]
+Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1146 kB]
+Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+Fetched 12.6 MB in 1s (8954 kB/s)
+Reading package lists...
++ sudo apt-get install -y -q cmake make git curl xz-utils bzip2 python3 pkg-config
+Reading package lists...
+Building dependency tree...
+Reading state information...
+make is already the newest version (4.3-4.1build2).
+git is already the newest version (1:2.55.0-0ppa1~ubuntu24.04.2).
+git set to manually installed.
+bzip2 is already the newest version (1.0.8-5.1ubuntu0.1).
+python3 is already the newest version (3.12.3-0ubuntu2.1).
+pkg-config is already the newest version (1.8.1-2build1).
+The following additional packages will be installed:
+  cmake-data libcurl3t64-gnutls libcurl4t64 libjsoncpp25 liblzma5 librhash0
+Suggested packages:
+  cmake-doc cmake-format elpa-cmake-mode ninja-build
+The following NEW packages will be installed:
+  cmake cmake-data libjsoncpp25 librhash0
+The following packages will be upgraded:
+  curl libcurl3t64-gnutls libcurl4t64 liblzma5 xz-utils
+5 upgraded, 4 newly installed, 0 to remove and 95 not upgraded.
+Need to get 14.9 MB of archives.
+After this operation, 49.1 MB of additional disk space will be used.
+Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 liblzma5 amd64 5.6.1+really5.4.5-1ubuntu0.4 [128 kB]
+Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 xz-utils amd64 5.6.1+really5.4.5-1ubuntu0.4 [267 kB]
+Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 curl amd64 8.5.0-2ubuntu10.16 [226 kB]
+Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libcurl4t64 amd64 8.5.0-2ubuntu10.16 [344 kB]
+Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjsoncpp25 amd64 1.9.5-6build1 [82.8 kB]
+Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 librhash0 amd64 1.4.3-3build1 [129 kB]
+Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake-data all 3.28.3-1build7 [2155 kB]
+Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake amd64 3.28.3-1build7 [11.2 MB]
+Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libcurl3t64-gnutls amd64 8.5.0-2ubuntu10.16 [337 kB]
+Fetched 14.9 MB in 0s (31.4 MB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 203540 files and directories currently installed.)
+Preparing to unpack .../liblzma5_5.6.1+really5.4.5-1ubuntu0.4_amd64.deb ...
+Unpacking liblzma5:amd64 (5.6.1+really5.4.5-1ubuntu0.4) over (5.6.1+really5.4.5-1ubuntu0.3) ...
+Setting up liblzma5:amd64 (5.6.1+really5.4.5-1ubuntu0.4) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 203540 files and directories currently installed.)
+Preparing to unpack .../0-xz-utils_5.6.1+really5.4.5-1ubuntu0.4_amd64.deb ...
+Unpacking xz-utils (5.6.1+really5.4.5-1ubuntu0.4) over (5.6.1+really5.4.5-1ubuntu0.3) ...
+Preparing to unpack .../1-curl_8.5.0-2ubuntu10.16_amd64.deb ...
+Unpacking curl (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Preparing to unpack .../2-libcurl4t64_8.5.0-2ubuntu10.16_amd64.deb ...
+Unpacking libcurl4t64:amd64 (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Selecting previously unselected package libjsoncpp25:amd64.
+Preparing to unpack .../3-libjsoncpp25_1.9.5-6build1_amd64.deb ...
+Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+Selecting previously unselected package librhash0:amd64.
+Preparing to unpack .../4-librhash0_1.4.3-3build1_amd64.deb ...
+Unpacking librhash0:amd64 (1.4.3-3build1) ...
+Selecting previously unselected package cmake-data.
+Preparing to unpack .../5-cmake-data_3.28.3-1build7_all.deb ...
+Unpacking cmake-data (3.28.3-1build7) ...
+Selecting previously unselected package cmake.
+Preparing to unpack .../6-cmake_3.28.3-1build7_amd64.deb ...
+Unpacking cmake (3.28.3-1build7) ...
+Preparing to unpack .../7-libcurl3t64-gnutls_8.5.0-2ubuntu10.16_amd64.deb ...
+Unpacking libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.16) over (8.5.0-2ubuntu10.15) ...
+Setting up libcurl4t64:amd64 (8.5.0-2ubuntu10.16) ...
+Setting up libcurl3t64-gnutls:amd64 (8.5.0-2ubuntu10.16) ...
+Setting up xz-utils (5.6.1+really5.4.5-1ubuntu0.4) ...
+Setting up libjsoncpp25:amd64 (1.9.5-6build1) ...
+Setting up librhash0:amd64 (1.4.3-3build1) ...
+Setting up cmake-data (3.28.3-1build7) ...
+Setting up curl (8.5.0-2ubuntu10.16) ...
+Setting up cmake (3.28.3-1build7) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Not building database; man-db/auto-update is not 'true'.
+Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+
+Running kernel seems to be up-to-date.
+
+Restarting services...
+ /etc/needrestart/restart.d/systemd-manager
+ systemctl restart multipathd.service packagekit.service php8.3-fpm.service polkit.service rsyslog.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-udevd.service udisks2.service
+
+Service restarts being deferred:
+ systemctl restart ModemManager.service
+ /etc/needrestart/restart.d/dbus.service
+ systemctl restart docker.service
+ systemctl restart networkd-dispatcher.service
+ systemctl restart systemd-logind.service
+ systemctl restart walinuxagent.service
+
+No containers need to be restarted.
+
+User sessions running outdated binaries:
+ runner @ user manager service: systemd[1260]
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
++ git clone --depth 1 https://github.com/vitasdk/vdpm /tmp/vdpm
+Cloning into '/tmp/vdpm'...
++ cd /tmp/vdpm
++ ./bootstrap-vitasdk.sh
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  2 8702k    2  175k    0     0   791k      0  0:00:10 --:--:--  0:00:10  791k100 8702k  100 8702k    0     0  26.5M      0 --:--:-- --:--:-- --:--:-- 84.9M
+Installing the supported series 2026.08
+refreshed 2026.08 channel sequence 2026102473
+:: Starting full system upgrade...
+ there is nothing to do
+resolving dependencies...
+looking for conflicting packages...
+
+Packages (2) vdpm-0.1.3-1  vitasdk-core-2026.08.1-1
+
+Total Download Size:    38.28 MiB
+Total Installed Size:  354.33 MiB
+
+:: Proceed with installation? [Y/n] 
+:: Retrieving packages...
+ vitasdk-core-2026.08.1-1-x86_64-linux-gnu downloading...
+ vdpm-0.1.3-1-x86_64-linux-gnu downloading...
+checking package integrity...
+loading package files...
+checking for file conflicts...
+:: Processing package changes...
+installing vdpm...
+installing vitasdk-core...
+VitaSDK installed at /home/runner/vitasdk
+export VITASDK=/home/runner/vitasdk
+export PATH=$VITASDK/bin:$PATH
++ export PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ vdpm search vita2d
+:: VitaSDK 2026.08 (sequence 2026102473)
+vita/imgui-vita2d 0.0.0.r19.ga849382-1
+    
+vita/libvita2d 0.0.0.r188.ga8f15ab-1
+    
+vita/libvita2d_ext 0.0.0.r4.gc3f5774-1
+    
+vita/libvita2d_vgl 1.0-1
+    
++ vdpm search png
+:: VitaSDK 2026.08 (sequence 2026102473)
+vita/libpng 1.6.58-1
+    
++ vdpm search zlib
+:: VitaSDK 2026.08 (sequence 2026102473)
+vita/zlib 1.3.2-2
+    A lossless data-compression library for Vita
+++ pick libvita2d vita2d
+++ for n in "$@"
+++ vdpm info libvita2d
+++ echo libvita2d
+++ return
+++ pick libpng png
+++ for n in "$@"
+++ vdpm info libpng
+++ echo libpng
+++ return
+++ pick zlib libz
+++ for n in "$@"
+++ vdpm info zlib
+++ echo zlib
+++ return
++ PKGS='libvita2d libpng zlib'
++ vdpm install --noconfirm libvita2d libpng zlib
+:: VitaSDK 2026.08 (sequence 2026102473)
+resolving dependencies...
+looking for conflicting packages...
+
+Packages (6) bzip2-1.0.8-1  freetype-2.14.3-1  libjpeg-turbo-3.2.0-1  libpng-1.6.58-1  libvita2d-0.0.0.r188.ga8f15ab-1  zlib-1.3.2-2
+
+Total Download Size:   1.28 MiB
+Total Installed Size:  5.34 MiB
+
+:: Proceed with installation? [Y/n] 
+:: Retrieving packages...
+ freetype-2.14.3-1-vita downloading...
+ libjpeg-turbo-3.2.0-1-vita downloading...
+ libpng-1.6.58-1-vita downloading...
+ zlib-1.3.2-2-vita downloading...
+ bzip2-1.0.8-1-vita downloading...
+ libvita2d-0.0.0.r188.ga8f15ab-1-vita downloading...
+checking package integrity...
+loading package files...
+checking for file conflicts...
+:: Processing package changes...
+installing zlib...
+installing libpng...
+installing libjpeg-turbo...
+installing bzip2...
+installing freetype...
+installing libvita2d...
++ ls /home/runner/vitasdk/arm-vita-eabi/lib
++ grep -Ei 'vita2d|png|libz'
+libpng
+libpng.a
+libpng16.a
+libvita2d.a
+libz.a
++ ls /home/runner/vitasdk/arm-vita-eabi/include
++ grep -Ei 'vita2d|png|zlib'
+bzlib.h
+libpng16
+png.h
+pngconf.h
+pnglibconf.h
+vita2d.h
+zlib.h
++ export PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ ROOT=/home/runner/work/Vita-Lingo/Vita-Lingo
+++ cat mgba.commit
++ MGBA_COMMIT=1509d86028c7df2d844b590723a80b2978f49e7c
++ rm -rf build mgba out
++ mkdir -p out
++ echo 'Automated build'
++ git init -q mgba
++ git -C mgba remote add origin https://github.com/mgba-emu/mgba
++ git -C mgba fetch -q --depth 1 origin 1509d86028c7df2d844b590723a80b2978f49e7c
++ git -C mgba checkout -q FETCH_HEAD
++ '[' -d src ']'
++ cp -v src/psp2-kaku-core.c src/psp2-kaku-data.c src/psp2-kaku.h src/psp2-lingo-dict.c src/psp2-lingo-text.c src/psp2-lingo.h mgba/src/platform/psp2/
+'src/psp2-kaku-core.c' -> 'mgba/src/platform/psp2/psp2-kaku-core.c'
+'src/psp2-kaku-data.c' -> 'mgba/src/platform/psp2/psp2-kaku-data.c'
+'src/psp2-kaku.h' -> 'mgba/src/platform/psp2/psp2-kaku.h'
+'src/psp2-lingo-dict.c' -> 'mgba/src/platform/psp2/psp2-lingo-dict.c'
+'src/psp2-lingo-text.c' -> 'mgba/src/platform/psp2/psp2-lingo-text.c'
+'src/psp2-lingo.h' -> 'mgba/src/platform/psp2/psp2-lingo.h'
++ '[' -d patches ']'
++ mkdir build
++ cd build
++ cmake ../mgba -DCMAKE_TOOLCHAIN_FILE=../mgba/src/platform/psp2/CMakeToolchain.vitasdk -DCMAKE_BUILD_TYPE=Release
+-- The C compiler identification is GNU 15.2.0
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/runner/vitasdk/bin/arm-vita-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
+-- The ASM compiler identification is GNU
+-- Found assembler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc
+-- Looking for strdup
+-- Looking for strdup - found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for strndup
+-- Looking for strndup - found
+-- Looking for vasprintf
+-- Looking for vasprintf - found
+-- Looking for freelocale
+-- Looking for freelocale - found
+-- Looking for newlocale
+-- Looking for newlocale - found
+-- Looking for setlocale
+-- Looking for setlocale - found
+-- Looking for snprintf_l
+-- Looking for snprintf_l - not found
+-- Looking for uselocale
+-- Looking for uselocale - found
+-- Looking for popcount32
+-- Looking for popcount32 - not found
+-- Looking for futimens
+-- Looking for futimens - found
+-- Looking for futimes
+-- Looking for futimes - not found
+-- Looking for localtime_r
+-- Looking for localtime_r - found
+-- Looking for realpath
+-- Looking for realpath - found
+-- Looking for strtof_l
+-- Looking for strtof_l - found
+-- Looking for include file xlocale.h
+-- Looking for include file xlocale.h - not found
+-- Checking for one of the modules 'libavcodec'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libavcodec missing for feature USE_FFMPEG.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:511 (find_feature)
+
+
+-- Checking for one of the modules 'minizip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module minizip missing for feature USE_MINIZIP.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:514 (find_feature)
+
+
+-- Checking for one of the modules 'libzip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libzip missing for feature USE_LIBZIP.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:516 (find_feature)
+
+
+-- Checking for one of the modules 'epoxy'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module epoxy missing for feature USE_EPOXY.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:517 (find_feature)
+
+
+-- Checking for one of the modules 'libelf'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libelf missing for feature USE_ELF.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:520 (find_feature)
+
+
+-- Checking for one of the modules 'json-c'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module json-c missing for feature USE_JSON_C.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:790 (find_feature)
+
+
+-- Checking for one of the modules 'Lua'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module Lua missing for feature USE_LUA.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:796 (find_feature)
+
+
+CMake Warning (dev) at CMakeLists.txt:1117 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1118 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Build type: Release
+-- Platforms:
+-- 	Game Boy Advance: ON
+-- 	Game Boy: ON
+-- Features:
+-- 	Debuggers: OFF
+-- 	CLI debugger: OFF
+-- 	GDB stub: OFF
+-- 	GIF/Video recording: OFF
+-- 	Screenshot/advanced savestate support: ON
+-- 	ZIP support: minizip (included)
+-- 	7-Zip support: ON
+-- 	SQLite3 game database: OFF
+-- 	ELF loading support: OFF
+-- 	Discord Rich Presence support: OFF
+-- 	OpenGL support: OFF
+-- Scripting support: ON
+-- 	Lua: OFF
+-- 	storage API: OFF
+-- 	Font rendering: ON
+-- Frontends:
+-- 	Qt: OFF
+-- 	SDL (): OFF
+-- 	Headless: OFF
+-- 	Python bindings: OFF
+-- 	Examples: OFF
+-- Test tools:
+-- 	Profiling: OFF
+-- 	Test harness: OFF
+-- 	Test suite: OFF
+-- 	Video test suite: OFF
+-- Cores:
+-- 	Libretro core: OFF
+-- Libraries:
+-- 	Static: ON
+-- 	Shared: OFF
+-- Configuring done (4.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/runner/work/Vita-Lingo/Vita-Lingo/build
+++ nproc
++ make -j4
+[  0%] Built target mgba-version-info
+[  0%] Building C object CMakeFiles/mgba.dir/src/core/bitmap-cache.c.obj
+[  1%] Building C object CMakeFiles/mgba.dir/src/core/cache-set.c.obj
+[  1%] Building C object CMakeFiles/mgba.dir/src/core/cheats.c.obj
+[  2%] Building C object CMakeFiles/mgba.dir/src/core/config.c.obj
+[  2%] Building C object CMakeFiles/mgba.dir/src/core/core.c.obj
+[  3%] Building C object CMakeFiles/mgba.dir/src/core/directories.c.obj
+[  4%] Building C object CMakeFiles/mgba.dir/src/core/input.c.obj
+[  4%] Building C object CMakeFiles/mgba.dir/src/core/interface.c.obj
+[  5%] Building C object CMakeFiles/mgba.dir/src/core/lockstep.c.obj
+[  5%] Building C object CMakeFiles/mgba.dir/src/core/log.c.obj
+[  6%] Building C object CMakeFiles/mgba.dir/src/core/map-cache.c.obj
+[  6%] Building C object CMakeFiles/mgba.dir/src/core/mem-search.c.obj
+[  7%] Building C object CMakeFiles/mgba.dir/src/core/rewind.c.obj
+[  8%] Building C object CMakeFiles/mgba.dir/src/core/serialize.c.obj
+[  8%] Building C object CMakeFiles/mgba.dir/src/core/sync.c.obj
+[  9%] Building C object CMakeFiles/mgba.dir/src/core/thread.c.obj
+[  9%] Building C object CMakeFiles/mgba.dir/src/core/tile-cache.c.obj
+[ 10%] Building C object CMakeFiles/mgba.dir/src/core/timing.c.obj
+[ 10%] Building C object CMakeFiles/mgba.dir/src/core/library.c.obj
+[ 11%] Building C object CMakeFiles/mgba.dir/src/sm83/decoder.c.obj
+[ 12%] Building C object CMakeFiles/mgba.dir/src/sm83/isa-sm83.c.obj
+[ 12%] Building C object CMakeFiles/mgba.dir/src/sm83/sm83.c.obj
+[ 13%] Building C object CMakeFiles/mgba.dir/src/gb/audio.c.obj
+[ 13%] Building C object CMakeFiles/mgba.dir/src/gb/cheats.c.obj
+[ 14%] Building C object CMakeFiles/mgba.dir/src/gb/core.c.obj
+[ 14%] Building C object CMakeFiles/mgba.dir/src/gb/gb.c.obj
+[ 15%] Building C object CMakeFiles/mgba.dir/src/gb/input.c.obj
+[ 16%] Building C object CMakeFiles/mgba.dir/src/gb/io.c.obj
+[ 16%] Building C object CMakeFiles/mgba.dir/src/gb/mbc.c.obj
+[ 17%] Building C object CMakeFiles/mgba.dir/src/gb/mbc/huc-3.c.obj
+[ 17%] Building C object CMakeFiles/mgba.dir/src/gb/mbc/licensed.c.obj
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/gb/mbc.c: In function 'GBMBCSwitchSramHalfBank':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/gb/mbc.c:301:71: warning: comparison of integer expressions of different signedness: 'int' and 'uint32_t' {aka 'unsigned int'} [-Wsign-compare]
+  301 |                         if (bankStart + GB_SIZE_EXTERNAL_RAM_HALFBANK > gb->sramSize) {
+      |                                                                       ^
+[ 18%] Building C object CMakeFiles/mgba.dir/src/gb/mbc/mbc.c.obj
+[ 18%] Building C object CMakeFiles/mgba.dir/src/gb/mbc/pocket-cam.c.obj
+[ 19%] Building C object CMakeFiles/mgba.dir/src/gb/mbc/tama5.c.obj
+[ 20%] Building C object CMakeFiles/mgba.dir/src/gb/mbc/unlicensed.c.obj
+[ 20%] Building C object CMakeFiles/mgba.dir/src/gb/memory.c.obj
+[ 21%] Building C object CMakeFiles/mgba.dir/src/gb/overrides.c.obj
+[ 21%] Building C object CMakeFiles/mgba.dir/src/gb/serialize.c.obj
+[ 22%] Building C object CMakeFiles/mgba.dir/src/gb/renderers/cache-set.c.obj
+[ 22%] Building C object CMakeFiles/mgba.dir/src/gb/renderers/software.c.obj
+[ 23%] Building C object CMakeFiles/mgba.dir/src/gb/sio.c.obj
+[ 24%] Building C object CMakeFiles/mgba.dir/src/gb/timer.c.obj
+[ 24%] Building C object CMakeFiles/mgba.dir/src/gb/video.c.obj
+[ 25%] Building C object CMakeFiles/mgba.dir/src/arm/arm.c.obj
+[ 25%] Building C object CMakeFiles/mgba.dir/src/arm/decoder-arm.c.obj
+[ 26%] Building C object CMakeFiles/mgba.dir/src/arm/decoder.c.obj
+[ 26%] Building C object CMakeFiles/mgba.dir/src/arm/decoder-thumb.c.obj
+[ 27%] Building C object CMakeFiles/mgba.dir/src/arm/isa-arm.c.obj
+[ 28%] Building C object CMakeFiles/mgba.dir/src/arm/isa-thumb.c.obj
+[ 28%] Building C object CMakeFiles/mgba.dir/src/gba/audio.c.obj
+[ 29%] Building C object CMakeFiles/mgba.dir/src/gba/bios.c.obj
+[ 29%] Building C object CMakeFiles/mgba.dir/src/gba/cart/ereader.c.obj
+[ 30%] Building C object CMakeFiles/mgba.dir/src/gba/cart/gpio.c.obj
+[ 30%] Building C object CMakeFiles/mgba.dir/src/gba/cart/matrix.c.obj
+[ 31%] Building C object CMakeFiles/mgba.dir/src/gba/cart/unlicensed.c.obj
+[ 32%] Building C object CMakeFiles/mgba.dir/src/gba/cart/vfame.c.obj
+[ 32%] Building C object CMakeFiles/mgba.dir/src/gba/cheats.c.obj
+[ 33%] Building C object CMakeFiles/mgba.dir/src/gba/cheats/codebreaker.c.obj
+[ 33%] Building C object CMakeFiles/mgba.dir/src/gba/cheats/gameshark.c.obj
+[ 34%] Building C object CMakeFiles/mgba.dir/src/gba/cheats/parv3.c.obj
+[ 34%] Building C object CMakeFiles/mgba.dir/src/gba/core.c.obj
+[ 35%] Building C object CMakeFiles/mgba.dir/src/gba/dma.c.obj
+[ 36%] Building C object CMakeFiles/mgba.dir/src/gba/gba.c.obj
+[ 36%] Building C object CMakeFiles/mgba.dir/src/gba/hle-bios.c.obj
+[ 37%] Building C object CMakeFiles/mgba.dir/src/gba/input.c.obj
+[ 37%] Building C object CMakeFiles/mgba.dir/src/gba/io.c.obj
+[ 38%] Building C object CMakeFiles/mgba.dir/src/gba/memory.c.obj
+[ 38%] Building C object CMakeFiles/mgba.dir/src/gba/overrides.c.obj
+[ 39%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/cache-set.c.obj
+[ 40%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/common.c.obj
+[ 40%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/gl.c.obj
+[ 41%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/software-bg.c.obj
+[ 41%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/software-mode0.c.obj
+[ 42%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/software-obj.c.obj
+[ 42%] Building C object CMakeFiles/mgba.dir/src/gba/renderers/video-software.c.obj
+[ 43%] Building C object CMakeFiles/mgba.dir/src/gba/savedata.c.obj
+[ 44%] Building C object CMakeFiles/mgba.dir/src/gba/serialize.c.obj
+[ 44%] Building C object CMakeFiles/mgba.dir/src/gba/sharkport.c.obj
+[ 45%] Building C object CMakeFiles/mgba.dir/src/gba/sio.c.obj
+[ 45%] Building C object CMakeFiles/mgba.dir/src/gba/sio/gbp.c.obj
+[ 46%] Building C object CMakeFiles/mgba.dir/src/gba/timer.c.obj
+[ 46%] Building C object CMakeFiles/mgba.dir/src/gba/video.c.obj
+[ 47%] Building C object CMakeFiles/mgba.dir/src/util/circle-buffer.c.obj
+[ 48%] Building C object CMakeFiles/mgba.dir/src/util/configuration.c.obj
+[ 48%] Building C object CMakeFiles/mgba.dir/src/util/crc32.c.obj
+[ 49%] Building C object CMakeFiles/mgba.dir/src/util/formatting.c.obj
+[ 49%] Building C object CMakeFiles/mgba.dir/src/util/gbk-table.c.obj
+[ 50%] Building C object CMakeFiles/mgba.dir/src/util/hash.c.obj
+[ 50%] Building C object CMakeFiles/mgba.dir/src/util/md5.c.obj
+[ 51%] Building C object CMakeFiles/mgba.dir/src/util/sha1.c.obj
+[ 52%] Building C object CMakeFiles/mgba.dir/src/util/string.c.obj
+[ 52%] Building C object CMakeFiles/mgba.dir/src/util/table.c.obj
+[ 53%] Building C object CMakeFiles/mgba.dir/src/util/vector.c.obj
+[ 53%] Building C object CMakeFiles/mgba.dir/src/util/vfs.c.obj
+[ 54%] Building C object CMakeFiles/mgba.dir/src/util/audio-buffer.c.obj
+[ 54%] Building C object CMakeFiles/mgba.dir/src/util/audio-resampler.c.obj
+[ 55%] Building C object CMakeFiles/mgba.dir/src/util/convolve.c.obj
+[ 56%] Building C object CMakeFiles/mgba.dir/src/util/elf-read.c.obj
+[ 56%] Building C object CMakeFiles/mgba.dir/src/util/geometry.c.obj
+[ 57%] Building C object CMakeFiles/mgba.dir/src/util/image.c.obj
+[ 57%] Building C object CMakeFiles/mgba.dir/src/util/image/export.c.obj
+[ 58%] Building C object CMakeFiles/mgba.dir/src/util/image/font.c.obj
+[ 58%] Building C object CMakeFiles/mgba.dir/src/util/image/png-io.c.obj
+[ 59%] Building C object CMakeFiles/mgba.dir/src/util/interpolator.c.obj
+[ 60%] Building C object CMakeFiles/mgba.dir/src/util/patch.c.obj
+[ 60%] Building C object CMakeFiles/mgba.dir/src/util/patch-fast.c.obj
+[ 61%] Building C object CMakeFiles/mgba.dir/src/util/patch-ips.c.obj
+[ 61%] Building C object CMakeFiles/mgba.dir/src/util/patch-ups.c.obj
+[ 62%] Building C object CMakeFiles/mgba.dir/src/util/ring-fifo.c.obj
+[ 62%] Building C object CMakeFiles/mgba.dir/src/util/sfo.c.obj
+[ 63%] Building C object CMakeFiles/mgba.dir/src/util/text-codec.c.obj
+[ 64%] Building C object CMakeFiles/mgba.dir/version.c.obj
+[ 64%] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-mem.c.obj
+[ 65%] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-fifo.c.obj
+[ 65%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/psp2-context.c.obj
+[ 66%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/psp2-kaku-core.c.obj
+[ 66%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/psp2-kaku-data.c.obj
+[ 67%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/psp2-lingo-dict.c.obj
+[ 68%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/psp2-lingo-text.c.obj
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/psp2-context.c: In function '_postAudioBuffer':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/psp2-context.c:241:77: warning: unused parameter 'buf' [-Wunused-parameter]
+  241 | static void _postAudioBuffer(struct mAVStream* stream, struct mAudioBuffer* buf) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~^~~
+[ 68%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/psp2-memory.c.obj
+[ 69%] Building C object CMakeFiles/mgba.dir/src/third-party/inih/ini.c.obj
+[ 69%] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-zip.c.obj
+[ 70%] Building C object CMakeFiles/mgba.dir/src/third-party/zlib/contrib/minizip/ioapi.c.obj
+[ 70%] Building C object CMakeFiles/mgba.dir/src/third-party/zlib/contrib/minizip/unzip.c.obj
+[ 72%] Building C object CMakeFiles/mgba.dir/src/util/vfs/vfs-lzma.c.obj
+[ 71%] Building C object CMakeFiles/mgba.dir/src/third-party/zlib/contrib/minizip/zip.c.obj
+[ 72%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zAlloc.c.obj
+[ 73%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zArcIn.c.obj
+[ 73%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zBuf.c.obj
+[ 74%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zBuf2.c.obj
+[ 74%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zCrc.c.obj
+[ 75%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zCrcOpt.c.obj
+[ 76%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zDec.c.obj
+[ 76%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/CpuArch.c.obj
+[ 77%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Delta.c.obj
+[ 77%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/LzmaDec.c.obj
+[ 78%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Lzma2Dec.c.obj
+[ 78%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Bra.c.obj
+[ 79%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Bra86.c.obj
+[ 80%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/BraIA64.c.obj
+[ 80%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Bcj2.c.obj
+[ 81%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Ppmd7.c.obj
+[ 81%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/Ppmd7Dec.c.obj
+[ 82%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zFile.c.obj
+[ 82%] Building C object CMakeFiles/mgba.dir/src/third-party/lzma/7zStream.c.obj
+[ 83%] Building C object CMakeFiles/mgba.dir/src/platform/psp2/sce-vfs.c.obj
+[ 84%] Building C object CMakeFiles/mgba.dir/src/gba/extra/battlechip.c.obj
+[ 84%] Building C object CMakeFiles/mgba.dir/src/gba/extra/proxy.c.obj
+[ 85%] Building C object CMakeFiles/mgba.dir/src/gb/extra/proxy.c.obj
+[ 85%] Building C object CMakeFiles/mgba.dir/src/feature/commandline.c.obj
+[ 86%] Building C object CMakeFiles/mgba.dir/src/feature/proxy-backend.c.obj
+[ 86%] Building C object CMakeFiles/mgba.dir/src/feature/thread-proxy.c.obj
+[ 87%] Building C object CMakeFiles/mgba.dir/src/feature/video-backend.c.obj
+[ 88%] Building C object CMakeFiles/mgba.dir/src/feature/video-logger.c.obj
+[ 88%] Building C object CMakeFiles/mgba.dir/src/feature/updater.c.obj
+[ 89%] Building C object CMakeFiles/mgba.dir/src/core/scripting.c.obj
+[ 89%] Linking C static library libmgba.a
+[ 89%] Built target mgba
+[ 90%] Generating icons.o
+[ 90%] Generating backdrop.o
+[ 91%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/util/gui.c.obj
+[ 92%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/util/gui/file-select.c.obj
+[ 92%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/util/gui/font.c.obj
+[ 93%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/util/gui/font-metrics.c.obj
+[ 93%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/util/gui/menu.c.obj
+[ 94%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/feature/gui/cheats.c.obj
+[ 94%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/feature/gui/gui-config.c.obj
+[ 95%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/feature/gui/gui-runner.c.obj
+[ 96%] Building C object psp2/CMakeFiles/mgba.elf.dir/__/__/feature/gui/remap.c.obj
+[ 96%] Building C object psp2/CMakeFiles/mgba.elf.dir/gui-font.c.obj
+[ 97%] Building C object psp2/CMakeFiles/mgba.elf.dir/main.c.obj
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c: In function '_keyboardRun':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:100:38: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  100 |         params.title = calloc(sizeof(SceWChar16), MAX_KEYBOARD_TITLE_LEN + 1);
+      |                                      ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:100:38: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:101:48: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  101 |         params.inputTextBuffer = calloc(sizeof(SceWChar16), keyboard->maxLen + 1);
+      |                                                ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:101:48: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:102:44: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  102 |         params.initialText = calloc(sizeof(SceWChar16), keyboard->maxLen + 1);
+      |                                            ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:102:44: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:112:21: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  112 |         utf16Buffer = params.title;
+      |                     ^
+[ 97%] Linking C executable mgba.elf
+lto-wrapper: warning: using serial compilation of 20 LTRANS jobs
+lto-wrapper: note: see the '-flto' option documentation for more information
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c: In function 'mGUIRun':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:622:76: warning: 'last' may be used uninitialized [-Wmaybe-uninitialized]
+  622 |                                                         runner->totalDelta -= last;
+      |                                                                            ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:620:65: note: 'last' declared here
+  620 |                                                         int32_t last;
+      |                                                                 ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:622:76: warning: 'last' may be used uninitialized [-Wmaybe-uninitialized]
+  622 |                                                         runner->totalDelta -= last;
+      |                                                                            ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:620:65: note: 'last' declared here
+  620 |                                                         int32_t last;
+      |                                                                 ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:211:2:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 0 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:214:3:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 0 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:216:2:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 8 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+[ 97%] Built target mgba.elf
+[ 98%] Converting to Sony ELF mgba.elf.velf
+[ 98%] Built target mgba.elf-velf
+[ 98%] Creating SELF mgba.self
+[ 98%] Built target mgba.self-self
+[ 99%] Generating param.sfo for mgba.vpk
+[100%] Building vpk mgba.vpk
+[100%] Built target mgba.vpk-vpk
++ ls -la
+total 8456
+drwxr-xr-x  7 runner runner    4096 Oct 26 16:47 .
+drwxr-xr-x 12 runner runner    4096 Oct 26 16:47 ..
+-rw-r--r--  1 runner runner   34680 Oct 26 16:47 CMakeCache.txt
+drwxr-xr-x  7 runner runner    4096 Oct 26 16:50 CMakeFiles
+-rw-r--r--  1 runner runner    5044 Oct 26 16:47 CPackConfig.cmake
+-rw-r--r--  1 runner runner    4324 Oct 26 16:47 CPackSourceConfig.cmake
+-rw-r--r--  1 runner runner  159561 Oct 26 16:47 Makefile
+-rw-r--r--  1 runner runner    5097 Oct 26 16:47 cmake_install.cmake
+drwxr-xr-x  4 runner runner    4096 Oct 26 16:47 include
+-rw-r--r--  1 runner runner 8402638 Oct 26 16:47 libmgba.a
+drwxr-xr-x  3 runner runner    4096 Oct 26 16:50 psp2
+drwxr-xr-x 11 runner runner    4096 Oct 26 16:47 src
+drwxr-xr-x  3 runner runner    4096 Oct 26 16:47 test
+-rw-r--r--  1 runner runner     678 Oct 26 16:47 version.c
++ cp './*.vpk' /home/runner/work/Vita-Lingo/Vita-Lingo/out/
+cp: cannot stat './*.vpk': No such file or directory
