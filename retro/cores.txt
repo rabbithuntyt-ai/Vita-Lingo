@@ -1,0 +1,13 @@
+# id                 repository (github.com/libretro/...)  commit                                    build dir                makefile
+fceumm               libretro-fceumm             ac0d00a7fc01166f84c7bac01d1084ebfd2b865e  .                        Makefile.libretro
+snes9x2005           snes9x2005                  a79dfe9047e7fec58808aefe48ad2bf499c7af11  .                        Makefile
+genesis_plus_gx      Genesis-Plus-GX             60bee4c724859710ce05672239e5b601ad01382e  .                        Makefile.libretro
+mednafen_pce_fast    beetle-pce-fast-libretro    4eee99c451f85ebe66d1591de88b892015b23059  .                        Makefile
+pcsx_rearmed         pcsx_rearmed                c8816799b50388e61cfe237fe2cdbb7d8175f20a  .                        Makefile.libretro
+mednafen_wswan       beetle-wswan-libretro       4b01295838ea89e3f1355bbe4cb5cf98aa6108cd  .                        Makefile
+mednafen_ngp         beetle-ngp-libretro         a50d5ac288a81f2104ddf43195a4efdd15c72227  .                        Makefile
+fmsx                 fmsx-libretro               4de11755ce4f196ac1c8a7bb20bb4eccbc87a7d4  .                        Makefile
+fbneo                FBNeo                       32958a89abd645ed20387c8d31d21ede3bc48161  src/burner/libretro      Makefile
+mednafen_vb          beetle-vb-libretro          d5ae54c8e23b573a3b34e888b2d48a588027e92c  .                        Makefile
+pokemini             PokeMini                    132111b76343559860532a1ccc094f93f1ed5650  .                        Makefile.libretro
+yabause              yabause                     8926b0c6c347f8c5c755911ddb0ac695420ffbf8  yabause/src/libretro     Makefile

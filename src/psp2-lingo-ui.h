@@ -98,8 +98,11 @@ bool deckAdd(const struct SavedWord* w);
 void deckLoad(void);
 
 /* ---- screens ---- */
-/* Title screen before mGBA's file browser. Returns when the player picks Play. */
-void lingoLauncherRun(void);
+/* Title screen. Returns true with path set when the player picks a Game Boy
+ * or GBA game for mGBA; other consoles launch their own core from here. */
+bool lingoLauncherRun(char* path, size_t pathSize);
+/* Receive games from a phone (QR code + local upload page). */
+void lingoUploadRun(void);
 /* Kaku practice. Returns when the player backs out. */
 void kakuRun(void);
 /* Saved-word review, also reachable from Kaku. */
@@ -116,6 +119,18 @@ void lingoPanelGameUnloaded(void);
 /* Every frame of play: reads text (GBA), times play and watches the save
  * flag (any system) so checkpoints know when the player has saved. */
 void lingoPanelFrame(const struct LingoMem* mem, int saveDirty);
+/* The shared dictionary (loaded on first use), or NULL. */
+const struct LingoDict* lingoDictGet(void);
+/* A word looked up by hand counts as met in the current game. */
+void lingoNoteLookup(const uint32_t* cp, int len, const struct LingoToken* tok);
+/* Type-what-you-see dictionary lookup, for any game. */
+void lingoLookupRun(void);
+int lingoRecentLookups(const char** words, const char** meanings, int max);
+
+/* Side panel for consoles without live text reading. */
+enum LingoPanelAction { LPA_NONE, LPA_KAKU, LPA_LOOKUP, LPA_MENU };
+enum LingoPanelAction lingoRetroPanelDraw(float gx, float gy, float gw, float gh, const char* system, const char* game);
+
 /* True when a checkpoint test is owed; run it with lingoCheckpointRun. */
 bool lingoCheckpointDue(void);
 void lingoCheckpointRun(void);
@@ -124,5 +139,7 @@ void lingoSetCheckpointsEnabled(bool on);
 /* Draws the panel around a game picture drawn at (gx, gy, gw, gh). Returns
  * true if the player asked for Kaku practice. */
 bool lingoPanelDraw(float gx, float gy, float gw, float gh);
+/* Set when the GBA panel's Look up button was tapped (cleared on read). */
+bool lingoPanelWantsLookup(void);
 
 #endif

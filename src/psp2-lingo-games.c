@@ -1,5 +1,7 @@
 /* Lingo: the starter-games shelf. Each card is original chalk art: the title
  * hand-lettered, a colour, and a small generic doodle. No cover art. */
+#include "psp2-lingo-net.h"
+#include "psp2-lingo-systems.h"
 #include "psp2-lingo-ui.h"
 
 #include <math.h>
@@ -7,15 +9,17 @@
 #include <string.h>
 
 #include <psp2/ctrl.h>
+#include <vita2d.h>
 
 enum Doodle { D_GEMS, D_GEM, D_FLAME_LEAF, D_STARS, D_SUN_MOON, D_SWORD };
 
 struct Game {
 	const char* jp;      /* title as written in Japan */
 	const char* en;      /* what English speakers call it */
-	const char* system;
+	const char* sys;     /* console id (psp2-lingo-systems.c) */
+	const char* art;     /* name used to find box art, with an extension when it picks the folder */
 	int level;           /* 1 start here, 2 next, 3 stretch */
-	bool panel;          /* the study panel reads its text */
+	bool panel;          /* the study panel reads its text as people talk */
 	const char* script;  /* how it is written */
 	const char* why;
 	enum Doodle doodle;
@@ -23,34 +27,60 @@ struct Game {
 };
 
 static const struct Game GAMES[] = {
-	{ "ルビー・サファイア", "Pokémon Ruby & Sapphire", "Game Boy Advance", 1, true, "Kana only",
+	{ "ルビー・サファイア", "Pokémon Ruby & Sapphire", "gba", "Pocket Monsters - Ruby", 1, true, "Kana only",
 	  "The best place to start. Every line is hiragana and katakana with spaces between phrases, and the study panel "
 	  "reads all of it. Menus, moves and items repeat constantly, so words stick fast.",
 	  D_GEMS, C_RED, C_BLUE },
-	{ "エメラルド", "Pokémon Emerald", "Game Boy Advance", 1, true, "Kana only",
+	{ "エメラルド", "Pokémon Emerald", "gba", "Pocket Monsters - Emerald", 1, true, "Kana only",
 	  "The same region and the same kana-only text as Ruby and Sapphire, with more story. Fully supported by the "
 	  "study panel.",
 	  D_GEM, C_GREEN, C_GREEN },
-	{ "ファイアレッド・リーフグリーン", "Pokémon FireRed & LeafGreen", "Game Boy Advance", 1, true, "Kana only",
+	{ "ファイアレッド・リーフグリーン", "Pokémon FireRed & LeafGreen", "gba", "Pocket Monsters - FireRed", 1, true, "Kana only",
 	  "If you played the original in English you will recognise every scene, which makes guessing meanings much "
 	  "easier. Fully supported by the study panel.",
 	  D_FLAME_LEAF, C_RED, C_GREEN },
-	{ "ポケットモンスター 金・銀", "Pokémon Gold & Silver", "Game Boy Color", 2, false, "Kana only",
-	  "Kana only, like every Pokémon game of its era. The study panel does not read Game Boy Color games, so this is "
-	  "pure reading practice. Star words you look up elsewhere and review them in Kaku.",
+	{ "ファミコン探偵倶楽部 PartII", "Famicom Detective Club II", "fc", "Famicom Tantei Club Part II.fds", 1, false, "Kana",
+	  "A mystery told almost entirely through dialogue. WaniKani readers call it easy, and a learning-games ranking "
+	  "puts it at the top. Look up words as you question suspects. Needs disksys.rom.",
+	  D_STARS, C_YELLOW, C_SOFT },
+	{ "ポートピア連続殺人事件", "The Portopia Serial Murder Case", "fc", "Portopia Renzoku Satsujin Jiken.nes", 2, false, "Kana",
+	  "The classic text mystery. Time Extension recommends it for practising long stretches of kana.",
+	  D_STARS, C_PINK, C_CHALK },
+	{ "ドラゴンクエスト", "Dragon Quest", "fc", "Dragon Quest.nes", 2, false, "Kana only",
+	  "Kana only, short, and the template for every Japanese RPG since. A slow read but a steady one.",
+	  D_SWORD, C_BLUE, C_CHALK },
+	{ "ファイナルファンタジーUSA", "Final Fantasy Mystic Quest", "sfc", "Final Fantasy USA - Mystic Quest", 2, false, "Kana only",
+	  "Written only in kana and built to be gentle. Time Extension singles it out for learners.",
+	  D_GEM, C_BLUE, C_BLUE },
+	{ "ファイナルファンタジーVI", "Final Fantasy VI", "sfc", "Final Fantasy VI", 3, false, "Mostly kana",
+	  "Readers recommend the Super Famicom Final Fantasy games for reading without kanji, and VI has line-by-line "
+	  "translations online to check yourself against.",
+	  D_STARS, C_PINK, C_BLUE },
+	{ "スターオーシャン", "Star Ocean", "sfc", "Star Ocean", 3, false, "Kana",
+	  "Released only in Japan, so there are plenty of fan resources for its terms. A good stretch goal.",
+	  D_STARS, C_BLUE, C_YELLOW },
+	{ "ポケットモンスター 金・銀", "Pokémon Gold & Silver", "gb", "Pocket Monsters Kin.gbc", 2, false, "Kana only",
+	  "Kana only, like every Pokémon game of its era. The panel does not read it, so use Look up as you go.",
 	  D_SUN_MOON, C_YELLOW, C_SOFT },
-	{ "MOTHER 1+2", "Mother 1+2 (Japan only)", "Game Boy Advance", 2, false, "Mostly kana",
-	  "The series is written almost entirely in kana. Warm, funny everyday dialogue. The panel does not read it, so "
-	  "go slowly and use it as reading practice.",
+	{ "MOTHER 1+2", "Mother 1+2", "gba", "Mother 1+2", 2, false, "Mostly kana",
+	  "The series is written almost entirely in kana. Warm, funny everyday dialogue.",
 	  D_STARS, C_PINK, C_YELLOW },
-	{ "MOTHER 3", "Mother 3 (Japan only)", "Game Boy Advance", 3, false, "Mostly kana",
+	{ "MOTHER 3", "Mother 3", "gba", "Mother 3", 3, false, "Mostly kana",
 	  "Mostly kana like the rest of the series, but a longer, heavier story. A great goal once Pokémon feels "
 	  "comfortable.",
 	  D_STARS, C_YELLOW, C_GREEN },
-	{ "聖剣伝説", "Seiken Densetsu (Final Fantasy Adventure)", "Game Boy", 3, false, "Kana with some kanji",
-	  "Picked out by Time Extension as a good stepping stone for reading retro games in Japanese. Short adventure, "
-	  "classic RPG vocabulary.",
+	{ "聖剣伝説", "Seiken Densetsu (Final Fantasy Adventure)", "gb", "Seiken Densetsu - Final Fantasy Gaiden.gb", 3, false,
+	  "Kana with some kanji",
+	  "Picked out by Time Extension as a good stepping stone for reading retro games in Japanese.",
 	  D_SWORD, C_BLUE, C_CHALK },
+	{ "うる星やつら STAY WITH YOU", "Urusei Yatsura: Stay with You", "pce", "Urusei Yatsura - Stay with You.cue", 3, false,
+	  "Digital comic",
+	  "A PC Engine CD digital comic that Time Extension suggests for fans of the series. Needs syscard3.pce.",
+	  D_STARS, C_PINK, C_GREEN },
+	{ "ときめきメモリアル", "Tokimeki Memorial", "ss", "Tokimeki Memorial - Forever with You.cue", 3, false, "Kana and kanji",
+	  "Time Extension calls it an excellent game to learn with. Saturn emulation on the Vita is slow, so treat "
+	  "it as an experiment.",
+	  D_SUN_MOON, C_PINK, C_YELLOW },
 };
 #define NGAMES ((int) (sizeof(GAMES) / sizeof(GAMES[0])))
 
@@ -127,41 +157,50 @@ static void drawCard(const struct Game* g, float x, float y, float w, float h, f
 	uiRound(x + 5, y + 8, w, h, 22, RGBA(0, 0, 0, 0x55));
 	uiRound(x, y, w, h, 22, C_SHEET);
 	uiRoundOutline(x, y, w, h, 22, focus ? 3 : 2, focus ? g->a : C_LINE);
-	/* colour band */
-	uiRound(x + 14, y + 14, w - 28, 120, 16, uiAlpha(g->a, 0.12f));
-	drawDoodle(g, x + w / 2, y + 74, t);
+	/* the band: real box art when it has been downloaded, chalk otherwise */
+	uiRound(x + 14, y + 14, w - 28, 132, 16, uiAlpha(g->a, 0.12f));
+	vita2d_texture* cover = focus ? lingoCover(g->sys, g->art) : NULL;
+	if (cover) {
+		float cw = vita2d_texture_get_width(cover), ch = vita2d_texture_get_height(cover);
+		float sc = 124 / ch;
+		if (cw * sc > w - 40) {
+			sc = (w - 40) / cw;
+		}
+		vita2d_draw_texture_scale(cover, x + w / 2 - cw * sc / 2, y + 18, sc, sc);
+	} else {
+		drawDoodle(g, x + w / 2, y + 80, t);
+	}
 	/* title */
-	float px = 40;
-	while (px > 20 && uiJpW(px, g->jp) > w - 40) {
+	float px = 36;
+	while (px > 18 && uiJpW(px, g->jp) > w - 40) {
 		px -= 2;
 	}
-	uiJpCentered(x + w / 2, y + 184, px, C_CHALK, g->jp);
-	uiTextCentered(x + w / 2, y + 214, 15, C_SOFT, g->en);
+	uiJpCentered(x + w / 2, y + 190, px, C_CHALK, g->jp);
+	uiTextCentered(x + w / 2, y + 216, 14, C_SOFT, g->en);
 	/* chips */
-	float cx = x + 20;
-	const char* chips[3] = { g->system, g->script, g->panel ? "Study panel reads it" : NULL };
-	uint32_t cols[3] = { C_SOFT, C_YELLOW, C_GREEN };
-	float cy = y + 234;
+	const struct LingoSystem* sys = lingoSystemById(g->sys);
+	const char* chips[3] = { sys ? sys->en : "", g->script, g->panel ? "Study panel reads it" : "Use Look up" };
+	uint32_t cols[3] = { sys ? sys->color : C_SOFT, C_YELLOW, g->panel ? C_GREEN : C_BLUE };
+	float cx = x + 20, cy = y + 232;
 	for (int i = 0; i < 3; ++i) {
-		if (!chips[i]) {
-			continue;
-		}
-		float cw = uiTextW(13, chips[i]) + 20;
+		float cw = uiTextW(12, chips[i]) + 18;
 		if (cx + cw > x + w - 20) {
 			cx = x + 20;
-			cy += 32;
+			cy += 30;
 		}
-		uiRound(cx, cy, cw, 26, 9, uiAlpha(cols[i], 0.16f));
-		uiText(cx + 10, cy + 18, 13, cols[i], chips[i]);
-		cx += cw + 8;
+		uiRound(cx, cy, cw, 24, 8, uiAlpha(cols[i], 0.16f));
+		uiText(cx + 9, cy + 17, 12, cols[i], chips[i]);
+		cx += cw + 6;
 	}
-	uiTextWrap(x + 22, cy + 56, w - 44, 15, 22, C_CHALK, g->why, 6);
-	/* level */
+	uiTextWrap(x + 22, cy + 52, w - 44, 14, 20, C_CHALK, g->why, 5);
 	static const char* const lv[4] = { "", "Start here", "Next step", "Stretch goal" };
 	for (int i = 0; i < 3; ++i) {
-		star(x + w - 92 + i * 26, y + h - 26, 9, i < g->level ? C_YELLOW : C_LINE_SOFT);
+		star(x + w - 92 + i * 26, y + h - 24, 9, i < g->level ? C_YELLOW : C_LINE_SOFT);
 	}
-	uiText(x + 22, y + h - 20, 15, g->level == 1 ? C_YELLOW : C_SOFT, lv[g->level]);
+	uiText(x + 22, y + h - 18, 14, g->level == 1 ? C_YELLOW : C_SOFT, lv[g->level]);
+	if (cover) {
+		uiText(x + w - 196, y + h - 46, 10, C_SOFT, "Box art: libretro-thumbnails");
+	}
 }
 
 void lingoGamesRun(void) {
@@ -202,7 +241,7 @@ void lingoGamesRun(void) {
 		uiFrameBegin();
 		uiChalkBackground();
 		uiJp(36, 56, 32, C_CHALK, "はじめの ゲーム");
-		uiText(36, 86, 16, C_SOFT, "Starter games, easiest first. Bring your own cartridge dumps.");
+		uiText(36, 86, 15, C_SOFT, "Starter games across every console, easiest first. Bring your own backups.");
 		float cw = 440, ch = 404;
 		for (int i = 0; i < NGAMES; ++i) {
 			float off = (i - pos) * (cw + 30) + drag;

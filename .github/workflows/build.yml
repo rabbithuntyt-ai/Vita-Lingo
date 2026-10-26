@@ -5,24 +5,63 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+env:
+  VITASDK: /home/runner/vitasdk
 jobs:
-  build:
+  sdk:
     runs-on: ubuntu-24.04
-    env:
-      VITASDK: /home/runner/vitasdk
     steps:
       - uses: actions/checkout@v4
-      - name: Cache VitaSDK
-        id: sdk
+      - id: sdk
         uses: actions/cache@v4
-        with:
-          path: /home/runner/vitasdk
-          key: vitasdk-v4
-      - name: Install VitaSDK
-        if: steps.sdk.outputs.cache-hit != 'true'
-        run: bash ci/install-sdk.sh 2>&1 | tee -a ci-log.txt; exit ${PIPESTATUS[0]}
+        with: { path: /home/runner/vitasdk, key: vitasdk-v5 }
+      - if: steps.sdk.outputs.cache-hit != 'true'
+        run: bash ci/install-sdk.sh
+
+  cores:
+    needs: sdk
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        core: [fceumm, snes9x2005, genesis_plus_gx, mednafen_pce_fast, pcsx_rearmed, mednafen_wswan,
+               mednafen_ngp, fmsx, fbneo, mednafen_vb, pokemini, yabause]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with: { path: /home/runner/vitasdk, key: vitasdk-v5 }
+      - id: key
+        run: echo "sha=$(awk -v id=${{ matrix.core }} '$1==id{print $3}' retro/cores.txt)" >> $GITHUB_OUTPUT
+      - id: built
+        uses: actions/cache@v4
+        with: { path: cores-a/${{ matrix.core }}.a, key: core-${{ matrix.core }}-${{ steps.key.outputs.sha }}-v1 }
+      - if: steps.built.outputs.cache-hit != 'true'
+        run: bash ci/build-core.sh ${{ matrix.core }} "$PWD/cores-a" 2>&1 | tee core-log.txt; exit ${PIPESTATUS[0]}
+      - uses: actions/upload-artifact@v4
+        with: { name: core-${{ matrix.core }}, path: cores-a/${{ matrix.core }}.a }
+      - if: failure()
+        run: |
+          git config user.name ci; git config user.email actions@github.com
+          cp core-log.txt /tmp/ 2>/dev/null || echo none > /tmp/core-log.txt
+          git switch --orphan "ci-${{ github.run_number }}-${{ matrix.core }}"
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp /tmp/core-log.txt . && tail -c 2000000 core-log.txt > t && mv t core-log.txt
+          git add -A && git commit -qm "core log" && git push -q -f origin HEAD
+
+  build:
+    needs: cores
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with: { path: /home/runner/vitasdk, key: vitasdk-v5 }
+      - uses: actions/download-artifact@v4
+        with: { path: cores-dl, pattern: core-*, merge-multiple: true }
       - name: Build
-        run: bash ci/build.sh 2>&1 | tee -a ci-log.txt; exit ${PIPESTATUS[0]}
+        run: |
+          mkdir -p cores-a && cp cores-dl/*.a cores-a/ 2>/dev/null || true
+          (bash ci/build.sh && bash ci/build-retro.sh) 2>&1 | tee -a ci-log.txt; exit ${PIPESTATUS[0]}
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -36,7 +75,6 @@ jobs:
           mkdir -p /tmp/ci && cp ci-log.txt /tmp/ci/ 2>/dev/null || echo "no log" > /tmp/ci/ci-log.txt
           cp out/* /tmp/ci/ 2>/dev/null || true
           git switch --orphan "ci-${{ github.run_number }}"
-          git rm -rq --cached . 2>/dev/null || true
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp /tmp/ci/* .
           find . -type f -size +95M -exec sh -c 'split -b 90m "$1" "$1.part-" && rm "$1"' _ {} \;

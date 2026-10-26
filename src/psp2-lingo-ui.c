@@ -3,6 +3,7 @@
 #include "psp2-lingo-ui.h"
 #include "psp2-lingo-rom.h"
 #include "psp2-lingo-quiz.h"
+#include "psp2-lingo-systems.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -664,7 +665,7 @@ static void drawAbout(void) {
 	uiTextCentered(480, 440, 16, C_SOFT, "Tap anywhere to close");
 }
 
-void lingoLauncherRun(void) {
+bool lingoLauncherRun(char* path, size_t pathSize) {
 	uiInit();
 	double last = uiTime();
 	double start = last;
@@ -699,14 +700,14 @@ void lingoLauncherRun(void) {
 		uiCircle(bx + 126, by + 148, 8, uiAlpha(C_YELLOW, 0.7f));
 
 		if (IN.buttonsPressed & SCE_CTRL_DOWN) {
-			focus = (focus + 1) % 4;
+			focus = (focus + 1) % 5;
 		}
 		if (IN.buttonsPressed & SCE_CTRL_UP) {
-			focus = (focus + 3) % 4;
+			focus = (focus + 4) % 5;
 		}
 		int choice = -1;
 		if (!about) {
-			if (uiButton(80, 262, 420, 58, "Play a game", "遊", C_YELLOW, focus == 0)) {
+			if (uiButton(80, 252, 420, 50, "Play a game", "遊", C_YELLOW, focus == 0)) {
 				choice = 0;
 			}
 			char buf[64];
@@ -715,7 +716,7 @@ void lingoLauncherRun(void) {
 			} else {
 				snprintf(buf, sizeof(buf), "Kaku practice");
 			}
-			if (uiButton(80, 330, 420, 58, buf, "書", C_GREEN, focus == 1)) {
+			if (uiButton(80, 308, 420, 50, buf, "書", C_GREEN, focus == 1)) {
 				choice = 1;
 			}
 			if (dueWords > 0) {
@@ -723,11 +724,14 @@ void lingoLauncherRun(void) {
 			} else {
 				snprintf(buf, sizeof(buf), "Saved words  ·  %d", deckCount());
 			}
-			if (uiButton(80, 398, 420, 58, buf, "語", C_PINK, focus == 2)) {
+			if (uiButton(80, 364, 420, 50, buf, "語", C_PINK, focus == 2)) {
 				choice = 2;
 			}
-			if (uiButton(80, 466, 420, 58, "Starter games", "初", C_BLUE, focus == 3)) {
+			if (uiButton(80, 420, 205, 50, "Starter games", "初", C_BLUE, focus == 3)) {
 				choice = 3;
+			}
+			if (uiButton(295, 420, 205, 50, "From phone", "送", C_GREEN, focus == 4)) {
+				choice = 4;
 			}
 			if (uiTapped(820, 490, 120, 40)) {
 				about = true;
@@ -743,10 +747,11 @@ void lingoLauncherRun(void) {
 				lingoSetCheckpointsEnabled(!on);
 			}
 		}
-		uiTextWrap(560, 330, 360, 16, 24, C_MUTED,
-		           "Inside a game, pick Study panel from the Screen mode setting, or press Square to cycle to it. "
-		           "Talk to anyone and their words appear beside the game. Tap a word to look it up, star it to keep it.",
-		           6);
+		uiTextWrap(560, 300, 360, 15, 22, C_MUTED,
+		           "Thirteen consoles. On Game Boy Advance Pokémon, words appear beside the game as people talk. "
+		           "Everywhere else, tap Look up and type what you see. Save your game and a checkpoint tests "
+		           "the words you met.",
+		           7);
 		uiDustDraw();
 		if (about) {
 			drawAbout();
@@ -758,8 +763,10 @@ void lingoLauncherRun(void) {
 		uiFrameEnd();
 
 		if (choice == 0) {
-			uiDust(290, 313, C_YELLOW, 20);
-			return;
+			if (lingoSystemsRun(path, pathSize)) {
+				return true;
+			}
+			last = uiTime();
 		}
 		if (choice == 1) {
 			kakuRun();
@@ -769,6 +776,9 @@ void lingoLauncherRun(void) {
 			last = uiTime();
 		} else if (choice == 3) {
 			lingoGamesRun();
+			last = uiTime();
+		} else if (choice == 4) {
+			lingoUploadRun();
 			last = uiTime();
 		}
 	}
@@ -885,6 +895,32 @@ void lingoCheckpointRun(void) {
 	sLastFrame = 0;
 }
 
+const struct LingoDict* lingoDictGet(void) {
+	if (!sDictTried) {
+		sDictTried = true;
+		sDict = loadDictBlock(DICT_PATH);
+	}
+	return sDict;
+}
+
+void lingoNoteLookup(const uint32_t* cp, int len, const struct LingoToken* tok) {
+	if (!sBookLoaded || !lingoDictGet() || len <= 0) {
+		return;
+	}
+	struct LingoText t;
+	memset(&t, 0, sizeof(t));
+	t.len = len < LINGO_MAX_TEXT ? len : LINGO_MAX_TEXT;
+	memcpy(t.cp, cp, t.len * sizeof(uint32_t));
+	lingoBookMeet(&sBook, sDict, &t, tok, 1);
+}
+
+static bool sWantsLookup;
+bool lingoPanelWantsLookup(void) {
+	bool w = sWantsLookup;
+	sWantsLookup = false;
+	return w;
+}
+
 void lingoPanelGameUnloaded(void) {
 	bookSave();
 	lingoBookFree(&sBook);
@@ -949,10 +985,7 @@ void lingoPanelInit(void) {
 	if (!sHist) {
 		sHist = calloc(HISTORY, sizeof(*sHist));
 	}
-	if (!sDictTried) {
-		sDictTried = true;
-		sDict = loadDictBlock(DICT_PATH);
-	}
+	lingoDictGet();
 }
 
 void lingoPanelGameLoaded(const char* gameCode, const char* title) {
@@ -1253,7 +1286,7 @@ bool lingoPanelDraw(float gx, float gy, float gw, float gh) {
 		float fw = sBook.wordsSince / (float) LINGO_CP_MIN_WORDS;
 		float ft = sBook.playSince / (float) LINGO_CP_MIN_PLAY;
 		float f = fminf(1, fmaxf(fw, ft));
-		float bx = px0 + 130, bw = SCREEN_W - 132 - 18 - bx;
+		float bx = px0 + 130, bw = SCREEN_W - 260 - 18 - bx;
 		uiRound(bx, 20, bw, 12, 6, C_SHEET);
 		uiRound(bx, 20, fmaxf(12, bw * f), 12, 6, f >= 1 ? C_YELLOW : C_GREEN);
 		char cp[64];
@@ -1273,6 +1306,14 @@ bool lingoPanelDraw(float gx, float gy, float gw, float gh) {
 		uiText(bx + 40, by + 24, 16, C_CHALK, "Kaku");
 		if (uiTapped(bx, by, 120, 34)) {
 			openKaku = true;
+		}
+		float lx = bx - 128;
+		uiRound(lx, by, 120, 34, 11, C_SHEET);
+		uiRoundOutline(lx, by, 120, 34, 11, 2, C_BLUE);
+		uiJp(lx + 12, by + 25, 18, C_BLUE, "あ");
+		uiText(lx + 38, by + 24, 16, C_CHALK, "Look up");
+		if (uiTapped(lx, by, 120, 34)) {
+			sWantsLookup = true;
 		}
 	}
 	/* message area */
@@ -1340,4 +1381,62 @@ bool lingoPanelDraw(float gx, float gy, float gw, float gh) {
 	}
 	uiDustDraw();
 	return openKaku;
+}
+
+/* ---- side panel for consoles without live text reading ---- */
+
+enum LingoPanelAction lingoRetroPanelDraw(float gx, float gy, float gw, float gh, const char* system, const char* game) {
+	static double last;
+	double now = uiTime();
+	float dt = last ? (float) (now - last) : 0;
+	last = now;
+	uiPollInput();
+	uiDustUpdate(dt > 0.1f ? 0.1f : dt);
+	uiRect(0, 0, SCREEN_W, gy, C_BOARD);
+	uiRect(0, gy + gh, gx + gw, SCREEN_H - gy - gh, C_BOARD);
+	uiRect(0, 0, gx, SCREEN_H, C_BOARD);
+	uiRect(gx + gw, 0, SCREEN_W - gx - gw, SCREEN_H, C_BOARD);
+	uiRoundOutline(gx - 4, gy - 4, gw + 8, gh + 8, 6, 2, uiAlpha(C_CHALK, 0.35f));
+	float px0 = gx + gw + 14, pw = SCREEN_W - px0 - 12;
+	enum LingoPanelAction act = LPA_NONE;
+	uiText(px0, 32, 20, C_YELLOW, "LINGO");
+	uiJp(px0 + 74, 32, 16, C_SOFT, system);
+	if (game && game[0]) {
+		uiTextWrap(px0, 54, pw, 13, 18, C_MUTED, game, 1);
+	}
+	/* checkpoint meter */
+	if (sBookLoaded && lingoCheckpointsEnabled()) {
+		float fw = sBook.wordsSince / (float) LINGO_CP_MIN_WORDS;
+		float ft = sBook.playSince / (float) LINGO_CP_MIN_PLAY;
+		float f = fminf(1, fmaxf(fw, ft));
+		uiRound(px0, 66, pw, 12, 6, C_SHEET);
+		uiRound(px0, 66, fmaxf(12, pw * f), 12, 6, f >= 1 ? C_YELLOW : C_GREEN);
+		uiText(px0, 96, 12, f >= 1 ? C_YELLOW : C_SOFT, f >= 1 ? "Checkpoint at your next save" : "Next checkpoint");
+	}
+	if (uiButton(px0, 112, pw, 64, "Look up a word", "あ", C_BLUE, false)) {
+		act = LPA_LOOKUP;
+	}
+	float hw = (pw - 10) / 2;
+	if (uiButton(px0, 186, hw, 52, "Kaku", "書", C_GREEN, false)) {
+		act = LPA_KAKU;
+	}
+	if (uiButton(px0 + hw + 10, 186, hw, 52, "Menu", NULL, C_SOFT, false)) {
+		act = LPA_MENU;
+	}
+	/* recent lookups */
+	const char* words[6];
+	const char* meanings[6];
+	int n = lingoRecentLookups(words, meanings, 6);
+	float y = 262;
+	uiText(px0, y, 13, C_SOFT, n ? "Looked up this session" : "Words you look up will be listed here and come up in checkpoints.");
+	y += 12;
+	for (int i = 0; i < n && y < SCREEN_H - 50; ++i) {
+		uiJp(px0, y + 26, 19, C_CHALK, words[i]);
+		char m[64];
+		lingoShortGloss(meanings[i], m, sizeof(m));
+		uiTextWrap(px0 + fminf(uiJpW(19, words[i]) + 12, pw * 0.45f), y + 24, pw * 0.55f, 13, 17, C_MUTED, m, 1);
+		y += 36;
+	}
+	uiDustDraw();
+	return act;
 }
