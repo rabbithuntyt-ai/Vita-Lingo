@@ -1,0 +1,361 @@
++ export PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ ROOT=/home/runner/work/Vita-Lingo/Vita-Lingo
+++ cat mgba.commit
++ MGBA_COMMIT=1509d86028c7df2d844b590723a80b2978f49e7c
++ rm -rf build mgba out assets
++ mkdir -p out assets
++ JMD_URL=https://files.pythonhosted.org/packages/97/a5/075928aed2b3b70459fc1db396397dfa6714d266c143c51af9b648551a4e/jamdict_data-1.5.tar.gz
++ curl -sSL -o /tmp/jamdict.tgz https://files.pythonhosted.org/packages/97/a5/075928aed2b3b70459fc1db396397dfa6714d266c143c51af9b648551a4e/jamdict_data-1.5.tar.gz
++ sha256sum -c -
+++ cat ci/jamdict.sha256
++ echo 'a4247dd9bb3148ab17c1b32fc56d7a7f1c35293b0d6ff2838c811f896d13f415  /tmp/jamdict.tgz'
+/tmp/jamdict.tgz: OK
++ tar xzf /tmp/jamdict.tgz -C /tmp jamdict_data-1.5/jamdict_data/jamdict.db.xz
++ xz -dc /tmp/jamdict_data-1.5/jamdict_data/jamdict.db.xz
++ python3 tools/build_dict.py /tmp/jamdict.db assets/lingo.dic
+reading kana...
+reading senses...
+assembling...
+191541 entries, 194367 keys
+wrote assets/lingo.dic: 20.5 MB
++ gcc -O2 -Wall -o /tmp/test_lingo tests/test_lingo.c src/psp2-lingo-text.c src/psp2-lingo-dict.c
++ /tmp/test_lingo assets/lingo.dic
+decode
+scanner
+  frame 24: report 1 at 02021FC4: やあ！　ぼくは　オダマキ。
+ポケモンの　けんきゅうを　しているんだ。
+  frame 206: report 2 at 08005000: きみの　なまえは　なんて　いうの？
+dictionary
+  191541 entries
+  ポケモン　せかいへ　ようこそ！ -> ポケモン|せかい|へ|ようこそ|！|
+      ポケモン = ポケモン【ポケモン】 [noun] Pokémon
+      せかい = 世界【せかい】 [noun] 1. the world; society; the universe  2. sphere; circle; world  3. world-renowned; world-famous
+      へ = へ【へ】 [particle] to; towards; for
+      ようこそ = ようこそ【ようこそ】 [interjection] welcome!; nice to see you!
+  きみの　なまえは　なんて　いうの？ -> きみ|の|なまえ|は|なんて|いう|の|？|
+      きみ = 黄身【きみ】 [noun] egg yolk
+      の = の【の】 [particle] 1. indicates possessive  2. nominalizes verbs and adjectives  3. substitutes for "ga" in subordinate phrases
+      なまえ = 名前【なまえ】 [noun] 1. name  2. given name; first name
+      は = は【は】 [particle] 1. topic marker particle  2. indicates contrast with another option (stated or unstated)  3. adds emphasis
+      なんて = なんて【なんて】 [particle] things like; something like; someone like
+      いう = 結う【ゆう】 [u-verb] 1. to do up (hair); to dress; to arrange  2. to tie; to bind; to fasten
+      の = の【の】 [particle] 1. indicates possessive  2. nominalizes verbs and adjectives  3. substitutes for "ga" in subordinate phrases
+  ポケモンの　けんきゅうを　しているんだ。 -> ポケモン|の|けんきゅう|を|している|んだ|。|
+      ポケモン = ポケモン【ポケモン】 [noun] Pokémon
+      の = の【の】 [particle] 1. indicates possessive  2. nominalizes verbs and adjectives  3. substitutes for "ga" in subordinate phrases
+      けんきゅう = 研究【けんきゅう】 [noun] study; research; investigation
+      を = を【を】 [particle] 1. indicates direct object of action  2. indicates subject of causative expression  3. indicates an area traversed
+      している = する【する】 [suru verb] 1. to do; to carry out; to perform  2. to cause to become; to make (into); to turn (into)  3. to serve as; to act as; to work as  <te-form, -ing
+      んだ = のです【のです】 [expression] the expectation is that ...; the reason is that ...; the fact is that ...
+  たべなかった -> /たべる/ (negative, past)
+  いきました -> /いく/いきる/ (polite past)
+  よんで -> /よぶ/よむ/よむ/よむ/ (te-form)
+  きました -> /くる/きる/ (polite past)
+  たかくない -> /たかい/ (negative)
+  みたい -> /みる/みたい/みる/みる/ (want to)
+  かえろう -> /かえる/かえる/かえる/ (let's)
+  まって -> /まう/まつ/まう/まう/ (te-form)
+  たたかって -> /たたかう/ (te-form)
+  にげられない -> /にげる/ (potential / passive, negative)
+  がんばって -> /がんばって/がんばる/ ()
+  いって -> /いる/いく/いって/ゆう/ (te-form)
+all passed
++ gcc -O2 -Wall -o /tmp/test_kaku tests/test_kaku.c src/psp2-kaku-core.c src/psp2-kaku-data.c -lm
++ /tmp/test_kaku
+strokes accepted:        874 / 874
+backwards flagged:       749 / 750
+early strokes rejected:  628 / 653
+zigzags accepted:        0 / 221
+good, good, good: due +1, +3, +8
+all passed
++ git clone -q --depth 1 --filter=blob:none --sparse https://github.com/google/fonts /tmp/gfonts
++ git -C /tmp/gfonts sparse-checkout set --no-cone /ofl/kleeone/
++ cp /tmp/gfonts/ofl/kleeone/KleeOne-SemiBold.ttf assets/klee.ttf
++ cp art/bg.png art/icon0.png art/pic0.png art/startup.png assets/
++ cp LICENSES.txt assets/
++ git init -q mgba
++ git -C mgba remote add origin https://github.com/mgba-emu/mgba
++ git -C mgba fetch -q --depth 1 origin 1509d86028c7df2d844b590723a80b2978f49e7c
++ git -C mgba checkout -q FETCH_HEAD
++ cp -v src/psp2-kaku-core.c src/psp2-kaku-data.c src/psp2-kaku-ui.c src/psp2-lingo-dict.c src/psp2-lingo-text.c src/psp2-lingo-ui.c src/psp2-kaku.h src/psp2-lingo-ui.h src/psp2-lingo.h mgba/src/platform/psp2/
+'src/psp2-kaku-core.c' -> 'mgba/src/platform/psp2/psp2-kaku-core.c'
+'src/psp2-kaku-data.c' -> 'mgba/src/platform/psp2/psp2-kaku-data.c'
+'src/psp2-kaku-ui.c' -> 'mgba/src/platform/psp2/psp2-kaku-ui.c'
+'src/psp2-lingo-dict.c' -> 'mgba/src/platform/psp2/psp2-lingo-dict.c'
+'src/psp2-lingo-text.c' -> 'mgba/src/platform/psp2/psp2-lingo-text.c'
+'src/psp2-lingo-ui.c' -> 'mgba/src/platform/psp2/psp2-lingo-ui.c'
+'src/psp2-kaku.h' -> 'mgba/src/platform/psp2/psp2-kaku.h'
+'src/psp2-lingo-ui.h' -> 'mgba/src/platform/psp2/psp2-lingo-ui.h'
+'src/psp2-lingo.h' -> 'mgba/src/platform/psp2/psp2-lingo.h'
++ for p in patches/*.patch
++ git -C mgba apply --verbose /home/runner/work/Vita-Lingo/Vita-Lingo/patches/0001-lingo.patch
+Checking patch src/platform/psp2/CMakeLists.txt...
+Checking patch src/platform/psp2/main.c...
+Checking patch src/platform/psp2/psp2-context.c...
+Applied patch src/platform/psp2/CMakeLists.txt cleanly.
+Applied patch src/platform/psp2/main.c cleanly.
+Applied patch src/platform/psp2/psp2-context.c cleanly.
++ mkdir build
++ cd build
++ cmake ../mgba -DCMAKE_TOOLCHAIN_FILE=../mgba/src/platform/psp2/CMakeToolchain.vitasdk -DCMAKE_BUILD_TYPE=Release -DLINGO_ASSETS=/home/runner/work/Vita-Lingo/Vita-Lingo/assets
+-- The C compiler identification is GNU 15.2.0
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/runner/vitasdk/bin/arm-vita-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
+-- The ASM compiler identification is GNU
+-- Found assembler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc
+-- Looking for strdup
+-- Looking for strdup - found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for strndup
+-- Looking for strndup - found
+-- Looking for vasprintf
+-- Looking for vasprintf - found
+-- Looking for freelocale
+-- Looking for freelocale - found
+-- Looking for newlocale
+-- Looking for newlocale - found
+-- Looking for setlocale
+-- Looking for setlocale - found
+-- Looking for snprintf_l
+-- Looking for snprintf_l - not found
+-- Looking for uselocale
+-- Looking for uselocale - found
+-- Looking for popcount32
+-- Looking for popcount32 - not found
+-- Looking for futimens
+-- Looking for futimens - found
+-- Looking for futimes
+-- Looking for futimes - not found
+-- Looking for localtime_r
+-- Looking for localtime_r - found
+-- Looking for realpath
+-- Looking for realpath - found
+-- Looking for strtof_l
+-- Looking for strtof_l - found
+-- Looking for include file xlocale.h
+-- Looking for include file xlocale.h - not found
+-- Checking for one of the modules 'libavcodec'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libavcodec missing for feature USE_FFMPEG.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:511 (find_feature)
+
+
+-- Checking for one of the modules 'minizip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module minizip missing for feature USE_MINIZIP.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:514 (find_feature)
+
+
+-- Checking for one of the modules 'libzip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libzip missing for feature USE_LIBZIP.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:516 (find_feature)
+
+
+-- Checking for one of the modules 'epoxy'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module epoxy missing for feature USE_EPOXY.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:517 (find_feature)
+
+
+-- Checking for one of the modules 'libelf'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libelf missing for feature USE_ELF.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:520 (find_feature)
+
+
+-- Checking for one of the modules 'json-c'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module json-c missing for feature USE_JSON_C.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:790 (find_feature)
+
+
+-- Checking for one of the modules 'Lua'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module Lua missing for feature USE_LUA.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:796 (find_feature)
+
+
+CMake Warning (dev) at CMakeLists.txt:1117 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1118 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Build type: Release
+-- Platforms:
+-- 	Game Boy Advance: ON
+-- 	Game Boy: ON
+-- Features:
+-- 	Debuggers: OFF
+-- 	CLI debugger: OFF
+-- 	GDB stub: OFF
+-- 	GIF/Video recording: OFF
+-- 	Screenshot/advanced savestate support: ON
+-- 	ZIP support: minizip (included)
+-- 	7-Zip support: ON
+-- 	SQLite3 game database: OFF
+-- 	ELF loading support: OFF
+-- 	Discord Rich Presence support: OFF
+-- 	OpenGL support: OFF
+-- Scripting support: ON
+-- 	Lua: OFF
+-- 	storage API: OFF
+-- 	Font rendering: ON
+-- Frontends:
+-- 	Qt: OFF
+-- 	SDL (): OFF
+-- 	Headless: OFF
+-- 	Python bindings: OFF
+-- 	Examples: OFF
+-- Test tools:
+-- 	Profiling: OFF
+-- 	Test harness: OFF
+-- 	Test suite: OFF
+-- 	Video test suite: OFF
+-- Cores:
+-- 	Libretro core: OFF
+-- Libraries:
+-- 	Static: ON
+-- 	Shared: OFF
+-- Configuring done (3.9s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/Vita-Lingo/Vita-Lingo/build
++ grep -v '^\['
+++ nproc
++ make -j4
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/gb/mbc.c: In function 'GBMBCSwitchSramHalfBank':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/gb/mbc.c:301:71: warning: comparison of integer expressions of different signedness: 'int' and 'uint32_t' {aka 'unsigned int'} [-Wsign-compare]
+  301 |                         if (bankStart + GB_SIZE_EXTERNAL_RAM_HALFBANK > gb->sramSize) {
+      |                                                                       ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/psp2-context.c: In function '_postAudioBuffer':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/psp2-context.c:246:77: warning: unused parameter 'buf' [-Wunused-parameter]
+  246 | static void _postAudioBuffer(struct mAVStream* stream, struct mAudioBuffer* buf) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~^~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c: In function '_keyboardRun':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:101:38: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  101 |         params.title = calloc(sizeof(SceWChar16), MAX_KEYBOARD_TITLE_LEN + 1);
+      |                                      ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:101:38: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:102:48: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  102 |         params.inputTextBuffer = calloc(sizeof(SceWChar16), keyboard->maxLen + 1);
+      |                                                ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:102:48: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:103:44: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  103 |         params.initialText = calloc(sizeof(SceWChar16), keyboard->maxLen + 1);
+      |                                            ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:103:44: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:113:21: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  113 |         utf16Buffer = params.title;
+      |                     ^
+lto-wrapper: warning: using serial compilation of 22 LTRANS jobs
+lto-wrapper: note: see the '-flto' option documentation for more information
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c: In function 'mGUIRun':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:622:76: warning: 'last' may be used uninitialized [-Wmaybe-uninitialized]
+  622 |                                                         runner->totalDelta -= last;
+      |                                                                            ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:620:65: note: 'last' declared here
+  620 |                                                         int32_t last;
+      |                                                                 ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:622:76: warning: 'last' may be used uninitialized [-Wmaybe-uninitialized]
+  622 |                                                         runner->totalDelta -= last;
+      |                                                                            ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:620:65: note: 'last' declared here
+  620 |                                                         int32_t last;
+      |                                                                 ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:211:2:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 0 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:214:3:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 0 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:216:2:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 8 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+++ nproc
++ make -j4
+[  0%] Built target mgba-version-info
+[ 89%] Built target mgba
+[ 97%] Built target mgba.elf
+[ 98%] Converting to Sony ELF mgba.elf.velf
+[ 98%] Built target mgba.elf-velf
+[ 98%] Creating SELF mgba.self
+[ 98%] Built target mgba.self-self
+[ 99%] Generating param.sfo for mgba.vpk
+[100%] Building vpk mgba.vpk
+[100%] Built target mgba.vpk-vpk
+++ find . -name '*.vpk'
+++ head -1
++ VPK=./psp2/mgba.vpk
++ cp ./psp2/mgba.vpk /home/runner/work/Vita-Lingo/Vita-Lingo/out/Lingo.vpk
++ cd /home/runner/work/Vita-Lingo/Vita-Lingo
++ unzip -l out/Lingo.vpk
+Archive:  out/Lingo.vpk
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      912  2026-10-26 17:13   sce_sys/param.sfo
+  1529006  2026-10-26 17:13   eboot.bin
+     3649  2026-10-26 17:11   sce_sys/icon0.png
+    54404  2026-10-26 17:11   sce_sys/pic0.png
+    48968  2026-10-26 17:11   sce_sys/livearea/contents/bg.png
+     6285  2026-10-26 17:11   sce_sys/livearea/contents/startup.png
+      430  2026-10-26 17:11   sce_sys/livearea/contents/template.xml
+ 20529585  2026-10-26 17:11   lingo/lingo.dic
+  8905128  2026-10-26 17:11   lingo/klee.ttf
+     1178  2026-10-26 17:11   lingo/LICENSES.txt
+---------                     -------
+ 31079545                     10 files
+++ du -h out/Lingo.vpk
+++ cut -f1
++ SIZE=14M
++ cat
+++ git rev-parse --short HEAD
+++ cut -c1-7 mgba.commit
