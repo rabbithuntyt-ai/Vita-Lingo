@@ -1,5 +1,5 @@
 diff --git a/src/platform/psp2/CMakeLists.txt b/src/platform/psp2/CMakeLists.txt
-index 9653205..fc6af8f 100644
+index 9653205..6119a5b 100644
 --- a/src/platform/psp2/CMakeLists.txt
 +++ b/src/platform/psp2/CMakeLists.txt
 @@ -13,7 +13,8 @@ source_group("PS Vita-specific code" FILES ${OS_SRC})
@@ -8,7 +8,7 @@ index 9653205..fc6af8f 100644
  
 -set(OS_LIB -lvita2d -l${M_LIBRARY}
 +set(OS_LIB -lvita2d -lfreetype -lpng -lbz2 -lz -l${M_LIBRARY}
-+    -lSceNet_stub -lSceHttp_stub -lSceSsl_stub
++    -lSceNet_stub -lSceHttp_stub -lSceSsl_stub -lpthread
      -lSceAppMgr_stub
      -lSceAppUtil_stub
      -lSceAudio_stub
