@@ -17,7 +17,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /home/runner/vitasdk
-          key: vitasdk-v2
+          key: vitasdk-v3
       - name: Install VitaSDK
         if: steps.sdk.outputs.cache-hit != 'true'
         run: bash ci/install-sdk.sh 2>&1 | tee -a ci-log.txt; exit ${PIPESTATUS[0]}

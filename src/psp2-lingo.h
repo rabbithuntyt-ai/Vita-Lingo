@@ -102,8 +102,9 @@ enum LingoPos {
 struct LingoEntry {
 	const char* headword; /* kanji form if any, else reading (UTF-8) */
 	const char* reading;  /* hiragana/katakana (UTF-8) */
-	const char* gloss;    /* "1. ...; ... 2. ..." (UTF-8) */
+	const char* gloss;    /* "[noun] 1. ...; ... 2. ..." (UTF-8) */
 	uint16_t pos;
+	uint16_t rank;        /* lower is more common */
 };
 
 struct LingoDict;
@@ -129,7 +130,7 @@ struct LingoToken {
 	int len;
 	int nIds;  /* 0 when the span is unknown or punctuation */
 	uint32_t ids[LINGO_MAX_IDS];
-	char reason[LINGO_MAX_REASON]; /* e.g. "polite past", empty if none */
+	char reason[LINGO_MAX_IDS][LINGO_MAX_REASON]; /* per id, e.g. "polite past" */
 	bool isWord;
 };
 
