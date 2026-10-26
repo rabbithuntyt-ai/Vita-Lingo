@@ -2,7 +2,7 @@
 
 Play Game Boy Advance games in Japanese and learn the words as you go, fully offline.
 
-Lingo is [mGBA](https://mgba.io)'s Vita port with two things added:
+Lingo is [mGBA](https://mgba.io)'s Vita port with these added:
 
 - **A study panel.** The game sits at 2x on the left. Whenever someone talks, their line appears on the right, split into words. Tap a word for its dictionary entry, including what form a verb or adjective is in (たべなかった ← negative, past). Star it to keep it.
 - **Kaku practice.** Write hiragana, katakana and 79 everyday kanji on the touchscreen, with every stroke checked for shape, direction and order. There are also reading quizzes with look-alike traps, and spaced review of the words you starred in games.
