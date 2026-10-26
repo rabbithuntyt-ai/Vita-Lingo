@@ -29,7 +29,7 @@ $CC $CFLAGS -c retro/lingo-retro.c -o $B/lingo-retro.o
 # whisper.cpp (MIT) for voiced lines on the CD consoles; everything else links a stub
 WH=/tmp/whisper
 rm -rf $WH && git clone -q --depth 1 --branch v1.5.4 https://github.com/ggerganov/whisper.cpp $WH
-WFLAGS="-O3 -mcpu=cortex-a9 -mfpu=neon -DNDEBUG -D_GNU_SOURCE -I$WH"
+WFLAGS="-O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I$WH"
 mkdir -p $B/wh
 for f in ggml ggml-alloc ggml-backend ggml-quants; do
 	$CC $WFLAGS -std=gnu11 -c $WH/$f.c -o $B/wh/$f.o
