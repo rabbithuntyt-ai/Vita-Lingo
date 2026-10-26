@@ -1,0 +1,1416 @@
++ export PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ ROOT=/home/runner/work/Vita-Lingo/Vita-Lingo
+++ cat mgba.commit
++ MGBA_COMMIT=1509d86028c7df2d844b590723a80b2978f49e7c
++ rm -rf build mgba out assets
++ mkdir -p out assets
++ JMD_URL=https://files.pythonhosted.org/packages/97/a5/075928aed2b3b70459fc1db396397dfa6714d266c143c51af9b648551a4e/jamdict_data-1.5.tar.gz
++ curl -sSL -o /tmp/jamdict.tgz https://files.pythonhosted.org/packages/97/a5/075928aed2b3b70459fc1db396397dfa6714d266c143c51af9b648551a4e/jamdict_data-1.5.tar.gz
++ sha256sum -c -
+++ cat ci/jamdict.sha256
++ echo 'a4247dd9bb3148ab17c1b32fc56d7a7f1c35293b0d6ff2838c811f896d13f415  /tmp/jamdict.tgz'
+/tmp/jamdict.tgz: OK
++ tar xzf /tmp/jamdict.tgz -C /tmp jamdict_data-1.5/jamdict_data/jamdict.db.xz
++ xz -dc /tmp/jamdict_data-1.5/jamdict_data/jamdict.db.xz
++ python3 tools/build_dict.py /tmp/jamdict.db assets/lingo.dic
+reading kana...
+reading senses...
+assembling...
+191541 entries, 385952 keys
+wrote assets/lingo.dic: 24.2 MB
++ READER='src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c'
++ gcc -O2 -Wall -o /tmp/test_lingo tests/test_lingo.c src/psp2-lingo-text.c src/psp2-lingo-dict.c src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c -lm
++ /tmp/test_lingo assets/lingo.dic
+decode
+scanner
+  frame 24: report 1 at 02021FC4: やあ！　ぼくは　オダマキ。
+ポケモンの　けんきゅうを　しているんだ。
+  frame 206: report 2 at 08005000: きみの　なまえは　なんて　いうの？
+dictionary
+  191541 entries
+  ポケモン　せかいへ　ようこそ！ -> ポケモン|せかい|へ|ようこそ|！|
+      ポケモン = ポケモン【ポケモン】 [noun] Pokémon
+      せかい = 世界【せかい】 [noun] 1. the world; society; the universe  2. sphere; circle; world  3. world-renowned; world-famous
+      へ = へ【へ】 [particle] to; towards; for
+      ようこそ = ようこそ【ようこそ】 [interjection] welcome!; nice to see you!
+  きみの　なまえは　なんて　いうの？ -> きみ|の|なまえ|は|なんて|いう|の|？|
+      きみ = 君【きみ】 [noun] 1. you; buddy; pal  2. monarch; ruler; sovereign
+      の = の【の】 [particle] 1. indicates possessive  2. nominalizes verbs and adjectives  3. substitutes for "ga" in subordinate phrases
+      なまえ = 名前【なまえ】 [noun] 1. name  2. given name; first name
+      は = は【は】 [particle] 1. topic marker particle  2. indicates contrast with another option (stated or unstated)  3. adds emphasis
+      なんて = なんて【なんて】 [particle] things like; something like; someone like
+      いう = 言う【いう】 [u-verb] 1. to say; to utter; to declare  2. to name; to call  3. to go (e.g. "the alarm went ping"); to make a noise
+      の = の【の】 [particle] 1. indicates possessive  2. nominalizes verbs and adjectives  3. substitutes for "ga" in subordinate phrases
+  ポケモンの　けんきゅうを　しているんだ。 -> ポケモン|の|けんきゅう|を|している|んだ|。|
+      ポケモン = ポケモン【ポケモン】 [noun] Pokémon
+      の = の【の】 [particle] 1. indicates possessive  2. nominalizes verbs and adjectives  3. substitutes for "ga" in subordinate phrases
+      けんきゅう = 研究【けんきゅう】 [noun] study; research; investigation
+      を = を【を】 [particle] 1. indicates direct object of action  2. indicates subject of causative expression  3. indicates an area traversed
+      している = する【する】 [suru verb] 1. to do; to carry out; to perform  2. to cause to become; to make (into); to turn (into)  3. to serve as; to act as; to work as  <te-form, -ing
+      んだ = のです【のです】 [expression] the expectation is that ...; the reason is that ...; the fact is that ...
+  たべなかった -> /たべる/ (negative, past)
+  いきました -> /いく/いきる/ (polite past)
+  よんで -> /よぶ/よむ/よむ/よむ/ (te-form)
+  きました -> /くる/きる/ (polite past)
+  たかくない -> /たかい/ (negative)
+  みたい -> /みる/みる/みる/みたい/ (want to)
+  かえろう -> /かえる/かえる/かえる/ (let's)
+  まって -> /まう/まつ/まう/まう/ (te-form)
+  たたかって -> /たたかう/ (te-form)
+  にげられない -> /にげる/ (potential / passive, negative)
+  がんばって -> /がんばる/がんばって/ (te-form)
+  いって -> /いく/いう/いる/いる/ (te-form)
+all passed
++ gcc -O2 -Wall -Wno-format-truncation -o /tmp/test_reader tests/test_reader.c src/psp2-lingo-text.c src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c -lm
++ /tmp/test_reader
+  byte detection: Found this game's hiragana (one byte per letter).
+  tile detection: Found this game's hiragana (16-bit tile codes), with ゛ marks drawn above letters. (mode 1 mask 3ff stride 32 dakuten 1f0)
+  teach: Found that line in ram. Lingo now knows 76 of this game's characters.
+reader tests passed
++ gcc -O2 -Wall -Wno-unused-result -o /tmp/test_frontend tests/test_frontend.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c -lz -lm
++ /tmp/test_frontend
+front end tests passed
++ gcc -O2 -Wall -o /tmp/test_kaku tests/test_kaku.c src/psp2-kaku-core.c src/psp2-kaku-data.c -lm
++ /tmp/test_kaku
+strokes accepted:        874 / 874
+backwards flagged:       749 / 750
+early strokes rejected:  628 / 653
+zigzags accepted:        0 / 221
+good, good, good: due +1, +3, +8
+all passed
++ gcc -O2 -Wall -o /tmp/test_rom tests/test_rom.c src/psp2-lingo-rom.c src/psp2-lingo-text.c src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c -lm
++ /tmp/test_rom
+index: found names@100000 pics@180000 pals@190000 species 200
+all passed
++ gcc -O2 -Wall -o /tmp/test_quiz tests/test_quiz.c src/psp2-lingo-quiz.c src/psp2-lingo-dict.c src/psp2-lingo-text.c src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c -lm
++ /tmp/test_quiz assets/lingo.dic /tmp/lingo-book-test.bin
+words met: 21 (new since checkpoint 21)
+questions: 5
+  [meaning] いい  ()
+        together (with)
+        to raise
+      * good
+        to jump out
+  [cloze] ＿＿＿は　いい　てんきだね。  (today)
+        この
+      * きょう
+        てんき
+        している
+  [meaning] いく  ()
+        Pokémon
+        to jump out
+      * to go
+        this
+  [meaning] 次  (つぎ)
+        weather
+        the expectation is that ...
+      * next
+        to go
+  [cloze] この　＿＿＿を　あげよう。  (tool)
+        きみ
+        この
+        はいる
+      * どうぐ
+all passed
++ for t in kana retro covers
++ extra=
++ '[' kana = kana ']'
++ extra='src/psp2-lingo-kana.c src/psp2-lingo-text.c src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c -lm'
++ '[' kana = retro ']'
++ '[' kana = covers ']'
++ gcc -O2 -Wall -o /tmp/test_kana tests/test_kana.c src/psp2-lingo-kana.c src/psp2-lingo-text.c src/psp2-lingo-reader.c src/psp2-lingo-bigram.c src/psp2-lingo-sjis.c -lm
++ /tmp/test_kana
+all passed
++ for t in kana retro covers
++ extra=
++ '[' retro = kana ']'
++ '[' retro = retro ']'
++ extra='retro/retro-util.c -lm'
++ '[' retro = covers ']'
++ gcc -O2 -Wall -o /tmp/test_retro tests/test_retro.c retro/retro-util.c -lm
++ /tmp/test_retro
+pulled 47104 frames, fill 1121
+zero crossings in 0.5s: 437 (want ~440)
+all passed
++ for t in kana retro covers
++ extra=
++ '[' covers = kana ']'
++ '[' covers = retro ']'
++ '[' covers = covers ']'
++ extra=src/psp2-lingo-covermatch.c
++ gcc -O2 -Wall -o /tmp/test_covers tests/test_covers.c src/psp2-lingo-covermatch.c
++ /tmp/test_covers
+parsed 9 names
+  Mother 3 (Japan).gba                     -> Mother 3 (Japan)
+  Pocket Monsters - Emerald (Japan)        -> Pocket Monsters - Emerald (Japan)
+  pocket monsters emerald                  -> Pocket Monsters - Emerald (Japan)
+  Pocket Monsters - Ruby                   -> Pocket Monsters - Ruby (Japan)
+  The Legend of Zelda - The Minish Cap     -> Legend of Zelda, The - The Minish Cap (USA)
+  Final Fantasy USA - Mystic Quest         -> Final Fantasy USA - Mystic Quest (Japan)
+  Mother 1+2                               -> Mother 1+2 (Japan)
+all passed
++ gcc -O2 -Wall -Wno-unused-result -o /tmp/test_upload tests/test_upload.c src/psp2-lingo-upload.c -lpthread
+src/psp2-lingo-upload.c: In function ‘handle’:
+src/psp2-lingo-upload.c:223:51: warning: ‘%s’ directive output may be truncated writing up to 199 bytes into a region of size 128 [-Wformat-truncation=]
+  223 |         snprintf(u->st.name, sizeof(u->st.name), "%s", name);
+      |                                                   ^~   ~~~~
+In file included from /usr/include/stdio.h:980,
+                 from src/psp2-lingo-upload.c:6:
+In function ‘snprintf’,
+    inlined from ‘receive’ at src/psp2-lingo-upload.c:223:2,
+    inlined from ‘handle’ at src/psp2-lingo-upload.c:330:3:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin_snprintf’ output between 1 and 200 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+src/psp2-lingo-upload.c: In function ‘handle’:
+src/psp2-lingo-upload.c:268:86: warning: ‘%s’ directive output may be truncated writing up to 199 bytes into a region of size 159 [-Wformat-truncation=]
+  268 |                 snprintf(u->st.recent[u->st.nRecent++], sizeof(u->st.recent[0]), "%s/%s", sys, name);
+      |                                                                                      ^~        ~~~~
+In function ‘snprintf’,
+    inlined from ‘receive’ at src/psp2-lingo-upload.c:268:3,
+    inlined from ‘handle’ at src/psp2-lingo-upload.c:330:3:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output 2 or more bytes (assuming 201) into a destination of size 160
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
+src/psp2-lingo-upload.c: In function ‘handle’:
+src/psp2-lingo-upload.c:271:61: warning: ‘%s’ directive output may be truncated writing up to 199 bytes into a region of size 128 [-Wformat-truncation=]
+  271 |                 snprintf(u->st.error, sizeof(u->st.error), "%s did not arrive in one piece", name);
+      |                                                             ^~                               ~~~~
+In function ‘snprintf’,
+    inlined from ‘receive’ at src/psp2-lingo-upload.c:271:3,
+    inlined from ‘handle’ at src/psp2-lingo-upload.c:330:3:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:54:10: note: ‘__builtin___snprintf_chk’ output between 29 and 228 bytes into a destination of size 128
+   54 |   return __builtin___snprintf_chk (__s, __n, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                                    __glibc_objsize (__s), __fmt,
+      |                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   56 |                                    __va_arg_pack ());
+      |                                    ~~~~~~~~~~~~~~~~~
++ mkdir -p /tmp/uptest
++ /tmp/test_upload /tmp/uptest
+listening on 45185
+done 2, recent: gba/ポケモン.gba | gba/evil.gba
+all passed
++ git clone -q --depth 1 --filter=blob:none --sparse https://github.com/google/fonts /tmp/gfonts
++ git -C /tmp/gfonts sparse-checkout set --no-cone /ofl/kleeone/ /ofl/mplusrounded1c/
++ cp /tmp/gfonts/ofl/kleeone/KleeOne-SemiBold.ttf assets/klee.ttf
++ cp /tmp/gfonts/ofl/mplusrounded1c/MPLUSRounded1c-Medium.ttf assets/ui.ttf
++ curl -sSfL -o assets/cacert.pem https://curl.se/ca/cacert.pem
++ grep -q 'BEGIN CERTIFICATE' assets/cacert.pem
++ cp art/bg.png art/icon0.png art/pic0.png art/startup.png assets/
++ cp LICENSES.txt assets/
++ git init -q mgba
++ git -C mgba remote add origin https://github.com/mgba-emu/mgba
++ git -C mgba fetch -q --depth 1 origin 1509d86028c7df2d844b590723a80b2978f49e7c
++ git -C mgba checkout -q FETCH_HEAD
++ cp -v src/psp2-kaku-core.c src/psp2-kaku-data.c src/psp2-kaku-lessons-ui.c src/psp2-kaku-lessons.c src/psp2-kaku-ui.c src/psp2-lingo-bigram.c src/psp2-lingo-checkpoint.c src/psp2-lingo-covermatch.c src/psp2-lingo-dict.c src/psp2-lingo-font.c src/psp2-lingo-games.c src/psp2-lingo-kana.c src/psp2-lingo-lookup.c src/psp2-lingo-net.c src/psp2-lingo-quiz.c src/psp2-lingo-reader.c src/psp2-lingo-rom.c src/psp2-lingo-shot.c src/psp2-lingo-sjis.c src/psp2-lingo-systems.c src/psp2-lingo-text.c src/psp2-lingo-textsrc.c src/psp2-lingo-ui.c src/psp2-lingo-upload-ui.c src/psp2-lingo-upload.c src/psp2-qrcodegen.c src/psp2-kaku-lessons.h src/psp2-kaku.h src/psp2-lingo-covermatch.h src/psp2-lingo-font.h src/psp2-lingo-kana.h src/psp2-lingo-net.h src/psp2-lingo-quiz.h src/psp2-lingo-reader.h src/psp2-lingo-rom.h src/psp2-lingo-shot.h src/psp2-lingo-systems.h src/psp2-lingo-textsrc.h src/psp2-lingo-ui.h src/psp2-lingo-upload.h src/psp2-lingo.h src/psp2-qrcodegen.h mgba/src/platform/psp2/
+'src/psp2-kaku-core.c' -> 'mgba/src/platform/psp2/psp2-kaku-core.c'
+'src/psp2-kaku-data.c' -> 'mgba/src/platform/psp2/psp2-kaku-data.c'
+'src/psp2-kaku-lessons-ui.c' -> 'mgba/src/platform/psp2/psp2-kaku-lessons-ui.c'
+'src/psp2-kaku-lessons.c' -> 'mgba/src/platform/psp2/psp2-kaku-lessons.c'
+'src/psp2-kaku-ui.c' -> 'mgba/src/platform/psp2/psp2-kaku-ui.c'
+'src/psp2-lingo-bigram.c' -> 'mgba/src/platform/psp2/psp2-lingo-bigram.c'
+'src/psp2-lingo-checkpoint.c' -> 'mgba/src/platform/psp2/psp2-lingo-checkpoint.c'
+'src/psp2-lingo-covermatch.c' -> 'mgba/src/platform/psp2/psp2-lingo-covermatch.c'
+'src/psp2-lingo-dict.c' -> 'mgba/src/platform/psp2/psp2-lingo-dict.c'
+'src/psp2-lingo-font.c' -> 'mgba/src/platform/psp2/psp2-lingo-font.c'
+'src/psp2-lingo-games.c' -> 'mgba/src/platform/psp2/psp2-lingo-games.c'
+'src/psp2-lingo-kana.c' -> 'mgba/src/platform/psp2/psp2-lingo-kana.c'
+'src/psp2-lingo-lookup.c' -> 'mgba/src/platform/psp2/psp2-lingo-lookup.c'
+'src/psp2-lingo-net.c' -> 'mgba/src/platform/psp2/psp2-lingo-net.c'
+'src/psp2-lingo-quiz.c' -> 'mgba/src/platform/psp2/psp2-lingo-quiz.c'
+'src/psp2-lingo-reader.c' -> 'mgba/src/platform/psp2/psp2-lingo-reader.c'
+'src/psp2-lingo-rom.c' -> 'mgba/src/platform/psp2/psp2-lingo-rom.c'
+'src/psp2-lingo-shot.c' -> 'mgba/src/platform/psp2/psp2-lingo-shot.c'
+'src/psp2-lingo-sjis.c' -> 'mgba/src/platform/psp2/psp2-lingo-sjis.c'
+'src/psp2-lingo-systems.c' -> 'mgba/src/platform/psp2/psp2-lingo-systems.c'
+'src/psp2-lingo-text.c' -> 'mgba/src/platform/psp2/psp2-lingo-text.c'
+'src/psp2-lingo-textsrc.c' -> 'mgba/src/platform/psp2/psp2-lingo-textsrc.c'
+'src/psp2-lingo-ui.c' -> 'mgba/src/platform/psp2/psp2-lingo-ui.c'
+'src/psp2-lingo-upload-ui.c' -> 'mgba/src/platform/psp2/psp2-lingo-upload-ui.c'
+'src/psp2-lingo-upload.c' -> 'mgba/src/platform/psp2/psp2-lingo-upload.c'
+'src/psp2-qrcodegen.c' -> 'mgba/src/platform/psp2/psp2-qrcodegen.c'
+'src/psp2-kaku-lessons.h' -> 'mgba/src/platform/psp2/psp2-kaku-lessons.h'
+'src/psp2-kaku.h' -> 'mgba/src/platform/psp2/psp2-kaku.h'
+'src/psp2-lingo-covermatch.h' -> 'mgba/src/platform/psp2/psp2-lingo-covermatch.h'
+'src/psp2-lingo-font.h' -> 'mgba/src/platform/psp2/psp2-lingo-font.h'
+'src/psp2-lingo-kana.h' -> 'mgba/src/platform/psp2/psp2-lingo-kana.h'
+'src/psp2-lingo-net.h' -> 'mgba/src/platform/psp2/psp2-lingo-net.h'
+'src/psp2-lingo-quiz.h' -> 'mgba/src/platform/psp2/psp2-lingo-quiz.h'
+'src/psp2-lingo-reader.h' -> 'mgba/src/platform/psp2/psp2-lingo-reader.h'
+'src/psp2-lingo-rom.h' -> 'mgba/src/platform/psp2/psp2-lingo-rom.h'
+'src/psp2-lingo-shot.h' -> 'mgba/src/platform/psp2/psp2-lingo-shot.h'
+'src/psp2-lingo-systems.h' -> 'mgba/src/platform/psp2/psp2-lingo-systems.h'
+'src/psp2-lingo-textsrc.h' -> 'mgba/src/platform/psp2/psp2-lingo-textsrc.h'
+'src/psp2-lingo-ui.h' -> 'mgba/src/platform/psp2/psp2-lingo-ui.h'
+'src/psp2-lingo-upload.h' -> 'mgba/src/platform/psp2/psp2-lingo-upload.h'
+'src/psp2-lingo.h' -> 'mgba/src/platform/psp2/psp2-lingo.h'
+'src/psp2-qrcodegen.h' -> 'mgba/src/platform/psp2/psp2-qrcodegen.h'
++ for p in patches/*.patch
++ git -C mgba apply --verbose /home/runner/work/Vita-Lingo/Vita-Lingo/patches/0001-lingo.patch
+Checking patch src/platform/psp2/CMakeLists.txt...
+Checking patch src/platform/psp2/main.c...
+Checking patch src/platform/psp2/psp2-context.c...
+Applied patch src/platform/psp2/CMakeLists.txt cleanly.
+Applied patch src/platform/psp2/main.c cleanly.
+Applied patch src/platform/psp2/psp2-context.c cleanly.
++ mkdir build
++ cd build
++ cmake ../mgba -DCMAKE_TOOLCHAIN_FILE=../mgba/src/platform/psp2/CMakeToolchain.vitasdk -DCMAKE_BUILD_TYPE=Release -DLINGO_ASSETS=/home/runner/work/Vita-Lingo/Vita-Lingo/assets
+-- The C compiler identification is GNU 15.2.0
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/runner/vitasdk/bin/arm-vita-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found PkgConfig: /usr/bin/pkg-config (found version "1.8.1")
+-- The ASM compiler identification is GNU
+-- Found assembler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc
+-- Looking for strdup
+-- Looking for strdup - found
+-- Looking for strlcpy
+-- Looking for strlcpy - found
+-- Looking for strndup
+-- Looking for strndup - found
+-- Looking for vasprintf
+-- Looking for vasprintf - found
+-- Looking for freelocale
+-- Looking for freelocale - found
+-- Looking for newlocale
+-- Looking for newlocale - found
+-- Looking for setlocale
+-- Looking for setlocale - found
+-- Looking for snprintf_l
+-- Looking for snprintf_l - not found
+-- Looking for uselocale
+-- Looking for uselocale - found
+-- Looking for popcount32
+-- Looking for popcount32 - not found
+-- Looking for futimens
+-- Looking for futimens - found
+-- Looking for futimes
+-- Looking for futimes - not found
+-- Looking for localtime_r
+-- Looking for localtime_r - found
+-- Looking for realpath
+-- Looking for realpath - found
+-- Looking for strtof_l
+-- Looking for strtof_l - found
+-- Looking for include file xlocale.h
+-- Looking for include file xlocale.h - not found
+-- Checking for one of the modules 'libavcodec'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libavcodec missing for feature USE_FFMPEG.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:511 (find_feature)
+
+
+-- Checking for one of the modules 'minizip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module minizip missing for feature USE_MINIZIP.  Feature
+  disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:514 (find_feature)
+
+
+-- Checking for one of the modules 'libzip'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libzip missing for feature USE_LIBZIP.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:516 (find_feature)
+
+
+-- Checking for one of the modules 'epoxy'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module epoxy missing for feature USE_EPOXY.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:517 (find_feature)
+
+
+-- Checking for one of the modules 'libelf'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module libelf missing for feature USE_ELF.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:520 (find_feature)
+
+
+-- Checking for one of the modules 'json-c'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module json-c missing for feature USE_JSON_C.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:790 (find_feature)
+
+
+-- Checking for one of the modules 'Lua'
+CMake Warning at src/platform/cmake/FindFeature.cmake:83 (message):
+  Requested module Lua missing for feature USE_LUA.  Feature disabled.
+Call Stack (most recent call first):
+  CMakeLists.txt:796 (find_feature)
+
+
+CMake Warning (dev) at CMakeLists.txt:1117 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning (dev) at CMakeLists.txt:1118 (install):
+  Policy CMP0177 is not set: install() DESTINATION paths are normalized.  Run
+  "cmake --help-policy CMP0177" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Build type: Release
+-- Platforms:
+-- 	Game Boy Advance: ON
+-- 	Game Boy: ON
+-- Features:
+-- 	Debuggers: OFF
+-- 	CLI debugger: OFF
+-- 	GDB stub: OFF
+-- 	GIF/Video recording: OFF
+-- 	Screenshot/advanced savestate support: ON
+-- 	ZIP support: minizip (included)
+-- 	7-Zip support: ON
+-- 	SQLite3 game database: OFF
+-- 	ELF loading support: OFF
+-- 	Discord Rich Presence support: OFF
+-- 	OpenGL support: OFF
+-- Scripting support: ON
+-- 	Lua: OFF
+-- 	storage API: OFF
+-- 	Font rendering: ON
+-- Frontends:
+-- 	Qt: OFF
+-- 	SDL (): OFF
+-- 	Headless: OFF
+-- 	Python bindings: OFF
+-- 	Examples: OFF
+-- Test tools:
+-- 	Profiling: OFF
+-- 	Test harness: OFF
+-- 	Test suite: OFF
+-- 	Video test suite: OFF
+-- Cores:
+-- 	Libretro core: OFF
+-- Libraries:
+-- 	Static: ON
+-- 	Shared: OFF
+-- Configuring done (2.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/Vita-Lingo/Vita-Lingo/build
++ grep -v '^\['
+++ nproc
++ make -j4
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/gb/mbc.c: In function 'GBMBCSwitchSramHalfBank':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/gb/mbc.c:301:71: warning: comparison of integer expressions of different signedness: 'int' and 'uint32_t' {aka 'unsigned int'} [-Wsign-compare]
+  301 |                         if (bankStart + GB_SIZE_EXTERNAL_RAM_HALFBANK > gb->sramSize) {
+      |                                                                       ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/psp2-context.c: In function '_postAudioBuffer':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/psp2-context.c:249:77: warning: unused parameter 'buf' [-Wunused-parameter]
+  249 | static void _postAudioBuffer(struct mAVStream* stream, struct mAudioBuffer* buf) {
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~^~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c: In function '_keyboardRun':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:101:38: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  101 |         params.title = calloc(sizeof(SceWChar16), MAX_KEYBOARD_TITLE_LEN + 1);
+      |                                      ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:101:38: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:102:48: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  102 |         params.inputTextBuffer = calloc(sizeof(SceWChar16), keyboard->maxLen + 1);
+      |                                                ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:102:48: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:103:44: warning: 'calloc' sizes specified with 'sizeof' in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
+  103 |         params.initialText = calloc(sizeof(SceWChar16), keyboard->maxLen + 1);
+      |                                            ^~~~~~~~~~
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:103:44: note: earlier argument should specify number of elements, later size of each element
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/platform/psp2/main.c:113:21: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  113 |         utf16Buffer = params.title;
+      |                     ^
+lto-wrapper: warning: using serial compilation of 24 LTRANS jobs
+lto-wrapper: note: see the '-flto' option documentation for more information
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c: In function 'mGUIRun':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:622:76: warning: 'last' may be used uninitialized [-Wmaybe-uninitialized]
+  622 |                                                         runner->totalDelta -= last;
+      |                                                                            ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:620:65: note: 'last' declared here
+  620 |                                                         int32_t last;
+      |                                                                 ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:622:76: warning: 'last' may be used uninitialized [-Wmaybe-uninitialized]
+  622 |                                                         runner->totalDelta -= last;
+      |                                                                            ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/feature/gui/gui-runner.c:620:65: note: 'last' declared here
+  620 |                                                         int32_t last;
+      |                                                                 ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:211:2:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 0 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:214:3:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 0 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+In function 'sha1Update',
+    inlined from 'sha1Finalize' at /home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:216:2:
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: warning: 'sha1Transform' reading 64 bytes from a region of size 8 [-Wstringop-overread]
+  192 |                         sha1Transform(context->state, &((uint8_t*) data)[i]);
+      |                         ^
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:192:25: note: referencing argument 2 of type 'const uint8_t[64]'
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c: In function 'sha1Finalize':
+/home/runner/work/Vita-Lingo/Vita-Lingo/mgba/src/util/sha1.c:46:13: note: in a call to function 'sha1Transform'
+   46 | static void sha1Transform(uint32_t state[5], const uint8_t buffer[64]) {
+      |             ^
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: warning: lib_a-vprintf.o: missing .note.GNU-stack section implies executable stack
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+++ nproc
++ make -j4
+[  0%] Built target mgba-version-info
+[ 90%] Built target mgba
+[ 97%] Built target mgba.elf
+[ 98%] Converting to Sony ELF mgba.elf.velf
+[ 98%] Built target mgba.elf-velf
+[ 98%] Creating SELF mgba.self
+[ 98%] Built target mgba.self-self
+[ 99%] Generating param.sfo for mgba.vpk
+[100%] Building vpk mgba.vpk
+[100%] Built target mgba.vpk-vpk
+++ find . -name '*.vpk'
+++ head -1
++ VPK=./psp2/mgba.vpk
++ cp ./psp2/mgba.vpk /home/runner/work/Vita-Lingo/Vita-Lingo/out/Lingo.vpk
++ cd /home/runner/work/Vita-Lingo/Vita-Lingo
++ unzip -l out/Lingo.vpk
+Archive:  out/Lingo.vpk
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+      912  2026-10-26 22:15   sce_sys/param.sfo
+  3395011  2026-10-26 22:15   eboot.bin
+     3649  2026-10-26 22:11   sce_sys/icon0.png
+    54404  2026-10-26 22:11   sce_sys/pic0.png
+    48968  2026-10-26 22:11   sce_sys/livearea/contents/bg.png
+     6285  2026-10-26 22:11   sce_sys/livearea/contents/startup.png
+      430  2026-10-26 22:12   sce_sys/livearea/contents/template.xml
+ 24158802  2026-10-26 22:11   lingo/lingo.dic
+  8905128  2026-10-26 22:11   lingo/klee.ttf
+  3432624  2026-10-26 22:11   lingo/ui.ttf
+   200116  2026-10-26 22:11   lingo/cacert.pem
+     2622  2026-10-26 22:11   lingo/LICENSES.txt
+---------                     -------
+ 40208951                     12 files
+++ du -h out/Lingo.vpk
+++ cut -f1
++ SIZE=20M
++ cat
+++ git rev-parse --short HEAD
+++ cut -c1-7 mgba.commit
++ export PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/home/runner/vitasdk/bin:/snap/bin:/home/runner/.local/bin:/opt/pipx_bin:/home/runner/.cargo/bin:/home/runner/.config/composer/vendor/bin:/usr/local/.ghcup/bin:/home/runner/.dotnet/tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ ROOT=/home/runner/work/Vita-Lingo/Vita-Lingo
++ CC=arm-vita-eabi-gcc
++ CFLAGS='-O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2'
++ B=/tmp/retro-build
++ rm -rf /tmp/retro-build
++ mkdir -p /tmp/retro-build/obj /tmp/retro-build/self/cores
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-kaku-core
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-kaku-core.c -o /tmp/retro-build/obj/psp2-kaku-core.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-kaku-data
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-kaku-data.c -o /tmp/retro-build/obj/psp2-kaku-data.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-kaku-lessons-ui
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-kaku-lessons-ui.c -o /tmp/retro-build/obj/psp2-kaku-lessons-ui.o
+src/psp2-kaku-lessons-ui.c: In function 'kakuLessonsRun':
+src/psp2-kaku-lessons-ui.c:385:53: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 8 [-Wformat-truncation=]
+  385 |                         snprintf(num, sizeof(num), "%d", i + 1);
+      |                                                     ^~
+src/psp2-kaku-lessons-ui.c:385:52: note: directive argument in the range [1, 2147483647]
+  385 |                         snprintf(num, sizeof(num), "%d", i + 1);
+      |                                                    ^~~~
+src/psp2-kaku-lessons-ui.c:385:25: note: 'snprintf' output between 2 and 11 bytes into a destination of size 8
+  385 |                         snprintf(num, sizeof(num), "%d", i + 1);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-kaku-lessons-ui.c:385:53: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 8 [-Wformat-truncation=]
+  385 |                         snprintf(num, sizeof(num), "%d", i + 1);
+      |                                                     ^~
+src/psp2-kaku-lessons-ui.c:385:52: note: directive argument in the range [1, 2147483647]
+  385 |                         snprintf(num, sizeof(num), "%d", i + 1);
+      |                                                    ^~~~
+src/psp2-kaku-lessons-ui.c:385:25: note: 'snprintf' output between 2 and 11 bytes into a destination of size 8
+  385 |                         snprintf(num, sizeof(num), "%d", i + 1);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-kaku-lessons
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-kaku-lessons.c -o /tmp/retro-build/obj/psp2-kaku-lessons.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-kaku-ui
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-kaku-ui.c -o /tmp/retro-build/obj/psp2-kaku-ui.o
+src/psp2-kaku-ui.c: In function 'strokeNumber.isra':
+src/psp2-kaku-ui.c:204:37: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 8 [-Wformat-truncation=]
+  204 |         snprintf(num, sizeof(num), "%d", i + 1);
+      |                                     ^~
+src/psp2-kaku-ui.c:204:36: note: directive argument in the range [-2147483647, 2147483647]
+  204 |         snprintf(num, sizeof(num), "%d", i + 1);
+      |                                    ^~~~
+src/psp2-kaku-ui.c:204:9: note: 'snprintf' output between 2 and 12 bytes into a destination of size 8
+  204 |         snprintf(num, sizeof(num), "%d", i + 1);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-kaku-ui.c: In function 'kakuReviewWords':
+src/psp2-kaku-ui.c:604:47: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 58 [-Wformat-truncation=]
+  604 |                 snprintf(key, sizeof(key), "w:%s|%s", w->head, w->reading);
+      |                                               ^~
+src/psp2-kaku-ui.c:604:17: note: 'snprintf' output between 4 and 130 bytes into a destination of size 60
+  604 |                 snprintf(key, sizeof(key), "w:%s|%s", w->head, w->reading);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-kaku-ui.c:645:47: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 58 [-Wformat-truncation=]
+  645 |                 snprintf(key, sizeof(key), "w:%s|%s", w->head, w->reading);
+      |                                               ^~
+src/psp2-kaku-ui.c:645:17: note: 'snprintf' output between 4 and 130 bytes into a destination of size 60
+  645 |                 snprintf(key, sizeof(key), "w:%s|%s", w->head, w->reading);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-bigram
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-bigram.c -o /tmp/retro-build/obj/psp2-lingo-bigram.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-checkpoint
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-checkpoint.c -o /tmp/retro-build/obj/psp2-lingo-checkpoint.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-covermatch
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-covermatch.c -o /tmp/retro-build/obj/psp2-lingo-covermatch.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-dict
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-dict.c -o /tmp/retro-build/obj/psp2-lingo-dict.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-font
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-font.c -o /tmp/retro-build/obj/psp2-lingo-font.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-games
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-games.c -o /tmp/retro-build/obj/psp2-lingo-games.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-kana
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-kana.c -o /tmp/retro-build/obj/psp2-lingo-kana.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-lookup
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-lookup.c -o /tmp/retro-build/obj/psp2-lingo-lookup.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-net
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-net.c -o /tmp/retro-build/obj/psp2-lingo-net.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-quiz
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-quiz.c -o /tmp/retro-build/obj/psp2-lingo-quiz.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-reader
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-reader.c -o /tmp/retro-build/obj/psp2-lingo-reader.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-rom
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-rom.c -o /tmp/retro-build/obj/psp2-lingo-rom.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-shot
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-shot.c -o /tmp/retro-build/obj/psp2-lingo-shot.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-sjis
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-sjis.c -o /tmp/retro-build/obj/psp2-lingo-sjis.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-systems
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-systems.c -o /tmp/retro-build/obj/psp2-lingo-systems.o
+src/psp2-lingo-systems.c: In function 'lingoSystemsRun':
+src/psp2-lingo-systems.c:287:61: warning: '%s' directive output may be truncated writing up to 767 bytes into a region of size 512 [-Wformat-truncation=]
+  287 |                                 snprintf(dir, sizeof(dir), "%s", next);
+      |                                                             ^~   ~~~~
+In function 'browse',
+    inlined from 'lingoSystemsRun' at src/psp2-lingo-systems.c:383:8:
+src/psp2-lingo-systems.c:287:33: note: 'snprintf' output between 1 and 768 bytes into a destination of size 512
+  287 |                                 snprintf(dir, sizeof(dir), "%s", next);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-text
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-text.c -o /tmp/retro-build/obj/psp2-lingo-text.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-textsrc
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-textsrc.c -o /tmp/retro-build/obj/psp2-lingo-textsrc.o
+src/psp2-lingo-textsrc.c: In function 'lingoTextTeachRun':
+src/psp2-lingo-textsrc.c:313:73: warning: '. Send them with a note abou...' directive output may be truncated writing 58 bytes into a region of size between 55 and 223 [-Wformat-truncation=]
+  313 |                         snprintf(msg, sizeof(msg), "Saved %d files to %s. Send them with a note about the game if text won't read.", k, where);
+      |                                                                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-lingo-textsrc.c:313:25: note: 'snprintf' output between 76 and 244 bytes into a destination of size 240
+  313 |                         snprintf(msg, sizeof(msg), "Saved %d files to %s. Send them with a note about the game if text won't read.", k, where);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-ui
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-ui.c -o /tmp/retro-build/obj/psp2-lingo-ui.o
+src/psp2-lingo-ui.c: In function 'deckLoad':
+src/psp2-lingo-ui.c:579:51: warning: '%s' directive output may be truncated writing up to 1023 bytes into a region of size 64 [-Wformat-truncation=]
+  567 |                 char* p = line;
+      |                           ~~~~                     
+......
+  579 |                 snprintf(w.head, sizeof(w.head), "%s", fields[0]);
+      |                                                   ^~
+src/psp2-lingo-ui.c:579:17: note: 'snprintf' output between 1 and 1024 bytes into a destination of size 64
+  579 |                 snprintf(w.head, sizeof(w.head), "%s", fields[0]);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-lingo-ui.c:579:51: warning: '%s' directive output may be truncated writing up to 1023 bytes into a region of size 64 [-Wformat-truncation=]
+  567 |                 char* p = line;
+      |                           ~~~~                     
+......
+  579 |                 snprintf(w.head, sizeof(w.head), "%s", fields[0]);
+      |                                                   ^~
+src/psp2-lingo-ui.c:579:17: note: 'snprintf' output between 1 and 1024 bytes into a destination of size 64
+  579 |                 snprintf(w.head, sizeof(w.head), "%s", fields[0]);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-lingo-ui.c:579:51: warning: '%s' directive output may be truncated writing up to 1023 bytes into a region of size 64 [-Wformat-truncation=]
+  567 |                 char* p = line;
+      |                           ~~~~                     
+......
+  579 |                 snprintf(w.head, sizeof(w.head), "%s", fields[0]);
+      |                                                   ^~
+src/psp2-lingo-ui.c:579:17: note: 'snprintf' output between 1 and 1024 bytes into a destination of size 64
+  579 |                 snprintf(w.head, sizeof(w.head), "%s", fields[0]);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-lingo-ui.c: In function 'deckAdd':
+src/psp2-lingo-ui.c:652:39: warning: '%s' directive output may be truncated writing up to 63 bytes into a region of size 58 [-Wformat-truncation=]
+  652 |         snprintf(key, sizeof(key), "w:%s|%s", w.head, w.reading);
+      |                                       ^~      ~~~~~~
+src/psp2-lingo-ui.c:652:9: note: 'snprintf' output between 4 and 130 bytes into a destination of size 60
+  652 |         snprintf(key, sizeof(key), "w:%s|%s", w.head, w.reading);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-upload-ui
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-upload-ui.c -o /tmp/retro-build/obj/psp2-lingo-upload-ui.o
+src/psp2-lingo-upload-ui.c: In function 'lingoUploadRun':
+src/psp2-lingo-upload-ui.c:127:86: warning: '%s' directive output may be truncated writing up to 31 bytes into a region of size between 22 and 180 [-Wformat-truncation=]
+  127 |                                 snprintf(line, sizeof(line), "Receiving %s  ·  %s of %s", st.name, a, b);
+      |                                                                                      ^~               ~
+src/psp2-lingo-upload-ui.c:127:33: note: 'snprintf' output between 21 and 210 bytes into a destination of size 200
+  127 |                                 snprintf(line, sizeof(line), "Receiving %s  ·  %s of %s", st.name, a, b);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-lingo-upload
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-lingo-upload.c -o /tmp/retro-build/obj/psp2-lingo-upload.o
+src/psp2-lingo-upload.c: In function 'handle':
+src/psp2-lingo-upload.c:223:51: warning: '%s' directive output may be truncated writing up to 199 bytes into a region of size 128 [-Wformat-truncation=]
+  223 |         snprintf(u->st.name, sizeof(u->st.name), "%s", name);
+      |                                                   ^~   ~~~~
+In function 'receive',
+    inlined from 'handle' at src/psp2-lingo-upload.c:330:3:
+src/psp2-lingo-upload.c:223:9: note: 'snprintf' output between 1 and 200 bytes into a destination of size 128
+  223 |         snprintf(u->st.name, sizeof(u->st.name), "%s", name);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-lingo-upload.c: In function 'handle':
+src/psp2-lingo-upload.c:268:86: warning: '%s' directive output may be truncated writing up to 199 bytes into a region of size 159 [-Wformat-truncation=]
+  268 |                 snprintf(u->st.recent[u->st.nRecent++], sizeof(u->st.recent[0]), "%s/%s", sys, name);
+      |                                                                                      ^~        ~~~~
+In function 'receive',
+    inlined from 'handle' at src/psp2-lingo-upload.c:330:3:
+src/psp2-lingo-upload.c:268:17: note: 'snprintf' output 2 or more bytes (assuming 201) into a destination of size 160
+  268 |                 snprintf(u->st.recent[u->st.nRecent++], sizeof(u->st.recent[0]), "%s/%s", sys, name);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/psp2-lingo-upload.c: In function 'handle':
+src/psp2-lingo-upload.c:271:61: warning: '%s' directive output may be truncated writing up to 199 bytes into a region of size 128 [-Wformat-truncation=]
+  271 |                 snprintf(u->st.error, sizeof(u->st.error), "%s did not arrive in one piece", name);
+      |                                                             ^~                               ~~~~
+In function 'receive',
+    inlined from 'handle' at src/psp2-lingo-upload.c:330:3:
+src/psp2-lingo-upload.c:271:17: note: 'snprintf' output between 29 and 228 bytes into a destination of size 128
+  271 |                 snprintf(u->st.error, sizeof(u->st.error), "%s did not arrive in one piece", name);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename src/psp2-qrcodegen
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c src/psp2-qrcodegen.c -o /tmp/retro-build/obj/psp2-qrcodegen.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename retro/retro-util
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/retro-util.c -o /tmp/retro-build/obj/retro-util.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename retro/retro-zip
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/retro-zip.c -o /tmp/retro-build/obj/retro-zip.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename retro/retro-options
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/retro-options.c -o /tmp/retro-build/obj/retro-options.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename retro/retro-rewind
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/retro-rewind.c -o /tmp/retro-build/obj/retro-rewind.o
++ for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c
+++ basename retro/retro-voice
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/retro-voice.c -o /tmp/retro-build/obj/retro-voice.o
++ arm-vita-eabi-ar rcs /tmp/retro-build/liblingo.a /tmp/retro-build/obj/psp2-kaku-core.o /tmp/retro-build/obj/psp2-kaku-data.o /tmp/retro-build/obj/psp2-kaku-lessons-ui.o /tmp/retro-build/obj/psp2-kaku-lessons.o /tmp/retro-build/obj/psp2-kaku-ui.o /tmp/retro-build/obj/psp2-lingo-bigram.o /tmp/retro-build/obj/psp2-lingo-checkpoint.o /tmp/retro-build/obj/psp2-lingo-covermatch.o /tmp/retro-build/obj/psp2-lingo-dict.o /tmp/retro-build/obj/psp2-lingo-font.o /tmp/retro-build/obj/psp2-lingo-games.o /tmp/retro-build/obj/psp2-lingo-kana.o /tmp/retro-build/obj/psp2-lingo-lookup.o /tmp/retro-build/obj/psp2-lingo-net.o /tmp/retro-build/obj/psp2-lingo-quiz.o /tmp/retro-build/obj/psp2-lingo-reader.o /tmp/retro-build/obj/psp2-lingo-rom.o /tmp/retro-build/obj/psp2-lingo-shot.o /tmp/retro-build/obj/psp2-lingo-sjis.o /tmp/retro-build/obj/psp2-lingo-systems.o /tmp/retro-build/obj/psp2-lingo-text.o /tmp/retro-build/obj/psp2-lingo-textsrc.o /tmp/retro-build/obj/psp2-lingo-ui.o /tmp/retro-build/obj/psp2-lingo-upload-ui.o /tmp/retro-build/obj/psp2-lingo-upload.o /tmp/retro-build/obj/psp2-qrcodegen.o /tmp/retro-build/obj/retro-options.o /tmp/retro-build/obj/retro-rewind.o /tmp/retro-build/obj/retro-util.o /tmp/retro-build/obj/retro-voice.o /tmp/retro-build/obj/retro-zip.o
++ LRC_SHA=927f51fcb35ae771568680673b0a6e8af2ac24b0
++ rm -rf /tmp/lrc
++ git init -q /tmp/lrc
++ git -C /tmp/lrc remote add origin https://github.com/libretro/libretro-common
++ git -C /tmp/lrc fetch -q --depth 1 origin 927f51fcb35ae771568680673b0a6e8af2ac24b0
++ git -C /tmp/lrc checkout -q FETCH_HEAD
++ mkdir -p /tmp/retro-build/lrc
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_fnmatch
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_fnmatch.c -o /tmp/retro-build/lrc/compat_compat_fnmatch.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_getopt
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_getopt.c -o /tmp/retro-build/lrc/compat_compat_getopt.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_ifaddrs
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_ifaddrs.c -o /tmp/retro-build/lrc/compat_compat_ifaddrs.o
+++ basename /tmp/lrc/compat/compat_ifaddrs.c
++ echo 'libretro-common: skipped compat/compat_ifaddrs.c'
+libretro-common: skipped compat/compat_ifaddrs.c
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_posix_string
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_posix_string.c -o /tmp/retro-build/lrc/compat_compat_posix_string.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_snprintf
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_snprintf.c -o /tmp/retro-build/lrc/compat_compat_snprintf.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_strcasestr
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_strcasestr.c -o /tmp/retro-build/lrc/compat_compat_strcasestr.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_strl
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_strl.c -o /tmp/retro-build/lrc/compat_compat_strl.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_strldup
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_strldup.c -o /tmp/retro-build/lrc/compat_compat_strldup.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_strtoll
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_strtoll.c -o /tmp/retro-build/lrc/compat_compat_strtoll.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/compat_vscprintf
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/compat_vscprintf.c -o /tmp/retro-build/lrc/compat_compat_vscprintf.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/compat/fopen_utf8
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/compat/fopen_utf8.c -o /tmp/retro-build/lrc/compat_fopen_utf8.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/chd_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/chd_stream.c -o /tmp/retro-build/lrc/streams_chd_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/file_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/file_stream.c -o /tmp/retro-build/lrc/streams_file_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/file_stream_transforms
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/file_stream_transforms.c -o /tmp/retro-build/lrc/streams_file_stream_transforms.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/interface_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/interface_stream.c -o /tmp/retro-build/lrc/streams_interface_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/memory_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/memory_stream.c -o /tmp/retro-build/lrc/streams_memory_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/network_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/network_stream.c -o /tmp/retro-build/lrc/streams_network_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/rzip_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/rzip_stream.c -o /tmp/retro-build/lrc/streams_rzip_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/stdin_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/stdin_stream.c -o /tmp/retro-build/lrc/streams_stdin_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/trans_stream
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/trans_stream.c -o /tmp/retro-build/lrc/streams_trans_stream.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/trans_stream_deflate
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/trans_stream_deflate.c -o /tmp/retro-build/lrc/streams_trans_stream_deflate.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/trans_stream_pipe
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/trans_stream_pipe.c -o /tmp/retro-build/lrc/streams_trans_stream_pipe.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/trans_stream_rzstd
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/trans_stream_rzstd.c -o /tmp/retro-build/lrc/streams_trans_stream_rzstd.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/streams/trans_stream_zlib
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/streams/trans_stream_zlib.c -o /tmp/retro-build/lrc/streams_trans_stream_zlib.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/archive_file
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/archive_file.c -o /tmp/retro-build/lrc/file_archive_file.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/archive_file_7z
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/archive_file_7z.c -o /tmp/retro-build/lrc/file_archive_file_7z.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/archive_file_rar
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/archive_file_rar.c -o /tmp/retro-build/lrc/file_archive_file_rar.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/archive_file_zlib
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/archive_file_zlib.c -o /tmp/retro-build/lrc/file_archive_file_zlib.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/archive_file_zstd
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/archive_file_zstd.c -o /tmp/retro-build/lrc/file_archive_file_zstd.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/config_file
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/config_file.c -o /tmp/retro-build/lrc/file_config_file.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/config_file_io
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/config_file_io.c -o /tmp/retro-build/lrc/file_config_file_io.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/config_file_userdata
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/config_file_userdata.c -o /tmp/retro-build/lrc/file_config_file_userdata.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/file_path
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/file_path.c -o /tmp/retro-build/lrc/file_file_path.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/file_path_io
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/file_path_io.c -o /tmp/retro-build/lrc/file_file_path_io.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/file_watch
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/file_watch.c -o /tmp/retro-build/lrc/file_file_watch.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/keychain
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/keychain.c -o /tmp/retro-build/lrc/file_keychain.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/rbmp_file
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/rbmp_file.c -o /tmp/retro-build/lrc/file_rbmp_file.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/retro_dirent
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/retro_dirent.c -o /tmp/retro-build/lrc/file_retro_dirent.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/file/rpng_file
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/file/rpng_file.c -o /tmp/retro-build/lrc/file_rpng_file.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_hybrid
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_hybrid.c -o /tmp/retro-build/lrc/vfs_vfs_hybrid.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_implementation
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_implementation.c -o /tmp/retro-build/lrc/vfs_vfs_implementation.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_implementation_cdrom
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_implementation_cdrom.c -o /tmp/retro-build/lrc/vfs_vfs_implementation_cdrom.o
+++ basename /tmp/lrc/vfs/vfs_implementation_cdrom.c
++ echo 'libretro-common: skipped vfs/vfs_implementation_cdrom.c'
+libretro-common: skipped vfs/vfs_implementation_cdrom.c
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_implementation_nfs
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_implementation_nfs.c -o /tmp/retro-build/lrc/vfs_vfs_implementation_nfs.o
+++ basename /tmp/lrc/vfs/vfs_implementation_nfs.c
++ echo 'libretro-common: skipped vfs/vfs_implementation_nfs.c'
+libretro-common: skipped vfs/vfs_implementation_nfs.c
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_implementation_saf
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_implementation_saf.c -o /tmp/retro-build/lrc/vfs_vfs_implementation_saf.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_implementation_smb
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_implementation_smb.c -o /tmp/retro-build/lrc/vfs_vfs_implementation_smb.o
+++ basename /tmp/lrc/vfs/vfs_implementation_smb.c
++ echo 'libretro-common: skipped vfs/vfs_implementation_smb.c'
+libretro-common: skipped vfs/vfs_implementation_smb.c
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/vfs/vfs_prefetch
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/vfs/vfs_prefetch.c -o /tmp/retro-build/lrc/vfs_vfs_prefetch.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/string/rstrtod
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/string/rstrtod.c -o /tmp/retro-build/lrc/string_rstrtod.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/string/stdstring
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/string/stdstring.c -o /tmp/retro-build/lrc/string_stdstring.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/rthreads/retro_asym_eventcount
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/rthreads/retro_asym_eventcount.c -o /tmp/retro-build/lrc/rthreads_retro_asym_eventcount.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/rthreads/retro_eventcount
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/rthreads/retro_eventcount.c -o /tmp/retro-build/lrc/rthreads_retro_eventcount.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/rthreads/retro_procbarrier
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/rthreads/retro_procbarrier.c -o /tmp/retro-build/lrc/rthreads_retro_procbarrier.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/rthreads/rthreads
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/rthreads/rthreads.c -o /tmp/retro-build/lrc/rthreads_rthreads.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/rthreads/tpool
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/rthreads/tpool.c -o /tmp/retro-build/lrc/rthreads_tpool.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/rthreads/xenon_sdl_threads
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/rthreads/xenon_sdl_threads.c -o /tmp/retro-build/lrc/rthreads_xenon_sdl_threads.o
+++ basename /tmp/lrc/rthreads/xenon_sdl_threads.c
++ echo 'libretro-common: skipped rthreads/xenon_sdl_threads.c'
+libretro-common: skipped rthreads/xenon_sdl_threads.c
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_base64
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_base64.c -o /tmp/retro-build/lrc/encodings_encoding_base64.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_crc32
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_crc32.c -o /tmp/retro-build/lrc/encodings_encoding_crc32.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_deflate
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_deflate.c -o /tmp/retro-build/lrc/encodings_encoding_deflate.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_huffman
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_huffman.c -o /tmp/retro-build/lrc/encodings_encoding_huffman.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_rlz4
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_rlz4.c -o /tmp/retro-build/lrc/encodings_encoding_rlz4.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_rzstd
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_rzstd.c -o /tmp/retro-build/lrc/encodings_encoding_rzstd.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_utf
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_utf.c -o /tmp/retro-build/lrc/encodings_encoding_utf.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/encodings/encoding_vcdiff
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/encodings/encoding_vcdiff.c -o /tmp/retro-build/lrc/encodings_encoding_vcdiff.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/time/rtime
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/time/rtime.c -o /tmp/retro-build/lrc/time_rtime.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/lists/dir_list
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/lists/dir_list.c -o /tmp/retro-build/lrc/lists_dir_list.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/lists/file_list
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/lists/file_list.c -o /tmp/retro-build/lrc/lists_file_list.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/lists/linked_list
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/lists/linked_list.c -o /tmp/retro-build/lrc/lists_linked_list.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/lists/nested_list
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/lists/nested_list.c -o /tmp/retro-build/lrc/lists_nested_list.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/lists/string_list
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/lists/string_list.c -o /tmp/retro-build/lrc/lists_string_list.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/lists/vector_list
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/lists/vector_list.c -o /tmp/retro-build/lrc/lists_vector_list.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/hash/lrc_hash
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/hash/lrc_hash.c -o /tmp/retro-build/lrc/hash_lrc_hash.o
++ for d in compat streams file vfs string rthreads encodings time lists hash memmap
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/memmap/memalign
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/memmap/memalign.c -o /tmp/retro-build/lrc/memmap_memalign.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/memmap/memcpy_nt
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/memmap/memcpy_nt.c -o /tmp/retro-build/lrc/memmap_memcpy_nt.o
++ for f in /tmp/lrc/$d/*.c
+++ basename /tmp/lrc/memmap/memmap
++ arm-vita-eabi-gcc -O2 -DVITA -D__vita__ -DHAVE_THREADS -DHAVE_ZLIB -I/tmp/lrc/include -c /tmp/lrc/memmap/memmap.c -o /tmp/retro-build/lrc/memmap_memmap.o
++ arm-vita-eabi-ar rcs /tmp/retro-build/libretro-common.a /tmp/retro-build/lrc/compat_compat_fnmatch.o /tmp/retro-build/lrc/compat_compat_getopt.o /tmp/retro-build/lrc/compat_compat_posix_string.o /tmp/retro-build/lrc/compat_compat_snprintf.o /tmp/retro-build/lrc/compat_compat_strcasestr.o /tmp/retro-build/lrc/compat_compat_strl.o /tmp/retro-build/lrc/compat_compat_strldup.o /tmp/retro-build/lrc/compat_compat_strtoll.o /tmp/retro-build/lrc/compat_compat_vscprintf.o /tmp/retro-build/lrc/compat_fopen_utf8.o /tmp/retro-build/lrc/encodings_encoding_base64.o /tmp/retro-build/lrc/encodings_encoding_crc32.o /tmp/retro-build/lrc/encodings_encoding_deflate.o /tmp/retro-build/lrc/encodings_encoding_huffman.o /tmp/retro-build/lrc/encodings_encoding_rlz4.o /tmp/retro-build/lrc/encodings_encoding_rzstd.o /tmp/retro-build/lrc/encodings_encoding_utf.o /tmp/retro-build/lrc/encodings_encoding_vcdiff.o /tmp/retro-build/lrc/file_archive_file.o /tmp/retro-build/lrc/file_archive_file_7z.o /tmp/retro-build/lrc/file_archive_file_rar.o /tmp/retro-build/lrc/file_archive_file_zlib.o /tmp/retro-build/lrc/file_archive_file_zstd.o /tmp/retro-build/lrc/file_config_file.o /tmp/retro-build/lrc/file_config_file_io.o /tmp/retro-build/lrc/file_config_file_userdata.o /tmp/retro-build/lrc/file_file_path.o /tmp/retro-build/lrc/file_file_path_io.o /tmp/retro-build/lrc/file_file_watch.o /tmp/retro-build/lrc/file_keychain.o /tmp/retro-build/lrc/file_rbmp_file.o /tmp/retro-build/lrc/file_retro_dirent.o /tmp/retro-build/lrc/file_rpng_file.o /tmp/retro-build/lrc/hash_lrc_hash.o /tmp/retro-build/lrc/lists_dir_list.o /tmp/retro-build/lrc/lists_file_list.o /tmp/retro-build/lrc/lists_linked_list.o /tmp/retro-build/lrc/lists_nested_list.o /tmp/retro-build/lrc/lists_string_list.o /tmp/retro-build/lrc/lists_vector_list.o /tmp/retro-build/lrc/memmap_memalign.o /tmp/retro-build/lrc/memmap_memcpy_nt.o /tmp/retro-build/lrc/memmap_memmap.o /tmp/retro-build/lrc/rthreads_retro_asym_eventcount.o /tmp/retro-build/lrc/rthreads_retro_eventcount.o /tmp/retro-build/lrc/rthreads_retro_procbarrier.o /tmp/retro-build/lrc/rthreads_rthreads.o /tmp/retro-build/lrc/rthreads_tpool.o /tmp/retro-build/lrc/streams_chd_stream.o /tmp/retro-build/lrc/streams_file_stream.o /tmp/retro-build/lrc/streams_file_stream_transforms.o /tmp/retro-build/lrc/streams_interface_stream.o /tmp/retro-build/lrc/streams_memory_stream.o /tmp/retro-build/lrc/streams_network_stream.o /tmp/retro-build/lrc/streams_rzip_stream.o /tmp/retro-build/lrc/streams_stdin_stream.o /tmp/retro-build/lrc/streams_trans_stream.o /tmp/retro-build/lrc/streams_trans_stream_deflate.o /tmp/retro-build/lrc/streams_trans_stream_pipe.o /tmp/retro-build/lrc/streams_trans_stream_rzstd.o /tmp/retro-build/lrc/streams_trans_stream_zlib.o /tmp/retro-build/lrc/string_rstrtod.o /tmp/retro-build/lrc/string_stdstring.o /tmp/retro-build/lrc/time_rtime.o /tmp/retro-build/lrc/vfs_vfs_hybrid.o /tmp/retro-build/lrc/vfs_vfs_implementation.o /tmp/retro-build/lrc/vfs_vfs_implementation_saf.o /tmp/retro-build/lrc/vfs_vfs_prefetch.o
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/lingo-retro.c -o /tmp/retro-build/lingo-retro.o
+retro/lingo-retro.c: In function 'main':
+retro/lingo-retro.c:946:49: warning: '%s' directive output may be truncated writing up to 1023 bytes into a region of size 256 [-Wformat-truncation=]
+  946 |         snprintf(sBaseName, sizeof(sBaseName), "%s", base);
+      |                                                 ^~
+retro/lingo-retro.c:946:9: note: 'snprintf' output between 1 and 1024 bytes into a destination of size 256
+  946 |         snprintf(sBaseName, sizeof(sBaseName), "%s", base);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+retro/lingo-retro.c:947:49: warning: '%s' directive output may be truncated writing up to 1023 bytes into a region of size 256 [-Wformat-truncation=]
+  947 |         snprintf(sGameName, sizeof(sGameName), "%s", base);
+      |                                                 ^~
+retro/lingo-retro.c:947:9: note: 'snprintf' output between 1 and 1024 bytes into a destination of size 256
+  947 |         snprintf(sGameName, sizeof(sGameName), "%s", base);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ WH=/tmp/whisper
++ rm -rf /tmp/whisper
++ git clone -q --depth 1 --branch v1.5.4 https://github.com/ggerganov/whisper.cpp /tmp/whisper
+Note: switching to '0b9af32a8b3fa7e2ae5f15a9a08f5b10394993f5'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
++ WFLAGS='-O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper'
++ mkdir -p /tmp/retro-build/wh
++ for f in ggml ggml-alloc ggml-backend ggml-quants
++ arm-vita-eabi-gcc -O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper -std=gnu11 -c /tmp/whisper/ggml.c -o /tmp/retro-build/wh/ggml.o
++ for f in ggml ggml-alloc ggml-backend ggml-quants
++ arm-vita-eabi-gcc -O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper -std=gnu11 -c /tmp/whisper/ggml-alloc.c -o /tmp/retro-build/wh/ggml-alloc.o
++ for f in ggml ggml-alloc ggml-backend ggml-quants
++ arm-vita-eabi-gcc -O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper -std=gnu11 -c /tmp/whisper/ggml-backend.c -o /tmp/retro-build/wh/ggml-backend.o
++ for f in ggml ggml-alloc ggml-backend ggml-quants
++ arm-vita-eabi-gcc -O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper -std=gnu11 -c /tmp/whisper/ggml-quants.c -o /tmp/retro-build/wh/ggml-quants.o
++ arm-vita-eabi-g++ -O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper -std=gnu++11 -c /tmp/whisper/whisper.cpp -o /tmp/retro-build/wh/whisper.o
+In file included from /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/algorithm:63,
+                 from /tmp/whisper/whisper.cpp:24:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h: In function 'void std::__unguarded_linear_insert(_RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = __gnu_cxx::__ops::_Val_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]':
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1751:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1751 |     __unguarded_linear_insert(_RandomAccessIterator __last,
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h: In function 'void std::__insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]':
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1771:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1771 |     __insertion_sort(_RandomAccessIterator __first,
+      |     ^~~~~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1771:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+In file included from /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:61:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_heap.h: In function 'void std::__adjust_heap(_RandomAccessIterator, _Distance, _Distance, _Tp, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Distance = int; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]':
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_heap.h:224:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+  224 |     __adjust_heap(_RandomAccessIterator __first, _Distance __holeIndex,
+      |     ^~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h: In function 'void std::__introsort_loop(_RandomAccessIterator, _RandomAccessIterator, _Size, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Size = int; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]':
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1877:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1877 |     __introsort_loop(_RandomAccessIterator __first,
+      |     ^~~~~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1877:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1891:32: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1891 |           std::__introsort_loop(__cut, __last, __depth_limit, __comp);
+      |           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/vector:67,
+                 from /tmp/whisper/whisper.cpp:36:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h: In function '_ForwardIterator std::__do_uninit_copy(_InputIterator, _Sentinel, _ForwardIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Sentinel = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _ForwardIterator = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*]':
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:140:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+  140 |     __do_uninit_copy(_InputIterator __first, _Sentinel __last,
+      |     ^~~~~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:140:5: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+In function '_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _ForwardIterator = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*]',
+    inlined from '_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _Sentinel, _ForwardIterator, allocator<_Tp>&) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Sentinel = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _ForwardIterator = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:637:37,
+    inlined from 'void std::vector<_Tp, _Alloc>::_M_range_insert(iterator, _ForwardIterator, _ForwardIterator, std::forward_iterator_tag) [with _ForwardIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate; _Alloc = std::allocator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate>]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/vector.tcc:915:34,
+    inlined from 'std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::insert(const_iterator, _InputIterator, _InputIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; <template-parameter-2-2> = void; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate; _Alloc = std::allocator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate>]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_vector.h:1621:19,
+    inlined from 'int whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)' at /tmp/whisper/whisper.cpp:5362:43:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:266:37: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+  266 |         return std::__do_uninit_copy(__first, __last, __result);
+      |                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function '_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _ForwardIterator = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*]',
+    inlined from '_ForwardIterator std::__uninitialized_copy_a(_InputIterator, _Sentinel, _ForwardIterator, allocator<_Tp>&) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Sentinel = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _ForwardIterator = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:637:37,
+    inlined from 'void std::vector<_Tp, _Alloc>::_M_range_insert(iterator, _ForwardIterator, _ForwardIterator, std::forward_iterator_tag) [with _ForwardIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate; _Alloc = std::allocator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate>]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/vector.tcc:953:38,
+    inlined from 'std::vector<_Tp, _Alloc>::iterator std::vector<_Tp, _Alloc>::insert(const_iterator, _InputIterator, _InputIterator) [with _InputIterator = __gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; <template-parameter-2-2> = void; _Tp = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate; _Alloc = std::allocator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate>]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_vector.h:1621:19,
+    inlined from 'int whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)' at /tmp/whisper/whisper.cpp:5362:43:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:266:37: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+  266 |         return std::__do_uninit_copy(__first, __last, __result);
+      |                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_uninitialized.h:266:37: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+In function 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]',
+    inlined from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)>]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:4874:18,
+    inlined from 'int whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)' at /tmp/whisper/whisper.cpp:5371:30:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1906:32: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1906 |           std::__introsort_loop(__first, __last,
+      |           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+ 1907 |                                 std::__lg(__last - __first) * 2,
+      |                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1908 |                                 __comp);
+      |                                 ~~~~~~~
+In function 'void std::__final_insertion_sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]',
+    inlined from 'void std::__sort(_RandomAccessIterator, _RandomAccessIterator, _Compare) [with _RandomAccessIterator = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = __gnu_cxx::__ops::_Iter_comp_iter<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)> >]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1909:31,
+    inlined from 'void std::sort(_RAIter, _RAIter, _Compare) [with _RAIter = __gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >; _Compare = whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::<lambda(const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&, const whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate&)>]' at /home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:4874:18,
+    inlined from 'int whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)' at /tmp/whisper/whisper.cpp:5371:30:
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1818:32: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1818 |           std::__insertion_sort(__first, __first + int(_S_threshold), __comp);
+      |           ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/vitasdk/arm-vita-eabi/include/c++/15.2.0/bits/stl_algo.h:1823:30: note: parameter passing for argument of type '__gnu_cxx::__normal_iterator<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate*, std::vector<whisper_full_with_state(whisper_context*, whisper_state*, whisper_full_params, const float*, int)::beam_candidate> >' changed in GCC 7.1
+ 1823 |         std::__insertion_sort(__first, __last, __comp);
+      |         ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
++ arm-vita-eabi-g++ -O3 -mcpu=cortex-a9 -mfpu=neon -mfp16-format=ieee -DNDEBUG -D_GNU_SOURCE -I/tmp/whisper -std=gnu++11 -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -c retro/retro-whisper.cpp -o /tmp/retro-build/wh/retro-whisper.o
++ arm-vita-eabi-ar rcs /tmp/retro-build/libwhisper.a /tmp/retro-build/wh/ggml-alloc.o /tmp/retro-build/wh/ggml-backend.o /tmp/retro-build/wh/ggml-quants.o /tmp/retro-build/wh/ggml.o /tmp/retro-build/wh/retro-whisper.o /tmp/retro-build/wh/whisper.o
++ arm-vita-eabi-gcc -O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I/home/runner/work/Vita-Lingo/Vita-Lingo/retro -I/home/runner/work/Vita-Lingo/Vita-Lingo/src -I/home/runner/vitasdk/arm-vita-eabi/include/freetype2 -c retro/retro-whisper-stub.c -o /tmp/retro-build/whisper-stub.o
++ VOICE_CORES='pcsx_rearmed yabause mednafen_pce_fast genesis_plus_gx'
++ mkdir -p /tmp/retro-build/self/lingo
++ curl -sSfL --retry 3 -o /tmp/retro-build/self/lingo/whisper.bin https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny-q5_1.bin
++ ls -la /tmp/retro-build/self/lingo
+total 31408
+drwxr-xr-x 2 runner runner     4096 Oct 26 22:19 .
+drwxr-xr-x 4 runner runner     4096 Oct 26 22:19 ..
+-rw-r--r-- 1 runner runner 32152673 Oct 26 22:19 whisper.bin
++ LIBS='-lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread  -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub  -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub  -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub'
++ for pad in 0 4096 12288
++ printf 'const char lingo_pad_%d[%d] __attribute__((used)) = {1};\n' 0 1
++ arm-vita-eabi-gcc -O2 -c /tmp/retro-build/pad0.c -o /tmp/retro-build/pad0.o
++ for pad in 0 4096 12288
++ printf 'const char lingo_pad_%d[%d] __attribute__((used)) = {1};\n' 4096 4096
++ arm-vita-eabi-gcc -O2 -c /tmp/retro-build/pad4096.c -o /tmp/retro-build/pad4096.o
++ for pad in 0 4096 12288
++ printf 'const char lingo_pad_%d[%d] __attribute__((used)) = {1};\n' 12288 12288
++ arm-vita-eabi-gcc -O2 -c /tmp/retro-build/pad12288.c -o /tmp/retro-build/pad12288.o
++ built=0
++ for a in cores-a/*.a
+++ basename cores-a/fbneo.a .a
++ id=fbneo
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/fbneo.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/fbneo.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/fbneo.elf /tmp/retro-build/fbneo.velf
++ vita-make-fself -c /tmp/retro-build/fbneo.velf /tmp/retro-build/self/cores/fbneo.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=1
++ echo 'linked fbneo (padding 0)'
+linked fbneo (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/fceumm.a .a
++ id=fceumm
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/fceumm.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/fceumm.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/fceumm.elf /tmp/retro-build/fceumm.velf
+ci/build-retro.sh: line 64:  4669 Segmentation fault      (core dumped) vita-elf-create $B/$id.elf $B/$id.velf >> $B/$id.link.log 2>&1
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/fceumm.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad4096.o -Wl,--start-group cores-a/fceumm.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/fceumm.elf /tmp/retro-build/fceumm.velf
++ vita-make-fself -c /tmp/retro-build/fceumm.velf /tmp/retro-build/self/cores/fceumm.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=2
++ echo 'linked fceumm (padding 4096)'
+linked fceumm (padding 4096)
++ for a in cores-a/*.a
+++ basename cores-a/fmsx.a .a
++ id=fmsx
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/fmsx.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/fmsx.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/fmsx.elf /tmp/retro-build/fmsx.velf
++ vita-make-fself -c /tmp/retro-build/fmsx.velf /tmp/retro-build/self/cores/fmsx.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=3
++ echo 'linked fmsx (padding 0)'
+linked fmsx (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/genesis_plus_gx.a .a
++ id=genesis_plus_gx
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ speech=/tmp/retro-build/libwhisper.a
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/genesis_plus_gx.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/genesis_plus_gx.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/genesis_plus_gx.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad4096.o -Wl,--start-group cores-a/genesis_plus_gx.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/genesis_plus_gx.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad12288.o -Wl,--start-group cores-a/genesis_plus_gx.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ '[' 0 = 1 ']'
++ echo 'LINK FAILED: genesis_plus_gx'
+LINK FAILED: genesis_plus_gx
++ tail -40 /tmp/retro-build/genesis_plus_gx.link.log
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `ggml_init':
+ggml.c:(.text+0x13bbc): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_empty':
+ggml.c:(.text+0x34ae2): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_from_file':
+ggml.c:(.text+0x352d4): undefined reference to `posix_memalign'
+collect2: error: ld returned 1 exit status
++ rm -f /tmp/retro-build/self/cores/genesis_plus_gx.self
++ for a in cores-a/*.a
+++ basename cores-a/mednafen_ngp.a .a
++ id=mednafen_ngp
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/mednafen_ngp.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/mednafen_ngp.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/mednafen_ngp.elf /tmp/retro-build/mednafen_ngp.velf
++ vita-make-fself -c /tmp/retro-build/mednafen_ngp.velf /tmp/retro-build/self/cores/mednafen_ngp.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=4
++ echo 'linked mednafen_ngp (padding 0)'
+linked mednafen_ngp (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/mednafen_pce_fast.a .a
++ id=mednafen_pce_fast
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ speech=/tmp/retro-build/libwhisper.a
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/mednafen_pce_fast.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/mednafen_pce_fast.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/mednafen_pce_fast.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad4096.o -Wl,--start-group cores-a/mednafen_pce_fast.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/mednafen_pce_fast.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad12288.o -Wl,--start-group cores-a/mednafen_pce_fast.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ '[' 0 = 1 ']'
++ echo 'LINK FAILED: mednafen_pce_fast'
+LINK FAILED: mednafen_pce_fast
++ tail -40 /tmp/retro-build/mednafen_pce_fast.link.log
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `ggml_init':
+ggml.c:(.text+0x13bbc): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_empty':
+ggml.c:(.text+0x34ae2): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_from_file':
+ggml.c:(.text+0x352d4): undefined reference to `posix_memalign'
+collect2: error: ld returned 1 exit status
++ rm -f /tmp/retro-build/self/cores/mednafen_pce_fast.self
++ for a in cores-a/*.a
+++ basename cores-a/mednafen_vb.a .a
++ id=mednafen_vb
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/mednafen_vb.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/mednafen_vb.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/mednafen_vb.elf /tmp/retro-build/mednafen_vb.velf
++ vita-make-fself -c /tmp/retro-build/mednafen_vb.velf /tmp/retro-build/self/cores/mednafen_vb.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=5
++ echo 'linked mednafen_vb (padding 0)'
+linked mednafen_vb (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/mednafen_wswan.a .a
++ id=mednafen_wswan
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/mednafen_wswan.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/mednafen_wswan.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/mednafen_wswan.elf /tmp/retro-build/mednafen_wswan.velf
++ vita-make-fself -c /tmp/retro-build/mednafen_wswan.velf /tmp/retro-build/self/cores/mednafen_wswan.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=6
++ echo 'linked mednafen_wswan (padding 0)'
+linked mednafen_wswan (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/pcsx_rearmed.a .a
++ id=pcsx_rearmed
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ speech=/tmp/retro-build/libwhisper.a
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/pcsx_rearmed.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/pcsx_rearmed.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/pcsx_rearmed.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad4096.o -Wl,--start-group cores-a/pcsx_rearmed.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/pcsx_rearmed.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad12288.o -Wl,--start-group cores-a/pcsx_rearmed.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ '[' 0 = 1 ']'
++ echo 'LINK FAILED: pcsx_rearmed'
+LINK FAILED: pcsx_rearmed
++ tail -40 /tmp/retro-build/pcsx_rearmed.link.log
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: warning: pcsx_rearmed_libretro_vita.o: requires executable stack (because the .note.GNU-stack section is executable)
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `ggml_init':
+ggml.c:(.text+0x13bbc): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_empty':
+ggml.c:(.text+0x34ae2): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_from_file':
+ggml.c:(.text+0x352d4): undefined reference to `posix_memalign'
+collect2: error: ld returned 1 exit status
++ rm -f /tmp/retro-build/self/cores/pcsx_rearmed.self
++ for a in cores-a/*.a
+++ basename cores-a/pokemini.a .a
++ id=pokemini
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/pokemini.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/pokemini.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/pokemini.elf /tmp/retro-build/pokemini.velf
++ vita-make-fself -c /tmp/retro-build/pokemini.velf /tmp/retro-build/self/cores/pokemini.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=7
++ echo 'linked pokemini (padding 0)'
+linked pokemini (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/snes9x2005.a .a
++ id=snes9x2005
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/snes9x2005.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/snes9x2005.a /tmp/retro-build/whisper-stub.o /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ vita-elf-create /tmp/retro-build/snes9x2005.elf /tmp/retro-build/snes9x2005.velf
++ vita-make-fself -c /tmp/retro-build/snes9x2005.velf /tmp/retro-build/self/cores/snes9x2005.self
++ ok=1
++ break
++ '[' 1 = 1 ']'
++ built=8
++ echo 'linked snes9x2005 (padding 0)'
+linked snes9x2005 (padding 0)
++ for a in cores-a/*.a
+++ basename cores-a/yabause.a .a
++ id=yabause
++ ok=0
++ speech=/tmp/retro-build/whisper-stub.o
++ case " $VOICE_CORES " in
++ speech=/tmp/retro-build/libwhisper.a
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/yabause.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad0.o -Wl,--start-group cores-a/yabause.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/yabause.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad4096.o -Wl,--start-group cores-a/yabause.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ for pad in 0 4096 12288
++ arm-vita-eabi-gcc -Wl,-q -o /tmp/retro-build/yabause.elf /tmp/retro-build/lingo-retro.o /tmp/retro-build/pad12288.o -Wl,--start-group cores-a/yabause.a /tmp/retro-build/libwhisper.a /tmp/retro-build/liblingo.a /tmp/retro-build/libretro-common.a -lvita2d -lfreetype -lpng -lbz2 -lcurl -lzstd -lssl -lcrypto -lz -lm -lstdc++ -lpthread -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub -Wl,--end-group
++ '[' 0 = 1 ']'
++ echo 'LINK FAILED: yabause'
+LINK FAILED: yabause
++ tail -40 /tmp/retro-build/yabause.link.log
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: warning: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/crtn.o: missing .note.GNU-stack section implies executable stack
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `ggml_init':
+ggml.c:(.text+0x13bbc): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_empty':
+ggml.c:(.text+0x34ae2): undefined reference to `posix_memalign'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /tmp/retro-build/libwhisper.a(ggml.o): in function `gguf_init_from_file':
+ggml.c:(.text+0x352d4): undefined reference to `posix_memalign'
+collect2: error: ld returned 1 exit status
++ rm -f /tmp/retro-build/self/cores/yabause.self
++ cd /tmp/retro-build/self
++ zip -0 -r /home/runner/work/Vita-Lingo/Vita-Lingo/out/Lingo.vpk cores lingo
+  adding: cores/ (stored 0%)
+  adding: cores/fbneo.self (stored 0%)
+  adding: cores/mednafen_ngp.self (stored 0%)
+  adding: cores/fmsx.self (stored 0%)
+  adding: cores/mednafen_vb.self (stored 0%)
+  adding: cores/pokemini.self (stored 0%)
+  adding: cores/snes9x2005.self (stored 0%)
+  adding: cores/mednafen_wswan.self (stored 0%)
+  adding: cores/fceumm.self (stored 0%)
+  adding: lingo/ (stored 0%)
+  adding: lingo/whisper.bin (stored 0%)
++ cd /home/runner/work/Vita-Lingo/Vita-Lingo
++ ls -la /tmp/retro-build/self/cores
+total 43640
+drwxr-xr-x 2 runner runner     4096 Oct 26 22:19 .
+drwxr-xr-x 4 runner runner     4096 Oct 26 22:19 ..
+-rw-r--r-- 1 runner runner 23266012 Oct 26 22:19 fbneo.self
+-rw-r--r-- 1 runner runner  3521882 Oct 26 22:19 fceumm.self
+-rw-r--r-- 1 runner runner  2971041 Oct 26 22:19 fmsx.self
+-rw-r--r-- 1 runner runner  3008040 Oct 26 22:19 mednafen_ngp.self
+-rw-r--r-- 1 runner runner  2935667 Oct 26 22:19 mednafen_vb.self
+-rw-r--r-- 1 runner runner  2935914 Oct 26 22:19 mednafen_wswan.self
+-rw-r--r-- 1 runner runner  2938337 Oct 26 22:19 pokemini.self
+-rw-r--r-- 1 runner runner  3086523 Oct 26 22:19 snes9x2005.self
++ echo 'cores in VPK: 8'
+cores in VPK: 8
+++ ls cores-a/fbneo.a cores-a/fceumm.a cores-a/fmsx.a cores-a/genesis_plus_gx.a cores-a/mednafen_ngp.a cores-a/mednafen_pce_fast.a cores-a/mednafen_vb.a cores-a/mednafen_wswan.a cores-a/pcsx_rearmed.a cores-a/pokemini.a cores-a/snes9x2005.a cores-a/yabause.a
+++ wc -l
++ echo 'Cores included: 8 of 12'
++ test 8 -gt 0
