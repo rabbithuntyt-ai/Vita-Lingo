@@ -91,6 +91,26 @@ static void testScanner(void) {
 		}
 	}
 	CHECK(reports == 2, "expected 2 reports, got %d", reports);
+
+	/* a player mashing A: three characters type, then the rest appears at once */
+	uint8_t msg3[256];
+	int m3 = encode("さあ　いこう！", msg3);
+	rom[0x5FFF] = 0xFF;
+	memcpy(rom + 0x6000, msg3, m3);
+	textPtr = 0x08006000;
+	*(uint32_t*) (ewram + (printer - 0x02000000)) = textPtr;
+	lingoScannerStep(&sc, &mem, &out);
+	bool got = false;
+	for (int f = 0; f < 10; ++f) {
+		if (f < 3) textPtr++;
+		else textPtr = 0x08006000 + m3 - 1;
+		*(uint32_t*) (ewram + (printer - 0x02000000)) = textPtr;
+		if (lingoScannerStep(&sc, &mem, &out)) {
+			utf8(&out, s, sizeof s);
+			got = !strcmp(s, "さあ　いこう！");
+		}
+	}
+	CHECK(got, "skipped message not captured");
 }
 
 static void showTokens(const struct LingoDict* d, const char* text, const char* expect) {

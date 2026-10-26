@@ -15,7 +15,7 @@ static float sLeniency = KAKU_LENIENCY_NORMAL;
 static int sAlwaysTrace = 0;
 
 static bool isHiragana(const char* s) {
-	uint32_t cp;
+	uint32_t cp = 0;
 	lingoUtf8Decode(s, &cp, 1);
 	return cp < 0x30A0;
 }

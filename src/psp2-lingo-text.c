@@ -323,7 +323,7 @@ static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const
 			}
 			c->value = v;
 			c->lastFrame = s->frame;
-			if (!found && c->steps >= 4 && c->ones * 2 >= c->steps) {
+			if (!found && c->steps >= 3 && c->ones * 2 >= c->steps) {
 				struct LingoText t;
 				if (lingoExtractMessage(mem, v - 1, c->msgStart, &t) &&
 				    (t.start != s->currentStart || t.hash != s->currentHash)) {
