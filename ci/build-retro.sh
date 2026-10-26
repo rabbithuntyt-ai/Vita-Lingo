@@ -29,14 +29,28 @@ LIBS="-lvita2d -lfreetype -lpng -lbz2 -lz -lm -lstdc++ -lpthread \
  -lSceDisplay_stub -lSceGxm_stub -lSceCtrl_stub -lSceTouch_stub -lSceAudio_stub -lSceAppMgr_stub -lSceAppUtil_stub \
  -lSceCommonDialog_stub -lSceSysmodule_stub -lScePgf_stub -lSceRtc_stub -lScePower_stub -lSceNet_stub -lSceNetCtl_stub \
  -lSceHttp_stub -lSceSsl_stub -lSceIme_stub -lSceMotion_stub -lSceKernelDmacMgr_stub"
+# vita-elf-create sometimes finds no room for its module data after the code
+# segment (it depends on where that segment happens to end); a little padding
+# moves the boundary, so a failing link is retried with some.
+for pad in 0 4096 12288; do
+	printf 'const char lingo_pad_%d[%d] __attribute__((used)) = {1};\n' $pad $((pad > 0 ? pad : 1)) > $B/pad$pad.c
+	$CC -O2 -c $B/pad$pad.c -o $B/pad$pad.o
+done
 built=0
 for a in cores-a/*.a; do
 	id=$(basename "$a" .a)
-	if $CC -Wl,-q -o $B/$id.elf $B/lingo-retro.o -Wl,--start-group "$a" $B/liblingo.a $B/libretro-common.a $LIBS -Wl,--end-group \
-		> $B/$id.link.log 2>&1 && vita-elf-create $B/$id.elf $B/$id.velf >> $B/$id.link.log 2>&1 \
-		&& vita-make-fself -c $B/$id.velf $B/self/cores/$id.self >> $B/$id.link.log 2>&1; then
+	ok=0
+	for pad in 0 4096 12288; do
+		if $CC -Wl,-q -o $B/$id.elf $B/lingo-retro.o $B/pad$pad.o -Wl,--start-group "$a" $B/liblingo.a $B/libretro-common.a $LIBS -Wl,--end-group \
+			> $B/$id.link.log 2>&1 && vita-elf-create $B/$id.elf $B/$id.velf >> $B/$id.link.log 2>&1 \
+			&& vita-make-fself -c $B/$id.velf $B/self/cores/$id.self >> $B/$id.link.log 2>&1; then
+			ok=1
+			break
+		fi
+	done
+	if [ $ok = 1 ]; then
 		built=$((built+1))
-		echo "linked $id"
+		echo "linked $id (padding $pad)"
 	else
 		echo "LINK FAILED: $id"; tail -40 $B/$id.link.log; rm -f $B/self/cores/$id.self
 	fi
