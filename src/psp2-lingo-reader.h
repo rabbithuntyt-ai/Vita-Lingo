@@ -78,6 +78,8 @@ struct LingoTable {
 	int nNewline;
 	int nMapped;
 	char source[24];       /* how the table was made, for the panel */
+	uint32_t ignore[16];   /* places (region << 24 | unit) whose text the player hid */
+	int nIgnore;
 	uint16_t map[65536];   /* code -> Unicode (BMP), 0 = not a character */
 };
 
@@ -100,7 +102,11 @@ uint32_t lingoUnitCount(const struct LingoTable* t, const struct LingoRegion* r)
 /* Decodes text from unit start until the first non-character (at most maxUnits).
  * Writes codepoints, returns how many; *used gets the units consumed. */
 int lingoTableDecode(const struct LingoTable* t, const struct LingoRegion* r, uint32_t start, uint32_t maxUnits,
-                     uint32_t* out, int outMax, uint32_t* used);
+                     uint32_t* out, int outMax, uint32_t* used, uint16_t* codes);
+/* Stop reading text from around this place (a LingoText.start). */
+void lingoTableIgnore(struct LingoTable* t, uint32_t start);
+/* The player corrected a character: code now means cp. */
+void lingoTableFix(struct LingoTable* t, uint16_t code, uint32_t cp);
 
 /* ---- the live reader ---- */
 
@@ -120,6 +126,12 @@ struct LingoReader {
 	uint32_t lastHash;
 	bool primed;
 	int lastKana; /* kana in the line last reported, for diagnostics */
+	/* lines seen recently, to tell dialogue typing itself out from menus */
+	struct {
+		uint32_t start, hash;
+		uint16_t len;
+		uint32_t grewScan;
+	} seen[32];
 };
 
 void lingoReaderInit(struct LingoReader* rd, struct LingoTable* table);

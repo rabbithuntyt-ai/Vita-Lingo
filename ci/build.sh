@@ -38,12 +38,25 @@ mkdir -p /tmp/uptest && /tmp/test_upload /tmp/uptest
 
 # 2. Assets: font, art, licences
 git clone -q --depth 1 --filter=blob:none --sparse https://github.com/google/fonts /tmp/gfonts
-git -C /tmp/gfonts sparse-checkout set --no-cone /ofl/kleeone/ /ofl/mplusrounded1c/
+git -C /tmp/gfonts sparse-checkout set --no-cone /ofl/kleeone/ /ofl/mplusrounded1c/ /ofl/dotgothic16/ /ofl/mplus1code/ \
+	/ofl/bizudgothic/ /ofl/sawarabigothic/ /ofl/kiwimaru/
 cp /tmp/gfonts/ofl/kleeone/KleeOne-SemiBold.ttf assets/klee.ttf
 cp /tmp/gfonts/ofl/mplusrounded1c/MPLUSRounded1c-Medium.ttf assets/ui.ttf
 # Mozilla's root certificates (MPL 2.0), as published by the curl project, for box art downloads
 curl -sSfL -o assets/cacert.pem https://curl.se/ca/cacert.pem
 grep -q "BEGIN CERTIFICATE" assets/cacert.pem
+# reference glyphs for reading text off the screen, and a test of it on frames
+# drawn with fonts it has never seen (Sawarabi Gothic, Kiwi Maru, Klee)
+python3 -m pip install -q pillow
+GF=/tmp/gfonts/ofl
+python3 tools/make_glyphs.py /tmp/jamdict.db assets/glyphs.bin $GF/dotgothic16/DotGothic16-Regular.ttf \
+	$GF/mplusrounded1c/MPLUSRounded1c-Medium.ttf "$GF/mplus1code/MPLUS1Code[wght].ttf" $GF/bizudgothic/BIZUDGothic-Regular.ttf
+python3 tests/make_ocr_frames.py /tmp/ocrframes $GF/dotgothic16/DotGothic16-Regular.ttf:16 $GF/dotgothic16/DotGothic16-Regular.ttf:12 \
+	$GF/mplusrounded1c/MPLUSRounded1c-Medium.ttf:12 $GF/sawarabigothic/SawarabiGothic-Regular.ttf:12 \
+	$GF/sawarabigothic/SawarabiGothic-Regular.ttf:16 $GF/kiwimaru/KiwiMaru-Medium.ttf:14 $GF/kleeone/KleeOne-SemiBold.ttf:16
+gcc -O2 -Wall -Wno-format-truncation -o /tmp/test_ocr tests/test_ocr.c src/psp2-lingo-ocr.c src/psp2-lingo-dict.c \
+	src/psp2-lingo-text.c $READER -lm
+/tmp/test_ocr assets/glyphs.bin /tmp/ocrframes assets/lingo.dic
 cp art/*.png assets/
 cp LICENSES.txt assets/
 

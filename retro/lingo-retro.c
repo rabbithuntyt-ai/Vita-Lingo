@@ -13,6 +13,7 @@
 #include "retro-whisper.h"
 #include "retro-zip.h"
 
+#include "../src/psp2-lingo-net.h"
 #include "../src/psp2-lingo-reader.h"
 #include "../src/psp2-lingo-shot.h"
 #include "../src/psp2-lingo-systems.h"
@@ -593,6 +594,8 @@ static void optionsRun(void) {
 	}
 }
 
+static void modelDownloadRun(void);
+
 enum MenuChoice { M_RESUME, M_QUIT };
 
 static enum MenuChoice menuRun(void) {
@@ -607,12 +610,13 @@ static enum MenuChoice menuRun(void) {
 		char rw[48], fs[48];
 		snprintf(rw, sizeof(rw), "Rewind: %s", sRewindOn ? (sRewind ? "on (hold the back)" : "on") : "off");
 		snprintf(fs, sizeof(fs), "Frame skip: %s", sAutoSkip ? "auto" : "off");
-		const char* items[] = { "Resume",         sStudy ? "Full screen" : "Study layout", "Save state", "Load state",
-			                    "Game settings",  rw,                                       fs,           "Teach Lingo a line",
-			                    "Look up a word", "Kaku practice",                          "Quit to Lingo" };
+		const char* items[] = { "Resume",         sStudy ? "Full screen" : "Study layout", "Save state",  "Load state",
+			                    "Game settings",  rw,                                       fs,            "Teach Lingo a line",
+			                    "Look up a word", "Kaku practice",                          sVoiceSystem ? "Get better speech model" : "Kaku lessons",
+			                    "Quit to Lingo" };
 		int count = (int) (sizeof(items) / sizeof(items[0]));
 		for (int i = 0; i < count; ++i) {
-			float x = 60 + (i % 2) * 430, y = 110 + (i / 2) * 68;
+			float x = 60 + (i % 2) * 430, y = 106 + (i / 2) * 68;
 			if (uiButton(x, y, 410, 56, items[i], NULL, i == count - 1 ? C_RED : C_YELLOW, false)) {
 				pick = i;
 			}
@@ -656,6 +660,13 @@ static enum MenuChoice menuRun(void) {
 			kakuRun();
 			return M_RESUME;
 		case 10:
+			if (sVoiceSystem) {
+				modelDownloadRun();
+			} else {
+				kakuLessonsRun();
+			}
+			return M_RESUME;
+		case 11:
 			return M_QUIT;
 		default:
 			break;
@@ -796,6 +807,7 @@ static void playAudio(bool slow) {
 struct Job {
 	int16_t* pcm;
 	int n;
+	char prompt[400];
 	char out[1024];
 	volatile int progress;
 	volatile int done;
@@ -804,7 +816,7 @@ struct Job {
 
 static void* transcribeThread(void* arg) {
 	struct Job* j = arg;
-	j->result = lingoWhisperTranscribe(j->pcm, j->n, j->out, sizeof(j->out), &j->progress);
+	j->result = lingoWhisperTranscribe(j->pcm, j->n, j->prompt, j->out, sizeof(j->out), &j->progress);
 	j->done = 1;
 	return NULL;
 }
@@ -831,6 +843,11 @@ static void transcribe(void) {
 		free(j);
 		toastLoop("Not enough speech to listen to");
 		return;
+	}
+	/* prime it with the game's recent text */
+	const struct LingoText* lt = lingoPanelCurrentText();
+	if (lt && lt->len) {
+		lingoUtf8FromCodepoints(lt->cp, lt->len < 120 ? lt->len : 120, j->prompt, sizeof(j->prompt));
 	}
 	pthread_t th;
 	bool threaded = pthread_create(&th, NULL, transcribeThread, j) == 0;
@@ -867,6 +884,56 @@ static void transcribe(void) {
 	}
 	free(j->pcm);
 	free(j);
+}
+
+/* ---- a better speech model, downloaded on the Vita ---- */
+
+#define BASE_MODEL_URL "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base-q5_1.bin"
+#define BASE_MODEL_PATH DATA "/models/ggml-base-q5_1.bin"
+
+struct Download {
+	volatile float progress;
+	volatile int cancel, done;
+	bool ok;
+};
+
+static void* downloadThread(void* arg) {
+	struct Download* d = arg;
+	d->ok = lingoNetDownload(BASE_MODEL_URL, BASE_MODEL_PATH, &d->progress, &d->cancel);
+	d->done = 1;
+	return NULL;
+}
+
+static void modelDownloadRun(void) {
+	char ip[32];
+	if (!lingoNetUp(ip, sizeof(ip))) {
+		toastLoop("Connect to Wi-Fi first");
+		return;
+	}
+	sceIoMkdir(DATA "/models", 0777);
+	static struct Download d;
+	memset((void*) &d, 0, sizeof(d));
+	pthread_t th;
+	if (pthread_create(&th, NULL, downloadThread, &d) != 0) {
+		return;
+	}
+	while (!d.done) {
+		uiPollInput();
+		uiFrameBegin();
+		uiChalkBackground();
+		uiTextCentered(SCREEN_W / 2, 200, 22, C_PINK, "Downloading the better speech model");
+		uiTextCentered(SCREEN_W / 2, 232, 14, C_SOFT, "Whisper base (about 57 MB, MIT licence). Recognises speech noticeably better, a little slower.");
+		uiRound(SCREEN_W / 2 - 250, 270, 500, 12, 6, C_SHEET);
+		uiRound(SCREEN_W / 2 - 250, 270, 500 * d.progress, 12, 6, C_PINK);
+		uiTextCentered(SCREEN_W / 2, 320, 14, C_SOFT, "○ Cancel");
+		uiFrameEnd();
+		if (uiBack()) {
+			d.cancel = 1;
+		}
+	}
+	pthread_join(th, NULL);
+	lingoWhisperUnload(); /* the next transcription picks the bigger model */
+	toastLoop(d.ok ? "Better speech model installed" : d.cancel ? "Download cancelled" : lingoNetLastError());
 }
 
 /* ---- loading ---- */
@@ -1082,6 +1149,10 @@ int main(int argc, char* argv[]) {
 		}
 		collectRegions(&rs);
 		lingoPanelSetRegions(&rs);
+		if (sTex && sFrameW) {
+			lingoTextSetFrame(vita2d_texture_get_datap(sTex), (int) sFrameW, (int) sFrameH, (int) vita2d_texture_get_stride(sTex),
+			                  sTexFormat == RETRO_PIXEL_FORMAT_XRGB8888 ? 1 : sTexFormat == RETRO_PIXEL_FORMAT_RGB565 ? 2 : 3);
+		}
 		lingoPanelFrame(&none, 0); /* ...then clean: a finished save */
 
 		/* behind? skip showing a frame or two (the game itself keeps running) */
@@ -1140,6 +1211,9 @@ int main(int argc, char* argv[]) {
 			break;
 		case LPA_TRANSCRIBE:
 			transcribe();
+			break;
+		case LPA_FIX:
+			lingoPanelFixRun();
 			break;
 		case LPA_MENU:
 			if (menuRun() == M_QUIT) {

@@ -210,6 +210,27 @@ void lingoTableSetRun(struct LingoTable* t, uint16_t first, const char* utf8) {
 	}
 }
 
+void lingoTableIgnore(struct LingoTable* t, uint32_t start) {
+	if (t->nIgnore < 16) {
+		t->ignore[t->nIgnore++] = start;
+	} else {
+		memmove(t->ignore, t->ignore + 1, sizeof(t->ignore) - sizeof(t->ignore[0]));
+		t->ignore[15] = start;
+	}
+}
+
+void lingoTableFix(struct LingoTable* t, uint16_t code, uint32_t cp) {
+	if (t->mode == LCM_SJIS || code == 0xFFFF) {
+		return;
+	}
+	/* with marks drawn above, the code is the plain letter */
+	if (t->dakuten != LT_NONE || t->handakuten != LT_NONE) {
+		int mark;
+		cp = unvoice(cp, &mark);
+	}
+	lingoTableSet(t, code, cp);
+}
+
 static const char* modeName(int m) {
 	switch (m) {
 	case LCM_LE16:
@@ -295,6 +316,10 @@ bool lingoTableParse(struct LingoTable* t, const char* text) {
 		if (!strncmp(line, ";lingo", 6)) {
 			parseHeader(t, line + 6);
 			any = true;
+			continue;
+		}
+		if (!strncmp(line, ";ignore ", 8)) {
+			lingoTableIgnore(t, (uint32_t) strtoul(line + 8, NULL, 16));
 			continue;
 		}
 		if (!line[0] || line[0] == ';' || line[0] == '#' || line[0] == '@') {
@@ -402,6 +427,9 @@ bool lingoTableSave(const struct LingoTable* t, const char* path) {
 		fprintf(f, " handakuten=%x", t->handakuten);
 	}
 	fprintf(f, " source=%s\n", src[0] ? src : "saved");
+	for (int i = 0; i < t->nIgnore; ++i) {
+		fprintf(f, ";ignore %08X\n", (unsigned) t->ignore[i]);
+	}
 	int digits = t->mode == LCM_BYTE ? 2 : 4;
 	for (int i = 0; i < t->nNewline; ++i) {
 		fprintf(f, "*%0*X\n", digits, t->newline[i]);
@@ -450,9 +478,36 @@ static void presetPokemonGb(struct LingoTable* t) {
 	lingoTableSetRun(t, 0xF6, "０１２３４５６７８９");
 }
 
+/* Pokémon Gen 3 (Japanese): field and battle messages are expanded into a
+ * buffer in work RAM (gStringVar4, gDisplayedStringBattle) before printing. */
+static void presetPokemonGba(struct LingoTable* t) {
+	lingoTableInit(t, LCM_BYTE, 0xFF);
+	snprintf(t->source, sizeof(t->source), "built in");
+	snprintf(t->region, sizeof(t->region), "ewram");
+	for (int c = 0; c < 0xF7; ++c) {
+		uint32_t cp = lingoGen3Char((uint8_t) c);
+		if (cp) {
+			lingoTableSet(t, (uint16_t) c, cp);
+		}
+	}
+	t->newline[0] = 0xFE;
+	t->newline[1] = 0xFA;
+	t->newline[2] = 0xFB;
+	t->nNewline = 3;
+}
+
 bool lingoTablePreset(struct LingoTable* t, const char* system, const uint8_t* rom, size_t romSize) {
 	if (!system || !rom) {
 		return false;
+	}
+	if (!strcmp(system, "gba") && romSize > 0xB0) {
+		static const char* const CODES[] = { "AXVJ", "AXPJ", "BPEJ", "BPRJ", "BPGJ" };
+		for (size_t i = 0; i < sizeof(CODES) / sizeof(CODES[0]); ++i) {
+			if (!memcmp(rom + 0xAC, CODES[i], 4)) {
+				presetPokemonGba(t);
+				return true;
+			}
+		}
 	}
 	if ((!strcmp(system, "gb") || !strcmp(system, "gbc")) && romSize > 0x150) {
 		const char* title = (const char*) rom + 0x134;
@@ -541,7 +596,7 @@ static uint32_t charAt(const struct LingoTable* t, const struct LingoRegion* r, 
 }
 
 int lingoTableDecode(const struct LingoTable* t, const struct LingoRegion* r, uint32_t start, uint32_t maxUnits,
-                     uint32_t* out, int outMax, uint32_t* used) {
+                     uint32_t* out, int outMax, uint32_t* used, uint16_t* codes) {
 	uint32_t units = lingoUnitCount(t, r);
 	uint32_t i = start, end = start + maxUnits < units ? start + maxUnits : units;
 	int n = 0;
@@ -574,6 +629,9 @@ int lingoTableDecode(const struct LingoTable* t, const struct LingoRegion* r, ui
 		} else if ((cp == 0x309C || cp == 0xFF9F) && n && semiVoiced(out[n - 1])) {
 			out[n - 1] = semiVoiced(out[n - 1]);
 		} else {
+			if (codes) {
+				codes[n] = t->mode == LCM_SJIS ? 0xFFFF : (uint16_t) unitRaw(t->mode, t->mask, r, i);
+			}
 			out[n++] = cp;
 		}
 		i += step;
@@ -588,6 +646,7 @@ struct Run {
 	int region;
 	uint32_t start, end; /* units */
 	uint32_t cp[LINGO_MAX_TEXT];
+	uint16_t code[LINGO_MAX_TEXT];
 	int len;
 	int kana;
 	uint32_t changed; /* most recent page change */
@@ -649,6 +708,7 @@ static void trimRun(struct Run* r) {
 	}
 	if (a) {
 		memmove(r->cp, r->cp + a, (size_t) (b - a) * sizeof(uint32_t));
+		memmove(r->code, r->code + a, (size_t) (b - a) * sizeof(uint16_t));
 	}
 	r->len = b - a;
 }
@@ -697,7 +757,7 @@ static int collectRuns(const struct LingoTable* t, const struct LingoRegions* rs
 		}
 		struct Run* run = &runs[nRuns];
 		uint32_t used;
-		run->len = lingoTableDecode(t, r, s, 1024, run->cp, LINGO_MAX_TEXT, &used);
+		run->len = lingoTableDecode(t, r, s, 1024, run->cp, LINGO_MAX_TEXT, &used, run->code);
 		run->region = ri;
 		run->start = s;
 		run->end = s + (used ? used : 1);
@@ -705,6 +765,12 @@ static int collectRuns(const struct LingoTable* t, const struct LingoRegions* rs
 		run->changed = 0;
 		trimRun(run);
 		run->kana = lingoJudgeText(run->cp, run->len, strict);
+		for (int k = 0; k < t->nIgnore && run->kana; ++k) {
+			uint32_t ig = t->ignore[k];
+			if ((ig >> 24) == (uint32_t) ri && (uint32_t) abs((int) (ig & 0xFFFFFF) - (int) s) <= 48) {
+				run->kana = 0; /* the player hid text from here */
+			}
+		}
 		if (run->kana) {
 			++nRuns;
 		}
@@ -747,8 +813,10 @@ static void mergeRows(const struct LingoTable* t, struct Run* runs, int n) {
 			if (head->len + 1 + r->len > LINGO_MAX_TEXT) {
 				break;
 			}
+			head->code[head->len] = 0xFFFF;
 			head->cp[head->len++] = '\n';
 			memcpy(head->cp + head->len, r->cp, (size_t) r->len * sizeof(uint32_t));
+			memcpy(head->code + head->len, r->code, (size_t) r->len * sizeof(uint16_t));
 			head->len += r->len;
 			head->kana += r->kana;
 			if (r->changed > head->changed) {
@@ -774,6 +842,8 @@ static uint32_t hashText(const uint32_t* cp, int n) {
 static void runToText(const struct Run* r, struct LingoText* out) {
 	out->len = r->len < LINGO_MAX_TEXT ? r->len : LINGO_MAX_TEXT;
 	memcpy(out->cp, r->cp, (size_t) out->len * sizeof(uint32_t));
+	memcpy(out->code, r->code, (size_t) out->len * sizeof(uint16_t));
+	out->hasCodes = true;
 	out->start = ((uint32_t) r->region << 24) | (r->start & 0xFFFFFF);
 	out->hash = hashText(out->cp, out->len);
 }
@@ -902,12 +972,62 @@ bool lingoReaderStep(struct LingoReader* rd, const struct LingoRegions* rs, stru
 		}
 	}
 	mergeRows(t, runs, n);
+	/* Dialogue types itself out: a line that keeps growing from the same
+	 * place is preferred over menus and other text that just appears. */
+	static bool grewNow[LR_MAX_RUNS];
+	static int grewAge[LR_MAX_RUNS];
+	for (int i = 0; i < n; ++i) {
+		grewNow[i] = false;
+		grewAge[i] = 1 << 30;
+		if (runs[i].merged || !runs[i].changed) {
+			continue;
+		}
+		uint32_t start = ((uint32_t) runs[i].region << 24) | runs[i].start;
+		int slot = -1, oldest = 0;
+		for (int k = 0; k < 32; ++k) {
+			if (rd->seen[k].start == start && rd->seen[k].len) {
+				slot = k;
+				break;
+			}
+			if (rd->seen[k].grewScan < rd->seen[oldest].grewScan) {
+				oldest = k;
+			}
+		}
+		uint32_t h = hashText(runs[i].cp, runs[i].len);
+		if (slot >= 0) {
+			int pl = rd->seen[slot].len;
+			if (runs[i].len > pl && hashText(runs[i].cp, pl) == rd->seen[slot].hash) {
+				rd->seen[slot].grewScan = rd->scan;
+				grewNow[i] = true;
+			}
+		} else {
+			slot = oldest;
+			rd->seen[slot].start = start;
+			rd->seen[slot].grewScan = 0;
+		}
+		rd->seen[slot].len = (uint16_t) runs[i].len;
+		rd->seen[slot].hash = h;
+		if (rd->seen[slot].grewScan) {
+			grewAge[i] = (int) (rd->scan - rd->seen[slot].grewScan);
+		}
+	}
 	int pick = -1;
 	for (int i = 0; i < n; ++i) {
 		if (runs[i].merged || !runs[i].changed) {
 			continue;
 		}
-		if (pick < 0 || runs[i].changed > runs[pick].changed ||
+		if (pick < 0) {
+			pick = i;
+			continue;
+		}
+		bool typing = grewAge[i] <= 20, pickTyping = grewAge[pick] <= 20;
+		if (typing != pickTyping) {
+			if (typing) {
+				pick = i;
+			}
+			continue;
+		}
+		if (runs[i].changed > runs[pick].changed ||
 		    (runs[i].changed == runs[pick].changed && runs[i].kana > runs[pick].kana)) {
 			pick = i;
 		}
@@ -926,7 +1046,9 @@ bool lingoReaderStep(struct LingoReader* rd, const struct LingoRegions* rs, stru
 		rd->candStart = start;
 		rd->candStable = 0;
 	}
-	if (rd->candStable >= 2 && h != rd->lastHash) {
+	/* a line still typing out is shown as it grows (it replaces itself in
+	 * the panel); anything else once it has held still */
+	if ((grewNow[pick] || rd->candStable >= 2) && h != rd->lastHash) {
 		rd->lastHash = h;
 		rd->lastKana = r->kana;
 		runToText(r, out);

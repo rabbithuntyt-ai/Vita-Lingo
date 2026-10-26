@@ -81,4 +81,4 @@ cd "$ROOT"
 ls -la $B/self/cores
 echo "cores in VPK: $built"
 echo "Cores included: $built of $(ls cores-a/*.a | wc -l)" >> out/NOTES.md
-test "$built" -gt 0
+test "$built" -eq "$(ls cores-a/*.a | wc -l)"

@@ -9,12 +9,24 @@
 #include "whisper.h"
 
 #include <dirent.h>
+#include <errno.h>
+#include <malloc.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
 
 #include <string>
 #include <vector>
+
+/* ggml allocates with posix_memalign, which the Vita's newlib lacks */
+extern "C" int posix_memalign(void** out, size_t align, size_t size) {
+	void* p = memalign(align < sizeof(void*) ? sizeof(void*) : align, size ? size : 1);
+	if (!p) {
+		return ENOMEM;
+	}
+	*out = p;
+	return 0;
+}
 
 static whisper_context* sCtx;
 static std::string sModel;
@@ -73,7 +85,7 @@ static void onProgress(whisper_context*, whisper_state*, int progress, void* use
 	}
 }
 
-extern "C" int lingoWhisperTranscribe(const int16_t* pcm16k, int n, char* out, int outLen, volatile int* progress) {
+extern "C" int lingoWhisperTranscribe(const int16_t* pcm16k, int n, const char* prompt, char* out, int outLen, volatile int* progress) {
 	out[0] = 0;
 	if (!sCtx) {
 		sModel = pickModel();
@@ -107,6 +119,10 @@ extern "C" int lingoWhisperTranscribe(const int16_t* pcm16k, int n, char* out, i
 	p.suppress_non_speech_tokens = true;
 	p.temperature_inc = 0; /* no slow fallback passes */
 	p.greedy.best_of = 1;
+	/* the game's own recent text: names and vocabulary it is likely to hear */
+	if (prompt && prompt[0]) {
+		p.initial_prompt = prompt;
+	}
 	/* encode only as much audio as there is (the model's window is 30 s) */
 	int ctx = (int) ((double) n / 16000 * 50) + 64;
 	p.audio_ctx = ctx < 1500 ? (ctx < 256 ? 256 : ctx) : 0;

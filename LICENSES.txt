@@ -25,6 +25,10 @@ Klee One (klee.ttf)
 M PLUS Rounded 1c (ui.ttf)
   Copyright 2016 The M+ Project Authors. SIL Open Font License 1.1.
 
+Reference glyphs for screen reading (glyphs.bin)
+  Rendered from DotGothic16 (Fontworks), M PLUS Rounded 1c and M PLUS 1 Code (The M+
+  Project Authors) and BIZ UDGothic (Morisawa), all SIL Open Font License 1.1.
+
 Stroke matching
   Follows the approach of Hanzi Writer by David Chanin (MIT licence).
 

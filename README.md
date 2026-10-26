@@ -44,6 +44,10 @@ Games keep the line they are printing in memory as numbers that stand for charac
 - **Found automatically:** while dialogue prints, Lingo watches which memory changes and tries the usual font layouts (kana in あいうえお order, at every offset, as bytes or as 16-bit tile numbers, with ゛ marks either built in or drawn above the letter). It keeps the one whose text reads like Japanese, judged by how often each kana follows another in real Japanese.
 - **Taught:** type a line you can see. Lingo finds it by relative search: letters keep their order in the font, so "code minus position in あいうえお" is the same for every letter.
 
+- **Read off the screen:** for games whose text isn't in memory in a usable form (drawn as pictures, compressed), Lingo finds text boxes in the picture, splits lines into letter cells and recognises each against reference glyphs (kana and 1,500 common kanji, rendered from four open fonts at retro sizes). Doubtful letters are settled by which reading makes real words, and every letter read surely is remembered exactly for that game (`ux0:data/lingo/glyphs/`), so it gets better as you play. Teaching a line labels the letters on screen directly. On test frames drawn in fonts it has never seen it gets about 80-85% of letters right the first time; pixel-style fonts like most games use, about 95%.
+
+While a line is on screen: **Hide** stops Lingo reading text from that place (menus, name lists), and holding a word lets you **fix a letter** it misread; the game's table is corrected for good.
+
 Tables are saved in `ux0:data/lingo/tables/` as ordinary `.tbl` files, the format ROM translators use, so you can also drop one in (or send it from your phone). A game that draws its text as pictures, or keeps it compressed, won't read; use **Look up** there. The teach screen can save a **Debug snapshot** of the game's memory for bug reports.
 
 ## Where things are saved

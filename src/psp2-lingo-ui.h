@@ -142,6 +142,7 @@ enum LingoPanelAction {
 	LPA_HEAR,
 	LPA_HEAR_SLOW,
 	LPA_TRANSCRIBE,
+	LPA_FIX,
 };
 enum LingoPanelAction lingoRetroPanelDraw(float gx, float gy, float gw, float gh, const char* system, const char* game);
 
@@ -156,6 +157,9 @@ bool lingoPanelDraw(float gx, float gy, float gw, float gh);
 /* Set when the GBA panel's Look up button was tapped (cleared on read). */
 bool lingoPanelWantsLookup(void);
 bool lingoPanelWantsTeach(void);
+/* A long press asked to correct a letter: run the fix screen (the game waits). */
+bool lingoPanelWantsFix(void);
+void lingoPanelFixRun(void);
 /* Where text comes from for games other than Gen 3 Pokémon: the console,
  * the game file's name, and the ROM (for built-in tables). */
 struct LingoRegions;

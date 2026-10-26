@@ -151,6 +151,73 @@ static char* httpGet(const char* url, size_t* len) {
 	return b.d;
 }
 
+struct Dl {
+	FILE* f;
+	volatile float* progress;
+	volatile int* cancel;
+};
+
+static size_t onFile(void* p, size_t size, size_t count, void* user) {
+	struct Dl* d = user;
+	return fwrite(p, size, count, d->f) * size;
+}
+
+static int onProgress(void* user, curl_off_t total, curl_off_t now, curl_off_t ut, curl_off_t un) {
+	(void) ut;
+	(void) un;
+	struct Dl* d = user;
+	if (d->progress && total > 0) {
+		*d->progress = (float) now / (float) total;
+	}
+	return d->cancel && *d->cancel ? 1 : 0;
+}
+
+bool lingoNetDownload(const char* url, const char* path, volatile float* progress, volatile int* cancel) {
+	if (!httpUp()) {
+		snprintf(sNetError, sizeof(sNetError), "not connected to Wi-Fi");
+		return false;
+	}
+	char tmp[600];
+	snprintf(tmp, sizeof(tmp), "%s.part", path);
+	struct Dl d = { fopen(tmp, "wb"), progress, cancel };
+	if (!d.f) {
+		snprintf(sNetError, sizeof(sNetError), "can't write to the memory card");
+		return false;
+	}
+	CURL* c = curl_easy_init();
+	char err[CURL_ERROR_SIZE] = "";
+	curl_easy_setopt(c, CURLOPT_URL, url);
+	curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, onFile);
+	curl_easy_setopt(c, CURLOPT_WRITEDATA, &d);
+	curl_easy_setopt(c, CURLOPT_XFERINFOFUNCTION, onProgress);
+	curl_easy_setopt(c, CURLOPT_XFERINFODATA, &d);
+	curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
+	curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
+	curl_easy_setopt(c, CURLOPT_MAXREDIRS, 6L);
+	curl_easy_setopt(c, CURLOPT_USERAGENT, "Lingo/1.1 (PS Vita)");
+	curl_easy_setopt(c, CURLOPT_CAINFO, CA_FILE);
+	curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER, 1L);
+	curl_easy_setopt(c, CURLOPT_SSL_VERIFYHOST, 2L);
+	curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 15L);
+	curl_easy_setopt(c, CURLOPT_LOW_SPEED_LIMIT, 1000L);
+	curl_easy_setopt(c, CURLOPT_LOW_SPEED_TIME, 30L);
+	curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
+	curl_easy_setopt(c, CURLOPT_ERRORBUFFER, err);
+	CURLcode r = curl_easy_perform(c);
+	long code = 0;
+	curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
+	curl_easy_cleanup(c);
+	bool ok = fclose(d.f) == 0 && r == CURLE_OK && code == 200;
+	if (ok) {
+		sceIoRemove(path);
+		ok = sceIoRename(tmp, path) >= 0;
+	} else {
+		snprintf(sNetError, sizeof(sNetError), "%s (HTTP %ld)", err[0] ? err : curl_easy_strerror(r), code);
+		sceIoRemove(tmp);
+	}
+	return ok;
+}
+
 static void urlEncode(const char* in, char* out, size_t n) {
 	size_t o = 0;
 	for (const unsigned char* p = (const unsigned char*) in; *p && o + 4 < n; ++p) {

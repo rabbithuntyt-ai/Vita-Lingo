@@ -1,5 +1,5 @@
 diff --git a/src/platform/psp2/CMakeLists.txt b/src/platform/psp2/CMakeLists.txt
-index 9653205..bdd5792 100644
+index 9653205..365e1d7 100644
 --- a/src/platform/psp2/CMakeLists.txt
 +++ b/src/platform/psp2/CMakeLists.txt
 @@ -13,7 +13,8 @@ source_group("PS Vita-specific code" FILES ${OS_SRC})
@@ -12,7 +12,7 @@ index 9653205..bdd5792 100644
      -lSceAppMgr_stub
      -lSceAppUtil_stub
      -lSceAudio_stub
-@@ -57,13 +58,20 @@ vita_create_self(${BINARY_NAME}.self ${BINARY_NAME}.elf)
+@@ -57,13 +58,21 @@ vita_create_self(${BINARY_NAME}.self ${BINARY_NAME}.elf)
  
  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/template.xml.in ${CMAKE_CURRENT_BINARY_DIR}/template.xml)
  
@@ -36,6 +36,7 @@ index 9653205..bdd5792 100644
 +                FILE ${LINGO_ASSETS}/klee.ttf lingo/klee.ttf
 +                FILE ${LINGO_ASSETS}/ui.ttf lingo/ui.ttf
 +                FILE ${LINGO_ASSETS}/cacert.pem lingo/cacert.pem
++                FILE ${LINGO_ASSETS}/glyphs.bin lingo/glyphs.bin
 +                FILE ${LINGO_ASSETS}/LICENSES.txt lingo/LICENSES.txt)
  
  if(BUILD_PERF)
@@ -79,7 +80,7 @@ index ad07bc9..98a5d89 100644
  		mGUILoadInputMaps(&runner);
  		mGUIRun(&runner, initialPath);
 diff --git a/src/platform/psp2/psp2-context.c b/src/platform/psp2/psp2-context.c
-index 4035d07..7674098 100644
+index 4035d07..2184c68 100644
 --- a/src/platform/psp2/psp2-context.c
 +++ b/src/platform/psp2/psp2-context.c
 @@ -4,6 +4,13 @@
@@ -212,7 +213,7 @@ index 4035d07..7674098 100644
  	                                    0, 0, width, height,
  	                                    scalex, scaley,
  	                                    tint);
-@@ -614,10 +684,83 @@ void mPSP2Swap(struct mGUIRunner* runner) {
+@@ -614,10 +684,90 @@ void mPSP2Swap(struct mGUIRunner* runner) {
  void mPSP2Draw(struct mGUIRunner* runner, bool faded) {
  	unsigned width, height;
  	runner->core->currentVideoSize(runner->core, &width, &height);
@@ -252,6 +253,8 @@ index 4035d07..7674098 100644
 +			break;
 +		}
 +		lingoPanelSetRegions(&rs);
++		/* the picture too, for games whose text can only be read off the screen */
++		lingoTextSetFrame(vita2d_texture_get_datap(tex[currentTex]), width, height, 256 * 4, 0);
 +		lingoPanelFrame(&mem, dirty);
 +		/* a picture of the game for the browser, once, after a minute of play */
 +		lingoShotFrame(vita2d_texture_get_datap(tex[currentTex]), width, height, 256 * 4, LSF_RGBX8888);
@@ -273,6 +276,9 @@ index 4035d07..7674098 100644
 +	if (study && lingoPanelWantsTeach()) {
 +		action = 4;
 +	}
++	if (study && lingoPanelWantsFix()) {
++		action = 5;
++	}
 +	if (!faded && lingoCheckpointDue()) {
 +		action = 2;
 +	}
@@ -287,6 +293,8 @@ index 4035d07..7674098 100644
 +			lingoLookupRun();
 +		} else if (action == 4) {
 +			lingoTextTeachRun();
++		} else if (action == 5) {
++			lingoPanelFixRun();
 +		} else {
 +			lingoCheckpointRun();
 +		}

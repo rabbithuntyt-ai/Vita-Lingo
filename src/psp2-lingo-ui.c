@@ -1003,6 +1003,7 @@ bool lingoPanelWantsLookup(void) {
 }
 
 static bool sWantsTeach;
+static bool sWantsFix;
 bool lingoPanelWantsTeach(void) {
 	bool w = sWantsTeach;
 	sWantsTeach = false;
@@ -1010,9 +1011,7 @@ bool lingoPanelWantsTeach(void) {
 }
 
 void lingoPanelSetSource(const char* system, const char* baseName, const uint8_t* rom, size_t romSize) {
-	if (sSupported) {
-		return; /* Gen 3 Pokémon: the text-printer scanner */
-	}
+	/* Gen 3 Pokémon also run the text-window scanner alongside */
 	lingoTextSetGame(system, sGameKey, baseName, rom, romSize);
 }
 
@@ -1138,6 +1137,69 @@ static struct Msg* msgAt(int back) {
 	return &sHist[idx];
 }
 
+/* letters only, so the same line from two readers compares equal */
+static int squash(const struct LingoText* t, uint32_t* out, int max) {
+	int n = 0;
+	for (int i = 0; i < t->len && n < max; ++i) {
+		if (t->cp[i] != '\n' && t->cp[i] != 0x3000 && t->cp[i] != ' ') {
+			out[n++] = t->cp[i];
+		}
+	}
+	return n;
+}
+
+static void retokenize(struct Msg* m) {
+	m->nTok = sDict ? lingoTokenize(sDict, m->text.cp, m->text.len, m->tok, LINGO_MAX_TOKENS) : 0;
+	if (!sDict) {
+		/* still show the text, one token per character */
+		for (int i = 0; i < m->text.len && i < LINGO_MAX_TOKENS; ++i) {
+			memset(&m->tok[i], 0, sizeof(m->tok[i]));
+			m->tok[i].start = i;
+			m->tok[i].len = 1;
+			m->nTok = i + 1;
+		}
+	}
+}
+
+/* A line from a reader: new, a longer version of the newest (it's still
+ * typing out), or the same line again from another reader (ignored). */
+static void pushText(const struct LingoText* t) {
+	struct Msg* top = msgAt(0);
+	struct Msg* m = NULL;
+	if (top) {
+		static uint32_t a[LINGO_MAX_TEXT], b[LINGO_MAX_TEXT];
+		int na = squash(&top->text, a, LINGO_MAX_TEXT), nb = squash(t, b, LINGO_MAX_TEXT);
+		bool fresh = uiTime() - top->arrived < 20;
+		if (na == nb && !memcmp(a, b, sizeof(uint32_t) * (size_t) na)) {
+			return; /* the same line */
+		}
+		if (fresh && nb < na && !memcmp(a, b, sizeof(uint32_t) * (size_t) nb)) {
+			return; /* an earlier, shorter view of what's on show */
+		}
+		if (top->text.start == t->start || (fresh && na < nb && !memcmp(a, b, sizeof(uint32_t) * (size_t) na))) {
+			m = top; /* the line grew */
+		}
+	}
+	if (!m) {
+		m = &sHist[sHistHead];
+		sHistHead = (sHistHead + 1) % HISTORY;
+		if (sHistN < HISTORY) {
+			++sHistN;
+		}
+		m->arrived = uiTime();
+		if (sView == 0) {
+			sSelTok = -1;
+		} else if (sView < HISTORY - 1) {
+			++sView; /* keep looking at the same message */
+		}
+	}
+	m->text = *t;
+	retokenize(m);
+	if (sDict && sBookLoaded) {
+		lingoBookMeet(&sBook, sDict, &m->text, m->tok, m->nTok);
+	}
+}
+
 void lingoPanelFrame(const struct LingoMem* mem, int saveDirty) {
 	if (!sScanner) {
 		return;
@@ -1158,40 +1220,13 @@ void lingoPanelFrame(const struct LingoMem* mem, int saveDirty) {
 		bookSave();
 	}
 	sPrevDirty = saveDirty;
-	bool got = sSupported ? lingoScannerStep(sScanner, mem, &sPending) : lingoTextStep(&sPending);
-	if (got) {
-		/* a message that just grew (same start) replaces the newest entry */
-		struct Msg* top = msgAt(0);
-		struct Msg* m;
-		if (top && top->text.start == sPending.start) {
-			m = top;
-		} else {
-			m = &sHist[sHistHead];
-			sHistHead = (sHistHead + 1) % HISTORY;
-			if (sHistN < HISTORY) {
-				++sHistN;
-			}
-			m->arrived = uiTime();
-			if (sView == 0) {
-				sSelTok = -1;
-			} else if (sView < HISTORY - 1) {
-				++sView; /* keep looking at the same message */
-			}
-		}
-		m->text = sPending;
-		m->nTok = sDict ? lingoTokenize(sDict, m->text.cp, m->text.len, m->tok, LINGO_MAX_TOKENS) : 0;
-		if (sDict && sBookLoaded) {
-			lingoBookMeet(&sBook, sDict, &m->text, m->tok, m->nTok);
-		}
-		if (!sDict) {
-			/* still show the text, one token per character */
-			for (int i = 0; i < m->text.len && i < LINGO_MAX_TOKENS; ++i) {
-				memset(&m->tok[i], 0, sizeof(m->tok[i]));
-				m->tok[i].start = i;
-				m->tok[i].len = 1;
-				m->nTok = i + 1;
-			}
-		}
+	/* Gen 3 Pokémon: two readers (the text window and the message buffer);
+	 * everything else: tables, learning and the screen */
+	if (sSupported && lingoScannerStep(sScanner, mem, &sPending)) {
+		pushText(&sPending);
+	}
+	if (lingoTextStep(&sPending)) {
+		pushText(&sPending);
 	}
 }
 
@@ -1206,6 +1241,8 @@ static void toast(const char* s) {
 
 static const char* grammarNote(const char* reason);
 static bool hasKanji(const char* s);
+static struct Msg* sFixMsg;  /* a long press asked to fix a letter in this line */
+static double sPressAt;      /* when the current touch began */
 
 /* Lays out (and optionally draws) a message as word chips. Returns the height used. */
 static float layoutMessage(struct Msg* m, float x, float y, float w, float px, bool draw, bool interactive, float alpha) {
@@ -1254,6 +1291,12 @@ static float layoutMessage(struct Msg* m, float x, float y, float w, float px, b
 				sSelTok = t;
 				sSelEntry = 0;
 				uiDust(cx + tw / 2, cy, C_YELLOW, 6);
+			}
+			/* hold a word to correct a letter Lingo misread */
+			if (interactive && m->text.hasCodes && IN.down && uiHeld(cx - 4, cy - px * 1.2f, tw + 8, px * 1.7f) &&
+			    fabsf(IN.x - IN.sx) < 8 && fabsf(IN.y - IN.sy) < 8 && uiTime() - sPressAt > 0.7 && sPressAt > 0) {
+				sFixMsg = m;
+				sPressAt = 0;
 			}
 		}
 		cx += tw + gap;
@@ -1534,6 +1577,9 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 	}
 	uiPollInput();
 	uiDustUpdate(dt);
+	if (IN.pressed) {
+		sPressAt = now;
+	}
 	enum LingoPanelAction act = LPA_NONE;
 
 	/* board behind everything but the game */
@@ -1613,6 +1659,13 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 		if (chip(tx + 80, ty, 104, 26, sBreakdown ? "Breakdown ✓" : "Breakdown", NULL, sBreakdown ? C_YELLOW : C_SOFT)) {
 			sBreakdown = true;
 			sScroll = 0;
+		}
+		if (cur->text.hasCodes && (cur->text.start >> 24) < 8) {
+			/* text that isn't dialogue (a menu, a name list): stop reading it */
+			if (chip(tx + 190, ty, 58, 26, "Hide", NULL, C_RED)) {
+				lingoTextIgnore(cur->text.start);
+				toast("Text from there will be skipped");
+			}
 		}
 		if (sVoice) {
 			float vx = px0 + pw - 14 - 3 * 64 - 12;
@@ -1755,18 +1808,116 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 	return act;
 }
 
+/* Fix a letter: pick the misread character, type what it should be. The
+ * game's table learns it, and lines already shown are corrected. */
+static void fixLetterRun(struct Msg* m) {
+	int pick = -1;
+	uint32_t typed[4];
+	int n = 0;
+	bool kata = false;
+	while (true) {
+		uiPollInput();
+		uiFrameBegin();
+		uiChalkBackground();
+		uiText(24, 34, 15, C_YELLOW, "FIX A LETTER");
+		uiTextWrap(24, 58, 900, 14, 20, C_SOFT,
+		           pick < 0 ? "Tap the character Lingo got wrong." : "Type what it should be, then Done.", 2);
+		/* the line, one tile per character */
+		float x = 24, y = 92;
+		for (int i = 0; i < m->text.len; ++i) {
+			uint32_t c = m->text.cp[i];
+			if (c == '\n') {
+				continue;
+			}
+			char s[8] = { 0 };
+			lingoUtf8Encode(c == 0x3000 ? 0x3000 : c, s);
+			float tw = 40;
+			if (x + tw > SCREEN_W - 24) {
+				x = 24;
+				y += 46;
+			}
+			if (y > 190) {
+				break;
+			}
+			bool can = m->text.code[i] != 0xFFFF && c != 0x3000;
+			uiRound(x, y, tw - 4, 40, 8, i == pick ? uiAlpha(C_YELLOW, 0.3f) : can ? C_SHEET : C_BOARD);
+			uiJpCentered(x + (tw - 4) / 2, y + 30, 20, can ? C_CHALK : C_SOFT, s);
+			if (can && uiTapped(x, y, tw - 4, 40)) {
+				pick = i;
+				n = 0;
+			}
+			x += tw;
+		}
+		bool done = false;
+		if (pick >= 0) {
+			char now[32] = "";
+			lingoUtf8FromCodepoints(typed, n, now, sizeof(now));
+			uiText(600, 40, 14, C_SOFT, "Should be:");
+			uiJp(700, 44, 26, C_GREEN, now);
+			done = lingoKeyboard(230, typed, &n, 1, &kata, false);
+		} else {
+			uiText(24, 520, 14, C_SOFT, "○ Back");
+		}
+		uiFrameEnd();
+		if (uiBack()) {
+			return;
+		}
+		if (done) {
+			if (n == 1 && pick >= 0) {
+				uint16_t code = m->text.code[pick];
+				if (lingoTextFix(code, typed[0])) {
+					/* correct every line on show that used it */
+					for (int b = 0; b < sHistN; ++b) {
+						struct Msg* h = msgAt(b);
+						if (!h->text.hasCodes) {
+							continue;
+						}
+						for (int i = 0; i < h->text.len; ++i) {
+							if (h->text.code[i] == code) {
+								h->text.cp[i] = typed[0];
+							}
+						}
+						retokenize(h);
+					}
+					toast("Fixed. Lingo will read it right from now on");
+				}
+			}
+			return;
+		}
+	}
+}
+
 bool lingoPanelDraw(float gx, float gy, float gw, float gh) {
 	enum LingoPanelAction act = panelDraw(gx, gy, gw, gh, false, NULL, NULL);
 	if (act == LPA_LOOKUP) {
 		sWantsLookup = true;
 	} else if (act == LPA_TEACH) {
 		sWantsTeach = true;
+	} else if (sFixMsg) {
+		sWantsFix = true;
 	}
 	return act == LPA_KAKU;
 }
 
+bool lingoPanelWantsFix(void) {
+	bool w = sWantsFix;
+	sWantsFix = false;
+	return w;
+}
+
+void lingoPanelFixRun(void) {
+	if (sFixMsg) {
+		fixLetterRun(sFixMsg);
+		sFixMsg = NULL;
+	}
+}
+
 enum LingoPanelAction lingoRetroPanelDraw(float gx, float gy, float gw, float gh, const char* system, const char* game) {
-	return panelDraw(gx, gy, gw, gh, true, system, game);
+	enum LingoPanelAction act = panelDraw(gx, gy, gw, gh, true, system, game);
+	if (act == LPA_NONE && sFixMsg) {
+		act = LPA_FIX;
+	}
+	return act;
 }
 
 double lingoPanelCurrentArrived(void) {
@@ -1783,22 +1934,12 @@ void lingoPanelAddText(const uint32_t* cp, int len) {
 	if (len <= 0) {
 		return;
 	}
-	struct LingoText t;
+	static struct LingoText t;
 	memset(&t, 0, sizeof(t));
 	t.len = len < LINGO_MAX_TEXT ? len : LINGO_MAX_TEXT;
 	memcpy(t.cp, cp, (size_t) t.len * sizeof(uint32_t));
 	t.start = 0xFE000000u | (uint32_t) sHistHead;
-	struct Msg* m = &sHist[sHistHead];
-	sHistHead = (sHistHead + 1) % HISTORY;
-	if (sHistN < HISTORY) {
-		++sHistN;
-	}
-	m->arrived = uiTime();
-	m->text = t;
-	m->nTok = sDict ? lingoTokenize(sDict, m->text.cp, m->text.len, m->tok, LINGO_MAX_TOKENS) : 0;
-	if (sDict && sBookLoaded) {
-		lingoBookMeet(&sBook, sDict, &m->text, m->tok, m->nTok);
-	}
+	pushText(&t);
 	sView = 0;
 	sSelTok = -1;
 }

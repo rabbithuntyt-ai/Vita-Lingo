@@ -14,7 +14,8 @@ extern "C" {
 bool lingoWhisperAvailable(void);
 /* Japanese text for 16 kHz mono audio, into out. Returns its length, or -1
  * with a reason in out. progress (0..100) is updated while it works. */
-int lingoWhisperTranscribe(const int16_t* pcm16k, int n, char* out, int outLen, volatile int* progress);
+/* prompt: recent text from the game (names, style) to steer recognition; may be NULL. */
+int lingoWhisperTranscribe(const int16_t* pcm16k, int n, const char* prompt, char* out, int outLen, volatile int* progress);
 void lingoWhisperUnload(void);
 const char* lingoWhisperModel(void);
 

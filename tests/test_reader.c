@@ -465,7 +465,40 @@ static void testRubyWindow(void) {
 	free(s);
 }
 
+/* Gen 3: the message buffer in work RAM, read with the built-in table */
+static void testGen3Buffer(void) {
+	static uint8_t rom[0x200];
+	memset(rom, 0, sizeof(rom));
+	memcpy(rom + 0xAC, "AXVJ", 4);
+	static struct LingoTable t;
+	CHECK(lingoTablePreset(&t, "gba", rom, sizeof(rom)), "Ruby preset");
+	static uint8_t ewram[0x40000];
+	memset(ewram, 0, sizeof(ewram));
+	struct LingoRegions rs;
+	lingoRegionsClear(&rs);
+	lingoRegionsAdd(&rs, "ewram", ewram, sizeof(ewram));
+	/* われわれ にんげんは / ポケモンと (FE = new line), then FF */
+	static const uint8_t msg[] = { 0x2C, 0x2A, 0x2C, 0x2A, 0x00, 0x16, 0x2E, 0x3A, 0x2E, 0x1A, 0xFE,
+	                               0x9F, 0x59, 0x73, 0x7E, 0x14, 0xFF };
+	struct LingoReader rd;
+	lingoReaderInit(&rd, &t);
+	struct LingoText out;
+	char got[256] = "";
+	for (int f = 0; f < 60; ++f) {
+		if (f == 8) {
+			memcpy(ewram + 0x21000, msg, sizeof(msg));
+		}
+		if (lingoReaderStep(&rd, &rs, &out)) {
+			utf8(out.cp, out.len, got, sizeof(got));
+		}
+	}
+	CHECK(!strcmp(got, "われわれ にんげんは\nポケモンと"), "Gen 3 message buffer (got: %s)", got);
+	CHECK(out.hasCodes && out.code[0] == 0x2C, "codes kept for fixing letters");
+	lingoReaderFree(&rd);
+}
+
 int main(void) {
+	testGen3Buffer();
 	testJudge();
 	testGbPreset();
 	testDetectByte();

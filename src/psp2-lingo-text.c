@@ -268,6 +268,7 @@ bool lingoExtractMessage(const struct LingoMem* mem, uint32_t addr, uint32_t kno
 	out->len = n;
 	out->start = start;
 	out->hash = hashText(out);
+	out->hasCodes = false;
 	return true;
 }
 

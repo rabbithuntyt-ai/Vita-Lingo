@@ -45,9 +45,11 @@ const uint8_t* lingoResolve(const struct LingoMem* mem, uint32_t addr, size_t* a
 
 struct LingoText {
 	uint32_t cp[LINGO_MAX_TEXT];
+	uint16_t code[LINGO_MAX_TEXT]; /* the game's code for each character, when hasCodes */
 	int len;
-	uint32_t start;  /* GBA address of the first byte */
+	uint32_t start;  /* where it came from (a GBA address, or region << 24 | unit) */
 	uint32_t hash;
+	bool hasCodes;
 };
 
 #define LINGO_CANDIDATES 48
