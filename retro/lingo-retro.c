@@ -22,13 +22,27 @@
 #include <psp2/io/fcntl.h>
 #include <psp2/io/stat.h>
 #include <psp2/kernel/processmgr.h>
+#include <psp2/kernel/sysmem.h>
 #include <psp2/kernel/threadmgr.h>
 #include <psp2/power.h>
 #include <psp2/touch.h>
 #include <vita2d.h>
 
 /* newlib's heap for the core and the game; the dictionary has its own block */
-int _newlib_heap_size_user = 192 * 1024 * 1024;
+int _newlib_heap_size_user = 160 * 1024 * 1024;
+
+/* Executable memory for recompiling cores (PCSX ReARMed). They size it with
+ * _newlib_vm_size_user and ask for it with getVMBlock(), as they do under
+ * RetroArch's Vita start-up code. */
+extern int _newlib_vm_size_user __attribute__((weak));
+static SceUID sVMBlock = -1;
+int getVMBlock(void) {
+	if (sVMBlock < 0 && &_newlib_vm_size_user && _newlib_vm_size_user > 0) {
+		unsigned size = ((unsigned) _newlib_vm_size_user + 0xFFFFF) & ~0xFFFFFu;
+		sVMBlock = sceKernelAllocMemBlockForVM("code", size);
+	}
+	return sVMBlock;
+}
 
 #define DATA "ux0:data/lingo"
 #define SYSTEM_DIR DATA "/system"
