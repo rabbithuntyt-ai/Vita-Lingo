@@ -19,6 +19,8 @@ POS_V1, POS_V5, POS_ADJI, POS_VK, POS_VS, POS_NOUN, POS_PRT, POS_EXP, POS_ADV, P
 COMMON = {"news1", "ichi1", "spec1", "spec2", "gai1"}
 SEMI = {"news2", "ichi2", "gai2"}
 MAX_SENSES = 3
+# Ties that games settle one way: きみ is nearly always 君 ("you"), not 気味.
+PREFER = {("きみ", "君"), ("おれ", "俺"), ("ぼく", "僕"), ("あなた", "貴方")}
 MAX_GLOSSES = 3
 MAX_GLOSS_CHARS = 150
 
@@ -135,22 +137,32 @@ def main(db_path, out_path):
         if label:
             gloss = f"[{label}] {gloss}"
         def prank(p):
-            return 0 if p & COMMON else (1 if p & SEMI or any(x.startswith("nf") for x in p) else 2)
+            # ichi1 marks everyday vocabulary, which is what games use; newspaper
+            # frequency alone (news1) favours words like 京 over 今日
+            if "ichi1" in p:
+                return 0
+            if p & {"spec1", "spec2"}:
+                return 0.5
+            if p & {"news1", "gai1"}:
+                return 1
+            if p & SEMI or any(x.startswith("nf") for x in p):
+                return 1.5
+            return 2
         kanji_p = pri.get(("e", idseq), set())
         rank_e = 3
         for kid, text in kana[idseq]:
             rank_e = min(rank_e, prank(pri.get(kid, set()) | kanji_p))
         boost = 0.0
         if bits & POS_PRT:
-            boost -= 1.0   # particles are what short kana spans usually are
+            boost -= 2.0   # particles are what short kana spans usually are
         if usually_kana:
             boost -= 0.5   # games write these in kana
         if not (bits & (POS_V1 | POS_V5 | POS_ADJI | POS_VK | POS_VS | POS_PRT)) and len(kana[idseq][0][1]) == 1:
-            boost += 0.5   # one-kana nouns (歯, 木, 手) rarely beat the particle reading
+            boost += 1.0   # one-kana nouns (歯, 木, 手) rarely beat the particle reading
         reading = kana[idseq][0][1]
         head = reading if (usually_kana or not kanji.get(idseq)) else kanji[idseq][0]
         idx = len(entries)
-        entry_rank = int((rank_e + boost + 2) * 2)
+        entry_rank = max(0, int((rank_e + boost + 2) * 2))
         entries.append((head, reading, gloss, bits, entry_rank))
         seen = set()
         for kid, text in kana[idseq]:
@@ -158,7 +170,12 @@ def main(db_path, out_path):
             if k in seen:
                 continue
             seen.add(k)
-            r = prank(pri.get(kid, set()) | kanji_p) + boost
+            # priority belongs to this reading; a kanji's tags only count when
+            # the entry has no other reading they could belong to
+            own = pri.get(kid, set())
+            r = prank(own | (kanji_p if len(kana[idseq]) == 1 else set())) + boost
+            if any((k, kj) in PREFER for kj in kanji.get(idseq, [])):
+                r -= 0.5
             keys[k].append((r, idseq, idx))
 
     print(f"{len(entries)} entries, {len(keys)} keys", flush=True)
@@ -185,8 +202,9 @@ def main(db_path, out_path):
     for k in sorted_keys:
         lst = sorted(keys[k])[:8]
         key_bin += struct.pack("<IIHH", put(k), nids, len(lst), 0)
-        for _, _, idx in lst:
-            ids_bin += struct.pack("<I", idx)
+        for r, _, idx in lst:
+            level = max(0, min(15, int((r + 3) * 2)))
+            ids_bin += struct.pack("<I", idx | (level << 28))  # top 4 bits: how common this reading is
             nids += 1
 
     header_size = 4 * 8
@@ -194,7 +212,7 @@ def main(db_path, out_path):
     off_keys = off_entries + len(entry_bin)
     off_ids = off_keys + len(key_bin)
     off_strings = off_ids + len(ids_bin)
-    header = b"LDIC" + struct.pack("<IIIIIII", 1, len(entries), len(sorted_keys), off_entries, off_keys,
+    header = b"LDIC" + struct.pack("<IIIIIII", 2, len(entries), len(sorted_keys), off_entries, off_keys,
                                    off_ids, off_strings)
     assert len(header) == header_size
     with open(out_path, "wb") as f:

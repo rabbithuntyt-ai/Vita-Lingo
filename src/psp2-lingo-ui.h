@@ -112,7 +112,15 @@ void lingoGamesRun(void);
 /* The in-game study panel. */
 void lingoPanelInit(void);
 void lingoPanelGameLoaded(const char* gameCode, const char* title);
-void lingoPanelFrame(const struct LingoMem* mem);
+void lingoPanelGameUnloaded(void);
+/* Every frame of play: reads text (GBA), times play and watches the save
+ * flag (any system) so checkpoints know when the player has saved. */
+void lingoPanelFrame(const struct LingoMem* mem, int saveDirty);
+/* True when a checkpoint test is owed; run it with lingoCheckpointRun. */
+bool lingoCheckpointDue(void);
+void lingoCheckpointRun(void);
+bool lingoCheckpointsEnabled(void);
+void lingoSetCheckpointsEnabled(bool on);
 /* Draws the panel around a game picture drawn at (gx, gy, gw, gh). Returns
  * true if the player asked for Kaku practice. */
 bool lingoPanelDraw(float gx, float gy, float gw, float gh);

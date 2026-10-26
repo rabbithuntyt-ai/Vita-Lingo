@@ -2,6 +2,7 @@
  * the title screen and the in-game study panel. */
 #include "psp2-lingo-ui.h"
 #include "psp2-lingo-rom.h"
+#include "psp2-lingo-quiz.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -733,6 +734,15 @@ void lingoLauncherRun(void) {
 			}
 		}
 		uiText(840, 515, 16, C_SOFT, "About");
+		{
+			bool on = lingoCheckpointsEnabled();
+			float x = 560, y = 470;
+			uiRound(x, y, 250, 34, 12, on ? uiAlpha(C_YELLOW, 0.22f) : C_SHEET);
+			uiText(x + 14, y + 23, 14, on ? C_YELLOW : C_SOFT, on ? "Checkpoint tests: on" : "Checkpoint tests: off");
+			if (!about && uiTapped(x, y, 250, 34)) {
+				lingoSetCheckpointsEnabled(!on);
+			}
+		}
 		uiTextWrap(560, 330, 360, 16, 24, C_MUTED,
 		           "Inside a game, pick Study panel from the Screen mode setting, or press Square to cycle to it. "
 		           "Talk to anyone and their words appear beside the game. Tap a word to look it up, star it to keep it.",
@@ -824,6 +834,62 @@ static double sToastAt;
 static char sToast[64];
 static struct LingoText sPending;
 static struct LingoMem sMem;
+static struct LingoBook sBook;
+static char sBookPath[128];
+static bool sBookLoaded;
+static int sPrevDirty;
+static double sLastFrame;
+static int sCheckpointsOn = -1;
+
+void lingoCheckpointTest(const struct LingoDict* d, struct LingoBook* book);
+
+bool lingoCheckpointsEnabled(void) {
+	if (sCheckpointsOn < 0) {
+		sCheckpointsOn = 1;
+		FILE* f = fopen(DATA_DIR "/settings.txt", "r");
+		if (f) {
+			char line[64];
+			while (fgets(line, sizeof(line), f)) {
+				if (!strncmp(line, "checkpoints=0", 13)) {
+					sCheckpointsOn = 0;
+				}
+			}
+			fclose(f);
+		}
+	}
+	return sCheckpointsOn;
+}
+
+void lingoSetCheckpointsEnabled(bool on) {
+	sCheckpointsOn = on;
+	FILE* f = fopen(DATA_DIR "/settings.txt", "w");
+	if (f) {
+		fprintf(f, "checkpoints=%d\n", on ? 1 : 0);
+		fclose(f);
+	}
+}
+
+static void bookSave(void) {
+	if (sBookLoaded && sBookPath[0]) {
+		lingoBookSave(&sBook, sBookPath);
+	}
+}
+
+bool lingoCheckpointDue(void) {
+	return sBookLoaded && lingoCheckpointsEnabled() && sBook.pending;
+}
+
+void lingoCheckpointRun(void) {
+	lingoCheckpointTest(sDict, &sBook);
+	bookSave();
+	sLastFrame = 0;
+}
+
+void lingoPanelGameUnloaded(void) {
+	bookSave();
+	lingoBookFree(&sBook);
+	sBookLoaded = false;
+}
 static struct LingoRom sRom;
 static bool sRomTried;
 static vita2d_texture* sSpriteTex;
@@ -904,6 +970,23 @@ void lingoPanelGameLoaded(const char* gameCode, const char* title) {
 		}
 	}
 	lingoScannerReset(sScanner);
+	/* one word book per game, keyed by its product code (or title) */
+	if (sBookLoaded) {
+		lingoPanelGameUnloaded();
+	}
+	char key[40] = "";
+	const char* src = gameCode && gameCode[0] ? gameCode : (title ? title : "game");
+	for (int i = 0, k = 0; src[i] && k < 32; ++i) {
+		char c = src[i];
+		key[k++] = ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) ? c : '_';
+		key[k] = 0;
+	}
+	snprintf(sBookPath, sizeof(sBookPath), DATA_DIR "/game-%s.bin", key[0] ? key : "game");
+	lingoBookInit(&sBook);
+	lingoBookLoad(&sBook, sBookPath);
+	sBookLoaded = true;
+	sPrevDirty = 0;
+	sLastFrame = 0;
 	memset(&sRom, 0, sizeof(sRom));
 	sRomTried = false;
 	sSpriteSpecies = -1;
@@ -921,11 +1004,26 @@ static struct Msg* msgAt(int back) {
 	return &sHist[idx];
 }
 
-void lingoPanelFrame(const struct LingoMem* mem) {
+void lingoPanelFrame(const struct LingoMem* mem, int saveDirty) {
 	if (!sScanner) {
 		return;
 	}
 	sMem = *mem;
+	/* play time, and the moment a save finishes (its dirty flag clears) */
+	double now = uiTime();
+	if (sLastFrame > 0 && sBookLoaded) {
+		float dt = (float) (now - sLastFrame);
+		lingoCheckpointTick(&sBook, dt > 0.5f ? 0.5f : dt);
+		if (sBook.playSince >= LINGO_CP_FORCE_PLAY) {
+			sBook.pending = true;
+		}
+	}
+	sLastFrame = now;
+	if (sPrevDirty && !saveDirty && sBookLoaded) {
+		lingoCheckpointSaved(&sBook);
+		bookSave();
+	}
+	sPrevDirty = saveDirty;
 	if (lingoScannerStep(sScanner, mem, &sPending)) {
 		/* a message that just grew (same start) replaces the newest entry */
 		struct Msg* top = msgAt(0);
@@ -947,6 +1045,9 @@ void lingoPanelFrame(const struct LingoMem* mem) {
 		}
 		m->text = sPending;
 		m->nTok = sDict ? lingoTokenize(sDict, m->text.cp, m->text.len, m->tok, LINGO_MAX_TOKENS) : 0;
+		if (sDict && sBookLoaded) {
+			lingoBookMeet(&sBook, sDict, &m->text, m->tok, m->nTok);
+		}
 		if (!sDict) {
 			/* still show the text, one token per character */
 			for (int i = 0; i < m->text.len && i < LINGO_MAX_TOKENS; ++i) {
@@ -1147,6 +1248,22 @@ bool lingoPanelDraw(float gx, float gy, float gw, float gh) {
 	/* header */
 	uiText(px0, 34, 20, C_YELLOW, "LINGO");
 	uiJp(px0 + 74, 34, 18, C_SOFT, "よみ");
+	if (sBookLoaded && lingoCheckpointsEnabled()) {
+		/* how close the next checkpoint is: words or time, whichever is nearer */
+		float fw = sBook.wordsSince / (float) LINGO_CP_MIN_WORDS;
+		float ft = sBook.playSince / (float) LINGO_CP_MIN_PLAY;
+		float f = fminf(1, fmaxf(fw, ft));
+		float bx = px0 + 130, bw = SCREEN_W - 132 - 18 - bx;
+		uiRound(bx, 20, bw, 12, 6, C_SHEET);
+		uiRound(bx, 20, fmaxf(12, bw * f), 12, 6, f >= 1 ? C_YELLOW : C_GREEN);
+		char cp[64];
+		if (f >= 1) {
+			snprintf(cp, sizeof(cp), "Checkpoint at your next save");
+		} else {
+			snprintf(cp, sizeof(cp), "Next checkpoint · %d new words", sBook.wordsSince);
+		}
+		uiText(bx, 48, 12, f >= 1 ? C_YELLOW : C_SOFT, cp);
+	}
 	bool openKaku = false;
 	{
 		float bx = SCREEN_W - 132, by = 10;

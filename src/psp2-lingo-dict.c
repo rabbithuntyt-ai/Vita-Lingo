@@ -26,7 +26,7 @@ static uint16_t rd16(const uint8_t* p) {
 }
 
 struct LingoDict* lingoDictFromMemory(uint8_t* data, size_t size, bool owned) {
-	if (size < 32 || memcmp(data, "LDIC", 4) != 0 || rd32(data + 4) != 1) {
+	if (size < 32 || memcmp(data, "LDIC", 4) != 0 || rd32(data + 4) != 2) {
 		return NULL;
 	}
 	struct LingoDict* d = calloc(1, sizeof(*d));
@@ -109,7 +109,7 @@ bool lingoDictEntry(const struct LingoDict* d, uint32_t id, struct LingoEntry* e
 	return true;
 }
 
-static int lookupUtf8(const struct LingoDict* d, const char* key, uint32_t* ids, int max) {
+static int lookupUtf8(const struct LingoDict* d, const char* key, uint32_t* ids, uint8_t* levels, int max) {
 	uint32_t lo = 0, hi = d->nKeys;
 	while (lo < hi) {
 		uint32_t mid = (lo + hi) / 2;
@@ -120,7 +120,11 @@ static int lookupUtf8(const struct LingoDict* d, const char* key, uint32_t* ids,
 			int count = rd16(k + 8);
 			int n = 0;
 			for (int i = 0; i < count && n < max; ++i) {
-				ids[n++] = rd32(d->ids + (first + i) * 4);
+				uint32_t v = rd32(d->ids + (first + i) * 4);
+				if (levels) {
+					levels[n] = (uint8_t) (v >> 28);
+				}
+				ids[n++] = v & 0x0FFFFFFF;
 			}
 			return n;
 		}
@@ -133,7 +137,13 @@ static int lookupUtf8(const struct LingoDict* d, const char* key, uint32_t* ids,
 	return 0;
 }
 
+static int lookupRanked(const struct LingoDict* d, const uint32_t* key, int keyLen, uint32_t* ids, uint8_t* levels, int max);
+
 int lingoDictLookup(const struct LingoDict* d, const uint32_t* key, int keyLen, uint32_t* ids, int max) {
+	return lookupRanked(d, key, keyLen, ids, NULL, max);
+}
+
+static int lookupRanked(const struct LingoDict* d, const uint32_t* key, int keyLen, uint32_t* ids, uint8_t* levels, int max) {
 	if (!d || keyLen <= 0) {
 		return 0;
 	}
@@ -146,7 +156,7 @@ int lingoDictLookup(const struct LingoDict* d, const uint32_t* key, int keyLen, 
 		n += lingoUtf8Encode(lingoKataToHira(key[i]), buf + n);
 	}
 	buf[n] = 0;
-	return lookupUtf8(d, buf, ids, max);
+	return lookupUtf8(d, buf, ids, levels, max);
 }
 
 /* ---- Deinflection ---- */
@@ -442,8 +452,64 @@ static bool isBreak(uint32_t cp) {
 
 #define MAX_CANDS 160
 
-int lingoTokenize(const struct LingoDict* d, const uint32_t* cp, int len, struct LingoToken* tokens, int maxTokens) {
+struct PoolItem {
+	uint32_t id;
+	uint16_t rank;
+	char reason[LINGO_MAX_REASON];
+};
+
+static bool isParticleChar(uint32_t c) {
+	return c == 0x306F || c == 0x3092 || c == 0x304C || c == 0x306B || c == 0x3067 || c == 0x306E || c == 0x3082 ||
+	       c == 0x3068 || c == 0x3078;
+}
+
+/* Every dictionary reading of the span cp[0..L), most common first. */
+static int collect(const struct LingoDict* d, const uint32_t* cp, int L, struct PoolItem* pool, int max) {
 	static struct Cand cands[MAX_CANDS];
+	uint32_t hira[24];
+	if (L > 24) {
+		return 0;
+	}
+	for (int k = 0; k < L; ++k) {
+		hira[k] = lingoKataToHira(cp[k]);
+	}
+	int nc = deinflect(hira, L, cands, MAX_CANDS);
+	int np = 0;
+	for (int c = 0; c < nc; ++c) {
+		uint32_t ids[8];
+		uint8_t levels[8];
+		int found = lookupRanked(d, cands[c].cp, cands[c].len, ids, levels, 8);
+		for (int f = 0; f < found && np < max; ++f) {
+			struct LingoEntry e;
+			if (!lingoDictEntry(d, ids[f], &e) || !posFits(cands[c].type, e.pos)) {
+				continue;
+			}
+			bool dup = false;
+			for (int q = 0; q < np; ++q) {
+				if (pool[q].id == ids[f]) {
+					dup = true;
+				}
+			}
+			if (!dup) {
+				pool[np].id = ids[f];
+				pool[np].rank = levels[f]; /* how common this reading of the entry is */
+				snprintf(pool[np].reason, LINGO_MAX_REASON, "%s", cands[c].reason);
+				++np;
+			}
+		}
+	}
+	/* stable sort by rank: surface forms win ties */
+	for (int a = 1; a < np; ++a) {
+		for (int b = a; b > 0 && pool[b].rank < pool[b - 1].rank; --b) {
+			struct PoolItem tmp = pool[b];
+			pool[b] = pool[b - 1];
+			pool[b - 1] = tmp;
+		}
+	}
+	return np;
+}
+
+int lingoTokenize(const struct LingoDict* d, const uint32_t* cp, int len, struct LingoToken* tokens, int maxTokens) {
 	int nt = 0;
 	int i = 0;
 	while (i < len && nt < maxTokens) {
@@ -466,51 +532,26 @@ int lingoTokenize(const struct LingoDict* d, const uint32_t* cp, int len, struct
 		}
 		bool matched = false;
 		for (int L = maxLen; L >= 1 && !matched; --L) {
-			uint32_t hira[24];
-			for (int k = 0; k < L; ++k) {
-				hira[k] = lingoKataToHira(cp[i + k]);
-			}
-			int nc = deinflect(hira, L, cands, MAX_CANDS);
-			/* Gather every reading of this span, then keep the most common. */
-			struct { uint32_t id; uint16_t rank; int cand; } pool[24];
-			int np = 0;
-			for (int c = 0; c < nc; ++c) {
-				uint32_t ids[8];
-				int found = lingoDictLookup(d, cands[c].cp, cands[c].len, ids, 8);
-				for (int f = 0; f < found && np < 24; ++f) {
-					struct LingoEntry e;
-					if (!lingoDictEntry(d, ids[f], &e) || !posFits(cands[c].type, e.pos)) {
-						continue;
-					}
-					bool dup = false;
-					for (int q = 0; q < np; ++q) {
-						if (pool[q].id == ids[f]) {
-							dup = true;
-						}
-					}
-					if (!dup) {
-						pool[np].id = ids[f];
-						pool[np].rank = e.rank;
-						pool[np].cand = c;
-						++np;
-					}
-				}
-			}
+			struct PoolItem pool[24];
+			int np = collect(d, cp + i, L, pool, 24);
 			if (!np) {
 				continue;
 			}
-			/* stable sort by rank: surface forms win ties */
-			for (int a = 1; a < np; ++a) {
-				for (int b = a; b > 0 && pool[b].rank < pool[b - 1].rank; --b) {
-					__typeof__(pool[0]) tmp = pool[b];
-					pool[b] = pool[b - 1];
-					pool[b - 1] = tmp;
+			/* A rare long reading that ends in a particle (きょうは as 教派) loses
+			 * to a common word with the particle split off (きょう + は). */
+			if (L >= 3 && pool[0].rank > 6 && isParticleChar(cp[i + L - 1])) {
+				struct PoolItem shorter[24];
+				int ns = collect(d, cp + i, L - 1, shorter, 24);
+				if (ns && shorter[0].rank <= 6) {
+					memcpy(pool, shorter, sizeof(shorter[0]) * ns);
+					np = ns;
+					L -= 1;
 				}
 			}
 			int kept = np < LINGO_MAX_IDS ? np : LINGO_MAX_IDS;
 			for (int k = 0; k < kept; ++k) {
 				t->ids[k] = pool[k].id;
-				snprintf(t->reason[k], LINGO_MAX_REASON, "%s", cands[pool[k].cand].reason);
+				snprintf(t->reason[k], LINGO_MAX_REASON, "%s", pool[k].reason);
 			}
 			t->nIds = kept;
 			t->len = L;

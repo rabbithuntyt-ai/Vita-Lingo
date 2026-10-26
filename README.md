@@ -8,6 +8,7 @@ Lingo is [mGBA](https://mgba.io)'s Vita port with these added:
 - **Kaku practice.** Write hiragana, katakana and 79 everyday kanji on the touchscreen, with every stroke checked for shape, direction and order. There are also reading quizzes with look-alike traps, and spaced review of the words you starred in games.
 - **Lessons.** 14 short classes that each teach one idea (particles, は, こそあど, verb groups…) and end with a check, plus 24 units of grammar notes with 115 drills where every wrong answer explains itself.
 - **Your game's own Pokémon.** Tap a Pokémon's name in dialogue and the word card shows its sprite, read live from the cartridge dump you loaded. No game graphics are included in Lingo or this repository.
+- **Checkpoints.** Lingo notices when you save your game, which works for any GBA or Game Boy game. If you have played 20 minutes or met 15 new words since the last checkpoint, the game pauses for a 5-question test on the words you met in that game, some shown in the very line you saw them in. Get 4 right to carry on. Miss and you see what you got wrong, then try again with fresh questions. Games the panel can't read are tested on your saved words and kana. An hour without saving triggers one anyway. You can turn checkpoints off on the title screen.
 - **Starter games.** A shelf of beginner-friendly picks, easiest first, drawn as original chalk cards.
 
 ![LiveArea](art/pic0.png)
@@ -64,7 +65,7 @@ GitHub Actions builds everything on every push to `main`. It installs VitaSDK, b
 src/          Lingo and Kaku (copied into mGBA's src/platform/psp2)
 patches/      the changes to mGBA's Vita port
 tools/        dictionary, Kaku data and art generators
-tests/        host tests: text decoding, memory scanner, tokenizer, stroke matcher, ROM reader
+tests/        host tests: text decoding, memory scanner, tokenizer, stroke matcher, ROM reader, checkpoints
 data/kaku/    Kaku's stroke and kanji data
 ```
 
