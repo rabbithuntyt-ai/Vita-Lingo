@@ -1,0 +1,36 @@
+name: Build VPK
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    env:
+      VITASDK: /usr/local/vitasdk
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache VitaSDK
+        id: sdk
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/vitasdk
+          key: vitasdk-v1
+      - name: Install VitaSDK
+        if: steps.sdk.outputs.cache-hit != 'true'
+        run: bash ci/install-sdk.sh
+      - name: Build
+        run: bash ci/build.sh
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vita-lingo
+          path: out/*
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="build-${{ github.run_number }}"
+          gh release create "$TAG" out/* --title "Build ${{ github.run_number }}" --notes "Automated build from ${GITHUB_SHA::7}" --target "$GITHUB_SHA"
