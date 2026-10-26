@@ -1,6 +1,7 @@
 #!/bin/bash
 # Builds mGBA's Vita port with the Lingo study layer and packs the VPK into ./out
 set -euxo pipefail
+mkdir -p out; echo "Automated build" > out/NOTES.md
 export PATH="$VITASDK/bin:$PATH"
 ROOT="$PWD"
 MGBA_COMMIT=$(cat mgba.commit)
