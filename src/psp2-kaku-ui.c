@@ -758,16 +758,16 @@ void kakuRun(void) {
 			{ "日", "Kanji · meaning", SET_KANJI, false, C_SOFT },
 		};
 		if (IN.buttonsPressed & SCE_CTRL_RIGHT) {
-			focus = (focus + 1) % 7;
+			focus = (focus + 1) % 8;
 		}
 		if (IN.buttonsPressed & SCE_CTRL_LEFT) {
-			focus = (focus + 6) % 7;
+			focus = (focus + 7) % 8;
 		}
 		if (IN.buttonsPressed & SCE_CTRL_DOWN) {
-			focus = focus < 4 ? focus + 2 : 6;
+			focus = focus < 4 ? focus + 2 : (focus < 6 ? 6 + (focus & 1) : focus);
 		}
 		if (IN.buttonsPressed & SCE_CTRL_UP) {
-			focus = focus == 6 ? 4 : (focus >= 2 ? focus - 2 : focus);
+			focus = focus >= 6 ? 4 + (focus & 1) : (focus >= 2 ? focus - 2 : focus);
 		}
 		int pick = -1;
 		for (int i = 0; i < 6; ++i) {
@@ -790,9 +790,12 @@ void kakuRun(void) {
 		}
 		char wbuf[64];
 		int dueW = storeDueCount("w:", today);
-		snprintf(wbuf, sizeof(wbuf), "Saved words from games  ·  %d%s", deckCount(), dueW ? "  ·  due" : "");
-		if (uiButton(36, 440, 880, 70, wbuf, "語", C_PINK, focus == 6)) {
+		snprintf(wbuf, sizeof(wbuf), "Saved words  ·  %d%s", deckCount(), dueW ? "  ·  due" : "");
+		if (uiButton(36, 440, 430, 70, wbuf, "語", C_PINK, focus == 6)) {
 			pick = 6;
+		}
+		if (uiButton(486, 440, 430, 70, "Lessons", "習", C_BLUE, focus == 7)) {
+			pick = 7;
 		}
 		uiText(36, 534, 14, C_SOFT, "○ Back");
 		uiDustDraw();
@@ -810,6 +813,9 @@ void kakuRun(void) {
 			start = uiTime();
 		} else if (pick == 6) {
 			kakuReviewWords();
+			start = uiTime();
+		} else if (pick == 7) {
+			kakuLessonsRun();
 			start = uiTime();
 		}
 	}

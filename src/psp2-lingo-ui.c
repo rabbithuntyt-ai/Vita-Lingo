@@ -1,6 +1,7 @@
 /* Lingo / Kaku shared UI: chalkboard drawing, fonts, input, storage,
  * the title screen and the in-game study panel. */
 #include "psp2-lingo-ui.h"
+#include "psp2-lingo-rom.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -697,14 +698,14 @@ void lingoLauncherRun(void) {
 		uiCircle(bx + 126, by + 148, 8, uiAlpha(C_YELLOW, 0.7f));
 
 		if (IN.buttonsPressed & SCE_CTRL_DOWN) {
-			focus = (focus + 1) % 3;
+			focus = (focus + 1) % 4;
 		}
 		if (IN.buttonsPressed & SCE_CTRL_UP) {
-			focus = (focus + 2) % 3;
+			focus = (focus + 3) % 4;
 		}
 		int choice = -1;
 		if (!about) {
-			if (uiButton(80, 280, 420, 66, "Play a game", "遊", C_YELLOW, focus == 0)) {
+			if (uiButton(80, 262, 420, 58, "Play a game", "遊", C_YELLOW, focus == 0)) {
 				choice = 0;
 			}
 			char buf[64];
@@ -713,7 +714,7 @@ void lingoLauncherRun(void) {
 			} else {
 				snprintf(buf, sizeof(buf), "Kaku practice");
 			}
-			if (uiButton(80, 360, 420, 66, buf, "書", C_GREEN, focus == 1)) {
+			if (uiButton(80, 330, 420, 58, buf, "書", C_GREEN, focus == 1)) {
 				choice = 1;
 			}
 			if (dueWords > 0) {
@@ -721,8 +722,11 @@ void lingoLauncherRun(void) {
 			} else {
 				snprintf(buf, sizeof(buf), "Saved words  ·  %d", deckCount());
 			}
-			if (uiButton(80, 440, 420, 66, buf, "語", C_PINK, focus == 2)) {
+			if (uiButton(80, 398, 420, 58, buf, "語", C_PINK, focus == 2)) {
 				choice = 2;
+			}
+			if (uiButton(80, 466, 420, 58, "Starter games", "初", C_BLUE, focus == 3)) {
+				choice = 3;
 			}
 			if (uiTapped(820, 490, 120, 40)) {
 				about = true;
@@ -752,6 +756,9 @@ void lingoLauncherRun(void) {
 			last = uiTime();
 		} else if (choice == 2) {
 			kakuReviewWords();
+			last = uiTime();
+		} else if (choice == 3) {
+			lingoGamesRun();
 			last = uiTime();
 		}
 	}
@@ -816,6 +823,56 @@ static bool sSupported;
 static double sToastAt;
 static char sToast[64];
 static struct LingoText sPending;
+static struct LingoMem sMem;
+static struct LingoRom sRom;
+static bool sRomTried;
+static vita2d_texture* sSpriteTex;
+static int sSpriteSpecies = -1;
+
+/* Pokémon names in a line belong to the player's own game: look them up there. */
+static int tokenSpecies(const struct LingoText* t, const struct LingoToken* tok) {
+	if (!sSupported || tok->len < 2 || tok->len > 5) {
+		return -1;
+	}
+	for (int i = 0; i < tok->len; ++i) {
+		uint32_t c = t->cp[tok->start + i];
+		if (c < 0x30A1 || c > 0x30FC) {
+			return -1;
+		}
+	}
+	if (!sRomTried && sMem.rom) {
+		sRomTried = true;
+		lingoRomIndex(sMem.rom, sMem.romSize, &sRom);
+	}
+	if (!sRom.names) {
+		return -1;
+	}
+	return lingoRomFindSpecies(&sRom, t->cp + tok->start, tok->len);
+}
+
+static bool spriteFor(int species) {
+	if (species == sSpriteSpecies && sSpriteTex) {
+		return true;
+	}
+	static uint32_t px[64 * 64];
+	if (!sRom.ready || !lingoRomSprite(&sRom, species, px)) {
+		return false;
+	}
+	if (!sSpriteTex) {
+		sSpriteTex = vita2d_create_empty_texture(64, 64);
+		if (!sSpriteTex) {
+			return false;
+		}
+		vita2d_texture_set_filters(sSpriteTex, SCE_GXM_TEXTURE_FILTER_POINT, SCE_GXM_TEXTURE_FILTER_POINT);
+	}
+	uint8_t* dst = vita2d_texture_get_datap(sSpriteTex);
+	unsigned stride = vita2d_texture_get_stride(sSpriteTex);
+	for (int y = 0; y < 64; ++y) {
+		memcpy(dst + y * stride, px + y * 64, 64 * 4);
+	}
+	sSpriteSpecies = species;
+	return true;
+}
 
 void lingoPanelInit(void) {
 	uiInit();
@@ -847,6 +904,9 @@ void lingoPanelGameLoaded(const char* gameCode, const char* title) {
 		}
 	}
 	lingoScannerReset(sScanner);
+	memset(&sRom, 0, sizeof(sRom));
+	sRomTried = false;
+	sSpriteSpecies = -1;
 	sHistN = 0;
 	sHistHead = 0;
 	sView = 0;
@@ -865,6 +925,7 @@ void lingoPanelFrame(const struct LingoMem* mem) {
 	if (!sScanner) {
 		return;
 	}
+	sMem = *mem;
 	if (lingoScannerStep(sScanner, mem, &sPending)) {
 		/* a message that just grew (same start) replaces the newest entry */
 		struct Msg* top = msgAt(0);
@@ -932,7 +993,7 @@ static float layoutMessage(struct Msg* m, float x, float y, float w, float px, b
 		}
 		if (draw) {
 			bool sel = interactive && t == sSelTok;
-			bool word = m->tok[t].nIds > 0;
+			bool word = m->tok[t].nIds > 0 || m->tok[t].isWord;
 			if (sel) {
 				uiRound(cx - 4, cy - px * 1.15f, tw + 8, px * 1.55f, 8, uiAlpha(C_YELLOW, 0.22f * alpha));
 			}
@@ -956,6 +1017,48 @@ static float layoutMessage(struct Msg* m, float x, float y, float w, float px, b
 static void drawWordCard(float x, float y, float w, float h, struct Msg* m) {
 	uiRound(x, y, w, h, 16, C_SHEET);
 	uiRoundOutline(x, y, w, h, 16, 2, C_LINE_SOFT);
+	int species = (m && sSelTok >= 0 && sSelTok < m->nTok) ? tokenSpecies(&m->text, &m->tok[sSelTok]) : -1;
+	float spriteW = 0;
+	if (species >= 0 && spriteFor(species)) {
+		/* the Pokémon itself, from the player's cartridge */
+		float sx = x + w - 120, sy = y + 10;
+		uiRound(sx - 6, sy - 2, 112, 112, 14, uiAlpha(C_CHALK, 0.06f));
+		vita2d_draw_texture_scale(sSpriteTex, sx, sy, 1.55f, 1.55f);
+		uiText(sx + 4, sy + 120, 12, C_SOFT, "from your game");
+		spriteW = 124;
+	}
+	if (m && sSelTok >= 0 && sSelTok < m->nTok && !m->tok[sSelTok].nIds && m->tok[sSelTok].isWord) {
+		char name[64];
+		tokenUtf8(m, sSelTok, name, sizeof(name));
+		uiJp(x + 22, y + 58, 40, C_CHALK, name);
+		if (species >= 0) {
+			uiText(x + 22, y + 92, 17, C_YELLOW, "Pokémon");
+			uiTextWrap(x + 22, y + 122, w - 44 - spriteW, 15, 22, C_CHALK,
+			           "A name, written in katakana like every Pokémon name. Try sounding it out.", 3);
+		} else {
+			uiTextWrap(x + 22, y + 96, w - 44 - spriteW, 15, 22, C_SOFT,
+			           "Not in the dictionary. Katakana like this is usually a name or a made-up word.", 3);
+		}
+		if (species >= 0) {
+			bool saved = deckHas(name, name);
+			float bx = x + 22, by = y + h - 50;
+			uiRound(bx, by, 104, 38, 12, saved ? uiAlpha(C_YELLOW, 0.3f) : C_SHEET_HI);
+			uiRoundOutline(bx, by, 104, 38, 12, 2, C_YELLOW);
+			uiText(bx + 14, by + 26, 17, C_YELLOW, saved ? "★ Saved" : "☆ Save");
+			if (!saved && uiTapped(bx, by, 104, 38)) {
+				struct SavedWord sw;
+				memset(&sw, 0, sizeof(sw));
+				snprintf(sw.head, sizeof(sw.head), "%s", name);
+				snprintf(sw.reading, sizeof(sw.reading), "%s", name);
+				snprintf(sw.gloss, sizeof(sw.gloss), "a Pokémon's name");
+				lingoUtf8FromCodepoints(m->text.cp, m->text.len, sw.context, sizeof(sw.context));
+				if (deckAdd(&sw)) {
+					toast("★ Saved for review in Kaku");
+				}
+			}
+		}
+		return;
+	}
 	if (!m || sSelTok < 0 || sSelTok >= m->nTok || !m->tok[sSelTok].nIds || !sDict) {
 		uiJp(x + 22, y + 58, 30, uiAlpha(C_CHALK, 0.3f), "?");
 		uiTextWrap(x + 64, y + 44, w - 90, 17, 25, C_SOFT,
@@ -981,7 +1084,7 @@ static void drawWordCard(float x, float y, float w, float h, struct Msg* m) {
 		snprintf(buf, sizeof(buf), "← %s", t->reason[sSelEntry]);
 		uiText(x + 22, y + 86, 15, C_GREEN, buf);
 	}
-	uiTextWrap(x + 22, y + 112, w - 44, 16, 23, C_CHALK, e.gloss, 3);
+	uiTextWrap(x + 22, y + 112, w - 44 - spriteW, 16, 23, C_CHALK, e.gloss, 3);
 	/* other readings */
 	if (t->nIds > 1) {
 		float ox = x + 22;

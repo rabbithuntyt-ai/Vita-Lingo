@@ -104,6 +104,10 @@ void lingoLauncherRun(void);
 void kakuRun(void);
 /* Saved-word review, also reachable from Kaku. */
 void kakuReviewWords(void);
+/* Kaku's classes and units. */
+void kakuLessonsRun(void);
+/* The starter-games shelf. */
+void lingoGamesRun(void);
 
 /* The in-game study panel. */
 void lingoPanelInit(void);

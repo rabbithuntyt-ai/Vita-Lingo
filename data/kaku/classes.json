@@ -1,0 +1,1075 @@
+[
+ {
+  "id": "particles",
+  "lesson": "3",
+  "t": "Particles: what they are for",
+  "idea": "English says who did what by the order of the words. Japanese says it by tagging each word.",
+  "body": [
+   "In English, \"the dog bit the man\" and \"the man bit the dog\" use exactly the same words. The only thing telling you who bit whom is the order. Move a word and you change the meaning.",
+   "Japanese does not work that way. Each word carries a small tag — a particle — saying what job it is doing in the sentence. Because the job is written on the word itself, the order can move and the meaning does not. That is why a Japanese sentence can look scrambled to an English eye and still be perfectly clear.",
+   "So a particle is not decoration and it is not a preposition. It is a label saying: this word is the topic, this one is the thing being acted on, this one is where it happens. Learn the job each particle marks and the sentences stop being a word jumble.",
+   "One more thing worth knowing early: the verb goes at the end, always. Everything before it is labelled pieces in more or less any order."
+  ],
+  "shape": [
+   [
+    "は",
+    "the topic — what the sentence is about"
+   ],
+   [
+    "を",
+    "the thing the verb acts on"
+   ],
+   [
+    "で",
+    "where the action happens"
+   ],
+   [
+    "に",
+    "where you are heading, or a point in time"
+   ],
+   [
+    "の",
+    "glues two nouns together"
+   ],
+   [
+    "も",
+    "too, as well — it replaces は"
+   ],
+   [
+    "か",
+    "turns the sentence into a question"
+   ]
+  ],
+  "ex": [
+   [
+    "わたしはにくをたべます。",
+    "I eat meat.",
+    "わたし is the topic, にく is the thing being eaten. Two different jobs, two different tags."
+   ],
+   [
+    "うちでたべます。",
+    "I eat at home.",
+    "で because the eating happens there."
+   ],
+   [
+    "うちにかえります。",
+    "I go home.",
+    "に because home is where you end up. Same word, different job, different particle."
+   ],
+   [
+    "わたしのほん",
+    "my book",
+    "の glues them: the second noun is the main thing, the first describes it."
+   ],
+   [
+    "そらさんもがくせいです。",
+    "Sora is a student too.",
+    "も replaces は. You never write もは."
+   ]
+  ],
+  "slips": [
+   [
+    "がっこうでいきます。",
+    "がっこうにいきます。",
+    "いく needs a destination, not a venue. You are not doing something at the school, you are heading to it."
+   ],
+   [
+    "うちにたべます。",
+    "うちでたべます。",
+    "Eating is an action that happens somewhere, so で. に would mean you are travelling into the house."
+   ],
+   [
+    "わたしもはがくせいです。",
+    "わたしもがくせいです。",
+    "も takes the place of は. The two never sit together."
+   ],
+   [
+    "にくがたべます。",
+    "にくをたべます。",
+    "The meat is being eaten, so it is the object: を."
+   ]
+  ],
+  "check": [
+   {
+    "q": "Which particle marks the thing a verb acts on?",
+    "o": [
+     "は",
+     "を",
+     "で",
+     "に"
+    ],
+    "a": 1,
+    "why": "を marks the object — the thing being eaten, read, watched."
+   },
+   {
+    "q": "としょかん＿＿べんきょうします。 (I study at the library)",
+    "o": [
+     "に",
+     "で",
+     "を",
+     "へ"
+    ],
+    "a": 1,
+    "why": "The studying happens at the library, so で. に would be for arriving there."
+   },
+   {
+    "q": "としょかん＿＿いきます。 (I go to the library)",
+    "o": [
+     "で",
+     "に",
+     "を",
+     "も"
+    ],
+    "a": 1,
+    "why": "いく takes a destination, so に. Same place, different job."
+   },
+   {
+    "q": "Why can Japanese word order move around when English cannot?",
+    "o": [
+     "Because Japanese has no grammar",
+     "Because the particle says what job each word does",
+     "Because the verb comes first",
+     "Because it cannot — the order is fixed"
+    ],
+    "a": 1,
+    "why": "The job is tagged on the word, so the position is free. Only the verb is pinned, at the end."
+   }
+  ]
+ },
+ {
+  "id": "wa",
+  "lesson": "1",
+  "t": "は: the topic",
+  "idea": "は does not mean \"is\". It announces what you are about to talk about.",
+  "body": [
+   "は is usually explained as the subject marker. That is close enough to be useful and wrong often enough to trip you up. What it really does is set the topic: \"as for X, ...\".",
+   "So わたしはがくせいです is not quite \"I am a student\" — it is closer to \"as for me, student\". The です is doing the \"is\". は is only pointing at what the sentence concerns.",
+   "This matters because once a topic is set, Japanese drops it. If it is obvious you are talking about yourself, you do not keep saying わたしは. Sentences with no visible subject are normal, not lazy.",
+   "And one spelling oddity: as a particle it is written は but said \"wa\". Everywhere else は says \"ha\"."
+  ],
+  "shape": [
+   [
+    "XはYです。",
+    "As for X, it is Y."
+   ]
+  ],
+  "ex": [
+   [
+    "わたしはがくせいです。",
+    "I am a student.",
+    "Topic: me."
+   ],
+   [
+    "せんこうはにほんごです。",
+    "My major is Japanese.",
+    "Topic: the major."
+   ],
+   [
+    "がくせいです。",
+    "(I) am a student.",
+    "Topic dropped, because it was already clear."
+   ]
+  ],
+  "slips": [
+   [
+    "わたしはがくせい。",
+    "わたしはがくせいです。",
+    "は does not mean \"is\". Without です the sentence has no verb."
+   ]
+  ],
+  "check": [
+   {
+    "q": "は is written は but pronounced how, when it is a particle?",
+    "o": [
+     "ha",
+     "wa",
+     "ba",
+     "pa"
+    ],
+    "a": 1,
+    "why": "As a particle it is said \"wa\"."
+   },
+   {
+    "q": "What does は actually do?",
+    "o": [
+     "It means \"is\"",
+     "It marks the topic — what the sentence is about",
+     "It makes the sentence a question",
+     "It joins two nouns"
+    ],
+    "a": 1,
+    "why": "It sets the topic. です does the work of \"is\"."
+   }
+  ]
+ },
+ {
+  "id": "no",
+  "lesson": "1",
+  "t": "の: gluing two nouns",
+  "idea": "の sticks two nouns together, and the last one is the thing you are really talking about.",
+  "body": [
+   "English does this with apostrophes, \"of\", or just stacking words: my book, a student at VIU, Nanaimo, BC. Japanese uses one particle for all of it: の.",
+   "The order is the opposite of what English sometimes does. The describing noun goes first, the main noun goes last. わたしのほん — the ほん is the thing; わたし just says whose.",
+   "Once glued, the whole lump behaves like one noun, so you can drop it into a bigger sentence wherever a noun would go. And you can chain them: だいがくのせんせい — a university teacher."
+  ],
+  "shape": [
+   [
+    "AのB",
+    "the B that belongs to / relates to A — B is the main thing"
+   ]
+  ],
+  "ex": [
+   [
+    "わたしのなまえ",
+    "my name",
+    "The name is the thing."
+   ],
+   [
+    "だいがくのがくせい",
+    "a university student",
+    "A student, of the university kind."
+   ],
+   [
+    "たけしさんのせんこうはれきしです。",
+    "Takeshi's major is history.",
+    "The glued lump たけしさんのせんこう is the topic of the sentence."
+   ]
+  ],
+  "slips": [
+   [
+    "ほんのわたし",
+    "わたしのほん",
+    "Back to front. The owner comes first, the thing comes last."
+   ]
+  ],
+  "check": [
+   {
+    "q": "In AのB, which one is the main thing?",
+    "o": [
+     "A",
+     "B",
+     "Both equally",
+     "Neither"
+    ],
+    "a": 1,
+    "why": "The last noun is the thing; what comes before it describes it."
+   },
+   {
+    "q": "How do you say \"my teacher\"?",
+    "o": [
+     "せんせいのわたし",
+     "わたしのせんせい",
+     "わたしはせんせい",
+     "せんせいわたし"
+    ],
+    "a": 1,
+    "why": "Owner first, thing last."
+   }
+  ]
+ },
+ {
+  "id": "ka",
+  "lesson": "1",
+  "t": "か: asking instead of telling",
+  "idea": "Japanese does not reorder a sentence to ask a question. It adds one syllable at the end.",
+  "body": [
+   "English flips the words around: \"you are a student\" becomes \"are you a student?\". Japanese leaves the sentence exactly as it is and puts か on the end.",
+   "That is the whole mechanism. がくせいです becomes がくせいですか. Your voice does not even have to rise — the か has already done the job.",
+   "The same か works with a question word in the sentence: せんこうはなんですか. English would move the \"what\" to the front; Japanese leaves it exactly where the answer would go."
+  ],
+  "shape": [
+   [
+    "XはYですか。",
+    "Is X Y?"
+   ],
+   [
+    "Xはなんですか。",
+    "What is X?"
+   ]
+  ],
+  "ex": [
+   [
+    "がくせいですか。",
+    "Are you a student?",
+    "Same sentence, plus か."
+   ],
+   [
+    "せんこうはなんですか。",
+    "What is your major?",
+    "The question word sits where the answer will sit, not at the front."
+   ],
+   [
+    "はい、そうです。",
+    "Yes, that's right.",
+    "The standard yes."
+   ]
+  ],
+  "slips": [
+   [
+    "かがくせいです。",
+    "がくせいですか。",
+    "か goes at the end, never the front. It is not \"do\" or \"are\"."
+   ]
+  ],
+  "check": [
+   {
+    "q": "How do you turn がくせいです into a question?",
+    "o": [
+     "Move です to the front",
+     "Add か at the end",
+     "Add か at the front",
+     "Change です to ですかい"
+    ],
+    "a": 1,
+    "why": "か on the end, nothing else moves."
+   },
+   {
+    "q": "Where does the question word go in せんこうはなんですか?",
+    "o": [
+     "At the front, like English",
+     "Where the answer would go",
+     "At the very end",
+     "It does not matter"
+    ],
+    "a": 1,
+    "why": "It sits in the answer’s place. Japanese does not move it forward."
+   }
+  ]
+ },
+ {
+  "id": "qwords",
+  "lesson": "1",
+  "t": "The question words, and the counters they attach to",
+  "idea": "なん means \"what\", and it fuses with a counter to ask \"how many of that thing\".",
+  "body": [
+   "You already have なん and なに, which are the same word. なん goes before です and before a counter; なに goes before a particle. That is the only rule separating them.",
+   "The useful part is what happens when なん attaches to a counter. Japanese counts different things with different words — じ for hours, さい for years of age, ねんせい for school years, ばん for numbers. Stick なん on the front of one and you get the matching question.",
+   "So you are not learning five separate question words. You are learning one word and four counters, which you already know."
+  ],
+  "shape": [
+   [
+    "なん + じ",
+    "なんじ — what time"
+   ],
+   [
+    "なん + さい",
+    "なんさい — how old"
+   ],
+   [
+    "なん + ねんせい",
+    "なんねんせい — what year student"
+   ],
+   [
+    "なん + ばん",
+    "なんばん — what number"
+   ]
+  ],
+  "ex": [
+   [
+    "いまなんじですか。",
+    "What time is it now?",
+    "なん + the hour counter."
+   ],
+   [
+    "なんさいですか。",
+    "How old are you?",
+    "なん + the age counter."
+   ],
+   [
+    "でんわばんごうはなんばんですか。",
+    "What is your phone number?",
+    "なん + the number counter."
+   ],
+   [
+    "としょかんはどこですか。",
+    "Where is the library?",
+    "どこ for places."
+   ]
+  ],
+  "slips": [
+   [
+    "なにですか。",
+    "なんですか。",
+    "Before です it is なん. なに comes before a particle instead."
+   ]
+  ],
+  "check": [
+   {
+    "q": "How do you ask someone’s age?",
+    "o": [
+     "なんじですか",
+     "なんさいですか",
+     "なんばんですか",
+     "なんねんせいですか"
+    ],
+    "a": 1,
+    "why": "さい is the age counter, so なんさい."
+   },
+   {
+    "q": "なん or なに before です?",
+    "o": [
+     "なに",
+     "なん",
+     "Either",
+     "Neither — you drop it"
+    ],
+    "a": 1,
+    "why": "なん before です and before a counter."
+   }
+  ]
+ },
+ {
+  "id": "kosoado",
+  "lesson": "2",
+  "t": "こ・そ・あ・ど: two decisions, not twelve words",
+  "idea": "These twelve words are a grid. Pick how far away it is, then pick what shape the sentence needs.",
+  "body": [
+   "Learners meet これ, この, ここ, それ, その, そこ and so on as a list of twelve things to memorise, and it is miserable. They are not twelve things. They are two choices.",
+   "First choice, the beginning of the word: こ is near me, そ is near you, あ is away from both of us, ど is the question — which one?",
+   "Second choice, the ending: れ stands alone and means \"one\", の goes in front of a noun, こ/そ/あそこ is a place. Put the two together and the word builds itself.",
+   "The one that catches people is これ against この. これ is already the noun — \"this one\". この cannot stand by itself and must have a noun after it. これはあ and このほん are both fine; この by itself is not a sentence."
+  ],
+  "shape": [
+   [
+    "これ / それ / あれ / どれ",
+    "stands alone — this one, that one"
+   ],
+   [
+    "この / その / あの / どの + noun",
+    "must be followed by a noun"
+   ],
+   [
+    "ここ / そこ / あそこ / どこ",
+    "a place — here, there, over there"
+   ]
+  ],
+  "ex": [
+   [
+    "これはなんですか。",
+    "What is this?",
+    "In my hand."
+   ],
+   [
+    "それはなんですか。",
+    "What is that?",
+    "In yours."
+   ],
+   [
+    "あのとけいはたかいです。",
+    "That watch over there is expensive.",
+    "あの because it is far from us both, and it has a noun after it."
+   ],
+   [
+    "トイレはあそこです。",
+    "The toilet is over there.",
+    "A place, so the こ ending."
+   ]
+  ],
+  "slips": [
+   [
+    "これほんはたかいです。",
+    "このほんはたかいです。",
+    "これ cannot take a noun after it. Before a noun you need この."
+   ],
+   [
+    "このはなんですか。",
+    "これはなんですか。",
+    "この needs a noun. Standing alone, it has to be これ."
+   ]
+  ],
+  "check": [
+   {
+    "q": "The bag next to the person you are speaking to:",
+    "o": [
+     "このかばん",
+     "そのかばん",
+     "あのかばん",
+     "どのかばん"
+    ],
+    "a": 1,
+    "why": "そ is near the listener."
+   },
+   {
+    "q": "Which one can stand on its own, with no noun after it?",
+    "o": [
+     "この",
+     "これ",
+     "Both",
+     "Neither"
+    ],
+    "a": 1,
+    "why": "これ is already \"this one\". この must be followed by a noun."
+   },
+   {
+    "q": "\"The bank is over there.\"",
+    "o": [
+     "ぎんこうはあれです",
+     "ぎんこうはあそこです",
+     "ぎんこうはあのです",
+     "ぎんこうはどこです"
+    ],
+    "a": 1,
+    "why": "A place, far from both of you: あそこ."
+   }
+  ]
+ },
+ {
+  "id": "mo",
+  "lesson": "2",
+  "t": "も: too",
+  "idea": "も means \"as well\", and it takes the place of は rather than joining it.",
+  "body": [
+   "When you want to add a second person or thing to something already said, you swap は for も. Not add — swap.",
+   "たけしさんはにほんじんです。やましたせんせいもにほんじんです。 The second sentence does not need to repeat the whole idea; も carries \"also is Japanese\" on its own.",
+   "The reason it replaces は is that both are doing the same job — pointing at what the sentence is about. You cannot point twice."
+  ],
+  "shape": [
+   [
+    "XもYです。",
+    "X is Y too."
+   ]
+  ],
+  "ex": [
+   [
+    "そらさんもがくせいです。",
+    "Sora is a student too.",
+    "も instead of は."
+   ],
+   [
+    "あのとけいもたかいです。",
+    "That watch over there is expensive too.",
+    "Works with anything, not just people."
+   ]
+  ],
+  "slips": [
+   [
+    "そらさんはもがくせいです。",
+    "そらさんもがくせいです。",
+    "も replaces は. The two never appear together."
+   ]
+  ],
+  "check": [
+   {
+    "q": "\"Sora is a student too.\"",
+    "o": [
+     "そらさんはもがくせいです",
+     "そらさんもがくせいです",
+     "そらさんをもがくせいです",
+     "もそらさんがくせいです"
+    ],
+    "a": 1,
+    "why": "も stands in for は."
+   }
+  ]
+ },
+ {
+  "id": "janai",
+  "lesson": "2",
+  "t": "じゃないです: saying it is not",
+  "idea": "To make a noun sentence negative, swap です for じゃないです.",
+  "body": [
+   "This is the whole of it. がくせいです becomes がくせいじゃないです. Nothing else in the sentence changes.",
+   "It is worth saying what this is not: it is not how you make a verb negative. たべます does not become たべますじゃないです — verbs have their own negative, ません, which Lesson 3 covers. じゃないです is only for sentences that end in です after a noun.",
+   "In answers it usually follows いいえ: いいえ、にほんじんじゃないです。"
+  ],
+  "shape": [
+   [
+    "XはYじゃないです。",
+    "X is not Y."
+   ]
+  ],
+  "ex": [
+   [
+    "がくせいじゃないです。",
+    "I am not a student.",
+    "です swapped out."
+   ],
+   [
+    "いいえ、にほんじんじゃないです。",
+    "No, I am not Japanese.",
+    "The usual shape of a \"no\" answer."
+   ]
+  ],
+  "slips": [
+   [
+    "たべますじゃないです。",
+    "たべません。",
+    "じゃないです is for nouns. A verb goes negative with ません."
+   ]
+  ],
+  "check": [
+   {
+    "q": "\"I am not a student.\"",
+    "o": [
+     "がくせいません",
+     "がくせいじゃないです",
+     "がくせいですじゃない",
+     "がくせいないです"
+    ],
+    "a": 1,
+    "why": "Noun sentence, so です becomes じゃないです."
+   },
+   {
+    "q": "How do you make たべます negative?",
+    "o": [
+     "たべますじゃないです",
+     "たべません",
+     "たべないです",
+     "たべるじゃない"
+    ],
+    "a": 1,
+    "why": "Verbs use ません; じゃないです is only for nouns."
+   }
+  ]
+ },
+ {
+  "id": "neyo",
+  "lesson": "2",
+  "t": "ね and よ: checking and telling",
+  "idea": "Two syllables that say what you expect the listener to do with the sentence.",
+  "body": [
+   "ね invites agreement. You already think it is true and you are checking, or you are being companionable: このコーヒーはおいしいですね — \"this coffee is good, isn’t it\".",
+   "よ goes the other way. It says: I know this and you probably do not. あのとけいもはっせんえんですよ — new information, handed over.",
+   "Neither is compulsory and both are easy to overuse. よ on something the other person obviously knows can sound like you are correcting them."
+  ],
+  "shape": [
+   [
+    "ですね",
+    "right? — seeking agreement"
+   ],
+   [
+    "ですよ",
+    "I tell you — new to the listener"
+   ]
+  ],
+  "ex": [
+   [
+    "このとけいはごせんえんですね。",
+    "This watch is 5,000 yen, right?",
+    "Checking."
+   ],
+   [
+    "トイレはそこですよ。",
+    "The toilet is right there.",
+    "Telling them something useful."
+   ]
+  ],
+  "slips": [
+   [
+    "メアリーさんのせんこうはにほんごですよ。",
+    "メアリーさんのせんこうはにほんごですね。",
+    "Telling Mary her own major with よ is odd. She knows it; ね is the one that fits."
+   ]
+  ],
+  "check": [
+   {
+    "q": "You want the other person to agree with you. Which?",
+    "o": [
+     "よ",
+     "ね",
+     "か",
+     "も"
+    ],
+    "a": 1,
+    "why": "ね seeks agreement."
+   },
+   {
+    "q": "You are telling them something they do not know. Which?",
+    "o": [
+     "ね",
+     "よ",
+     "か",
+     "の"
+    ],
+    "a": 1,
+    "why": "よ hands over new information."
+   }
+  ]
+ },
+ {
+  "id": "vgroups",
+  "lesson": "3",
+  "t": "The three verb groups",
+  "idea": "Which group a verb is in is the whole of knowing how to conjugate it.",
+  "body": [
+   "Japanese verbs fall into three groups, and the group decides what happens when you make the polite form. Learn the group with the verb and conjugation is automatic; learn the verb without it and you are guessing every time.",
+   "る-verbs are the easy ones: drop る, add ます. たべる becomes たべます.",
+   "う-verbs end in a consonant sound plus う. The last kana shifts to its i-row partner before ます: のむ becomes のみます, かく becomes かきます, はなす becomes はなします.",
+   "And two verbs are irregular: する becomes します, くる becomes きます. べんきょうする is just a noun stuck onto する, so it follows する.",
+   "The trap: かえる ends in る but is a う-verb. It is かえります, not かえます. Your exam likes this one."
+  ],
+  "shape": [
+   [
+    "る-verb",
+    "drop る, add ます"
+   ],
+   [
+    "う-verb",
+    "last kana moves to the i-row, add ます"
+   ],
+   [
+    "irregular",
+    "する→します, くる→きます"
+   ]
+  ],
+  "ex": [
+   [
+    "たべる → たべます",
+    "to eat",
+    "る-verb: drop and add."
+   ],
+   [
+    "のむ → のみます",
+    "to drink",
+    "う-verb: む becomes み."
+   ],
+   [
+    "かえる → かえります",
+    "to go home",
+    "Looks like a る-verb, is not."
+   ],
+   [
+    "くる → きます",
+    "to come",
+    "Irregular, and the sound changes."
+   ]
+  ],
+  "slips": [
+   [
+    "かえます",
+    "かえります",
+    "かえる is a う-verb despite the る."
+   ],
+   [
+    "のむます",
+    "のみます",
+    "The む has to move to み first."
+   ]
+  ],
+  "check": [
+   {
+    "q": "かえる is which group?",
+    "o": [
+     "る-verb",
+     "う-verb",
+     "irregular",
+     "it depends"
+    ],
+    "a": 1,
+    "why": "A う-verb that ends in る — hence かえります."
+   },
+   {
+    "q": "のむ in its polite form:",
+    "o": [
+     "のむます",
+     "のみます",
+     "のます",
+     "のまします"
+    ],
+    "a": 1,
+    "why": "う-verb: む → み, then ます."
+   },
+   {
+    "q": "べんきょうする follows which pattern?",
+    "o": [
+     "る-verb",
+     "う-verb",
+     "する, because it is a noun plus する",
+     "its own"
+    ],
+    "a": 2,
+    "why": "Noun + する, so べんきょうします."
+   }
+  ]
+ },
+ {
+  "id": "masu",
+  "lesson": "3",
+  "t": "ます and ません: present and future, both at once",
+  "idea": "One form covers \"I do\" and \"I will do\". Context, not grammar, tells them apart.",
+  "body": [
+   "The ます form is called present tense, which is slightly misleading. It covers habits — things you do regularly — and things you are going to do. It does not cover the past.",
+   "まいにちコーヒーをのみます is a habit. あしたコーヒーをのみます is tomorrow. Same verb form; the time word does the work.",
+   "The negative is ません, and it behaves the same way: たべません is both \"I do not eat\" and \"I am not going to eat\"."
+  ],
+  "shape": [
+   [
+    "〜ます",
+    "do / will do"
+   ],
+   [
+    "〜ません",
+    "do not / will not"
+   ]
+  ],
+  "ex": [
+   [
+    "まいにちコーヒーをのみます。",
+    "I drink coffee every day.",
+    "A habit."
+   ],
+   [
+    "あしたがっこうにいきます。",
+    "I am going to school tomorrow.",
+    "The future, same form."
+   ],
+   [
+    "にくをたべません。",
+    "I do not eat meat.",
+    "Negative."
+   ]
+  ],
+  "slips": [
+   [
+    "たべますじゃないです。",
+    "たべません。",
+    "じゃないです is for nouns. Verbs take ません."
+   ]
+  ],
+  "check": [
+   {
+    "q": "あしたたべます means:",
+    "o": [
+     "I ate tomorrow",
+     "I will eat tomorrow",
+     "I am eating now",
+     "I do not eat tomorrow"
+    ],
+    "a": 1,
+    "why": "ます covers the future; あした says when."
+   },
+   {
+    "q": "The negative of のみます:",
+    "o": [
+     "のみません",
+     "のみじゃないです",
+     "のまない",
+     "のみないです"
+    ],
+    "a": 0,
+    "why": "ます → ません."
+   }
+  ]
+ },
+ {
+  "id": "adverbs",
+  "lesson": "3",
+  "t": "あまり and ぜんぜん need a negative",
+  "idea": "Two of the frequency words are only half a sentence until the verb goes negative.",
+  "body": [
+   "Most of the frequency words are straightforward: よく often, ときどき sometimes, たいてい usually. They sit before the verb and that is that.",
+   "But あまり and ぜんぜん are different. あまり means \"not much\" and ぜんぜん means \"not at all\" — the \"not\" is part of their meaning, so the verb has to be negative as well. あまりたべます is not a sentence.",
+   "Think of them as needing a partner: the adverb sets up the negative and the verb delivers it."
+  ],
+  "shape": [
+   [
+    "よく / ときどき / たいてい + ます",
+    "ordinary frequency"
+   ],
+   [
+    "あまり / ぜんぜん + ません",
+    "must finish negative"
+   ]
+  ],
+  "ex": [
+   [
+    "よくテレビをみます。",
+    "I often watch TV.",
+    "Positive, fine."
+   ],
+   [
+    "あまりテレビをみません。",
+    "I do not watch much TV.",
+    "The ません is required."
+   ],
+   [
+    "ぜんぜんおさけをのみません。",
+    "I do not drink alcohol at all.",
+    "Same rule."
+   ]
+  ],
+  "slips": [
+   [
+    "ぜんぜんのみます。",
+    "ぜんぜんのみません。",
+    "ぜんぜん carries a \"not\" and needs the verb to agree."
+   ]
+  ],
+  "check": [
+   {
+    "q": "あまりテレビをみ＿＿。",
+    "o": [
+     "ます",
+     "ません",
+     "ましょう",
+     "ますか"
+    ],
+    "a": 1,
+    "why": "あまり needs a negative verb to finish it."
+   },
+   {
+    "q": "Which of these can finish with a positive verb?",
+    "o": [
+     "あまり",
+     "ぜんぜん",
+     "よく",
+     "none of them"
+    ],
+    "a": 2,
+    "why": "よく is ordinary; the other two need ません."
+   }
+  ]
+ },
+ {
+  "id": "numbers",
+  "lesson": "0",
+  "t": "Numbers, and the three that change sound",
+  "idea": "Japanese numbers stack like building blocks, with a handful of sound changes you have to know.",
+  "body": [
+   "Up to ten you simply learn them. After that they stack: 23 is にじゅうさん, literally two-ten-three. 45 is よんじゅうご. Hundreds and thousands work the same way.",
+   "Four and seven have two readings each — よん/し and なな/しち — and which one you use depends on what follows. For counting and for most counters, よん and なな are the safe ones.",
+   "The part that catches people out is the hundreds, where three numbers change sound: 300 is さんびゃく not さんひゃく, 600 is ろっぴゃく, and 800 is はっぴゃく. Those three are worth saying out loud until they are automatic, because they turn up in prices constantly."
+  ],
+  "shape": [
+   [
+    "〜じゅう〜",
+    "tens"
+   ],
+   [
+    "〜ひゃく",
+    "hundreds"
+   ],
+   [
+    "〜せん",
+    "thousands"
+   ]
+  ],
+  "ex": [
+   [
+    "にじゅうさん",
+    "23",
+    "two-ten-three."
+   ],
+   [
+    "さんびゃく",
+    "300",
+    "Not さんひゃく."
+   ],
+   [
+    "ろっぴゃく",
+    "600",
+    "A small つ and a ぴ."
+   ],
+   [
+    "はっぴゃく",
+    "800",
+    "Same shape as 600."
+   ]
+  ],
+  "slips": [
+   [
+    "さんひゃく",
+    "さんびゃく",
+    "300 takes a び."
+   ],
+   [
+    "ろくひゃく",
+    "ろっぴゃく",
+    "600 doubles the consonant and takes a ぴ."
+   ]
+  ],
+  "check": [
+   {
+    "q": "600 is:",
+    "o": [
+     "ろくひゃく",
+     "ろっぴゃく",
+     "ろくびゃく",
+     "ろっひゃく"
+    ],
+    "a": 1,
+    "why": "Small つ and ぴ."
+   },
+   {
+    "q": "300 is:",
+    "o": [
+     "さんひゃく",
+     "さんびゃく",
+     "さんぴゃく",
+     "さんっぴゃく"
+    ],
+    "a": 1,
+    "why": "さんびゃく."
+   }
+  ]
+ },
+ {
+  "id": "greetings",
+  "lesson": "0",
+  "t": "Greetings, and the ones that come in pairs",
+  "idea": "Several greetings are halves of an exchange, and learning one without the other leaves you stuck.",
+  "body": [
+   "The time-of-day ones are simple enough: おはようございます in the morning, こんにちは through the day, こんばんは once it is dark. Dropping ございます makes it casual, for friends and family.",
+   "The ones worth special attention are the pairs, because Japanese expects the other half. The person leaving says いってきます and the one staying answers いってらっしゃい. Coming home it is ただいま and おかえりなさい. Before eating いただきます, after it ごちそうさま.",
+   "Learn each pair as one unit. Half a pair is a question with no answer."
+  ],
+  "shape": [
+   [
+    "いってきます ↔ いってらっしゃい",
+    "leaving ↔ staying"
+   ],
+   [
+    "ただいま ↔ おかえりなさい",
+    "arriving ↔ welcoming"
+   ]
+  ],
+  "ex": [
+   [
+    "おはようございます。",
+    "Good morning.",
+    "Polite; drop ございます with friends."
+   ],
+   [
+    "こんばんは。",
+    "Good evening.",
+    "Once it is dark — your exam asks this one."
+   ],
+   [
+    "いただきます。",
+    "Thank you for the meal.",
+    "Before eating, not after."
+   ]
+  ],
+  "slips": [
+   [
+    "ごちそうさま。(before eating)",
+    "いただきます。",
+    "いただきます before, ごちそうさま after."
+   ]
+  ],
+  "check": [
+   {
+    "q": "You see your teacher at 8 in the evening.",
+    "o": [
+     "おはようございます",
+     "こんにちは",
+     "こんばんは",
+     "さようなら"
+    ],
+    "a": 2,
+    "why": "Dark, so こんばんは."
+   },
+   {
+    "q": "Someone says いってきます to you. You answer:",
+    "o": [
+     "ただいま",
+     "いってらっしゃい",
+     "おかえりなさい",
+     "いただきます"
+    ],
+    "a": 1,
+    "why": "That is the other half of the pair."
+   }
+  ]
+ }
+]

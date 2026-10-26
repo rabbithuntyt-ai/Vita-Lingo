@@ -1,0 +1,4210 @@
+[
+ {
+  "id": "0",
+  "topic": "Set phrases for the whole day, and counting",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Greetings change with the time of day",
+    "b": "おはようございます before about ten in the morning, こんにちは through the afternoon, こんばんは once it is dark. Dropping ございます from おはよう makes it casual, for friends and family only.",
+    "e": [
+     [
+      "おはようございます。",
+      "Good morning."
+     ],
+     [
+      "こんにちは。",
+      "Hello. / Good afternoon."
+     ]
+    ]
+   },
+   {
+    "t": "Phrases that come in pairs",
+    "b": "Several greetings have a fixed reply. The person leaving says いってきます and the one staying answers いってらっしゃい; coming home it is ただいま and おかえりなさい. Learn both halves together.",
+    "e": [
+     [
+      "いってきます。",
+      "I'm off."
+     ],
+     [
+      "いってらっしゃい。",
+      "See you when you get back."
+     ]
+    ]
+   },
+   {
+    "t": "Numbers 1 to 10 have two sets",
+    "b": "The Chinese-derived いち に さん is used for counting and for most counters. The native ひとつ ふたつ みっつ set counts objects up to ten and shows up again in Lesson 5. Four and seven switch readings depending on what follows: よん/し, なな/しち.",
+    "e": [
+     [
+      "いち、に、さん、し／よん、ご",
+      "1, 2, 3, 4, 5"
+     ],
+     [
+      "ろく、なな／しち、はち、きゅう、じゅう",
+      "6, 7, 8, 9, 10"
+     ]
+    ]
+   },
+   {
+    "t": "Building bigger numbers",
+    "b": "Stack the units: 23 is にじゅうさん (two-ten-three), 45 is よんじゅうご. Hundreds and thousands work the same way, with three sound changes to watch: さんびゃく (300), ろっぴゃく (600), はっぴゃく (800).",
+    "e": [
+     [
+      "にじゅうさん",
+      "23"
+     ],
+     [
+      "ひゃくごじゅう",
+      "150"
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "It is nine in the morning and you pass your teacher in the hall.",
+    "ctx": "",
+    "a": "おはようございます",
+    "w": [
+     [
+      "こんばんは",
+      "That is for the evening, once it is dark."
+     ],
+     [
+      "おやすみなさい",
+      "That is said at bedtime, not on meeting someone."
+     ],
+     [
+      "いってきます",
+      "That is what you say when leaving your own house."
+     ]
+    ],
+    "why": "Before about ten in the morning you use おはようございます. Keep the ございます for a teacher; おはよう alone is for friends."
+   },
+   {
+    "q": "You are heading out of the house to class.",
+    "ctx": "",
+    "a": "いってきます",
+    "w": [
+     [
+      "ただいま",
+      "That is what you say when you get back home."
+     ],
+     [
+      "いってらっしゃい",
+      "That is the reply from the person staying behind."
+     ],
+     [
+      "さようなら",
+      "A heavier goodbye. You would not use it for a daily trip out."
+     ]
+    ],
+    "why": "Leaving is いってきます, and whoever stays answers いってらっしゃい. The pair goes together."
+   },
+   {
+    "q": "You sit down in front of a meal someone has cooked for you.",
+    "ctx": "",
+    "a": "いただきます",
+    "w": [
+     [
+      "ごちそうさま",
+      "That is said after you finish, not before."
+     ],
+     [
+      "ありがとうございます",
+      "Polite, but it is not the set phrase for starting a meal."
+     ],
+     [
+      "おいしいです",
+      "That says it tastes good, which you cannot know yet."
+     ]
+    ],
+    "why": "いただきます opens the meal and ごちそうさま closes it."
+   },
+   {
+    "q": "Someone says ありがとうございます to you.",
+    "ctx": "",
+    "a": "どういたしまして",
+    "w": [
+     [
+      "ありがとうございます",
+      "That thanks them back rather than answering."
+     ],
+     [
+      "すみません",
+      "That is an apology or a way to get attention."
+     ],
+     [
+      "はじめまして",
+      "That is for meeting someone for the first time."
+     ]
+    ],
+    "why": "どういたしまして is the set reply to thanks, the equivalent of \"you are welcome\"."
+   },
+   {
+    "q": "Which one is 27?",
+    "ctx": "",
+    "a": "にじゅうなな",
+    "w": [
+     [
+      "ななじゅうに",
+      "That is 72. The tens come first, then the ones."
+     ],
+     [
+      "じゅうなな",
+      "That is 17, with only one ten."
+     ],
+     [
+      "にじゅう",
+      "That is 20, with no ones on the end."
+     ]
+    ],
+    "why": "Numbers stack from the largest unit down: two tens, then seven."
+   },
+   {
+    "q": "Which one is 100?",
+    "ctx": "",
+    "a": "ひゃく",
+    "w": [
+     [
+      "いちひゃく",
+      "100 never takes いち in front of it."
+     ],
+     [
+      "じゅう",
+      "That is 10."
+     ],
+     [
+      "せん",
+      "That is 1,000."
+     ]
+    ],
+    "why": "One hundred is just ひゃく. The same goes for 1,000, which is せん on its own."
+   },
+   {
+    "q": "You meet your classmate for the first time and want to say so.",
+    "ctx": "",
+    "a": "はじめまして",
+    "w": [
+     [
+      "こんにちは",
+      "A normal hello, but it does not mark a first meeting."
+     ],
+     [
+      "よろしくおねがいします",
+      "That comes at the end of the introduction, not the start."
+     ],
+     [
+      "おげんきですか",
+      "That asks how someone has been, so it assumes you already know them."
+     ]
+    ],
+    "why": "はじめまして opens a first introduction, and よろしくおねがいします closes it."
+   },
+   {
+    "q": "Which one is 300?",
+    "ctx": "",
+    "a": "さんびゃく",
+    "w": [
+     [
+      "さんひゃく",
+      "The sound changes after さん: ひゃく becomes びゃく."
+     ],
+     [
+      "さんじゅう",
+      "That is 30."
+     ],
+     [
+      "さんぜん",
+      "That is 3,000."
+     ]
+    ],
+    "why": "300, 600 and 800 change sound: さんびゃく, ろっぴゃく, はっぴゃく."
+   }
+  ]
+ },
+ {
+  "id": "1",
+  "topic": "Introducing yourself: who you are, what you study, what time it is",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "X は Y です",
+    "b": "The basic sentence. は marks the topic — what the sentence is about — and です rounds it off politely, roughly \"is\". は is written with the hiragana は but pronounced wa in this job.",
+    "e": [
+     [
+      "わたしは がくせいです。",
+      "I am a student."
+     ],
+     [
+      "たけしさんは にほんじんです。",
+      "Takeshi is Japanese."
+     ]
+    ]
+   },
+   {
+    "t": "You can leave out what is obvious",
+    "b": "Japanese drops anything both speakers already know, especially わたしは. If the topic has not changed, say only the new part. This is normal, not lazy.",
+    "e": [
+     [
+      "りゅうがくせいです。",
+      "[I'm] an international student."
+     ],
+     [
+      "にねんせいです。",
+      "[I'm] a second-year student."
+     ]
+    ]
+   },
+   {
+    "t": "Questions with か",
+    "b": "Add か to the end of a statement and it becomes a question. The word order does not change and there is no need for a question mark, though your voice rises. A question word such as なん or だれ sits exactly where the answer would go.",
+    "e": [
+     [
+      "たなかさんは せんせいですか。",
+      "Is Tanaka a teacher?"
+     ],
+     [
+      "せんこうは なんですか。",
+      "What is your major?"
+     ]
+    ]
+   },
+   {
+    "t": "Noun の Noun",
+    "b": "の glues two nouns together, the first one describing the second. It covers possession, affiliation and type, so にほんごの せんせい is a teacher of Japanese and だいがくの せんせい is a university teacher. The owner or category always comes first.",
+    "e": [
+     [
+      "わたしの ともだち",
+      "my friend"
+     ],
+     [
+      "だいがくの がくせい",
+      "a university student"
+     ]
+    ]
+   },
+   {
+    "t": "Telling the time",
+    "b": "Attach じ to the hour and ふん／ぷん to the minutes. はん means half past. Four, seven and nine o'clock are irregular: よじ, しちじ, くじ.",
+    "e": [
+     [
+      "いま さんじです。",
+      "It is three o'clock."
+     ],
+     [
+      "ろくじはんです。",
+      "It is half past six."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Introduce yourself as a student.",
+    "ctx": "",
+    "a": "わたしは がくせいです",
+    "w": [
+     [
+      "わたしの がくせいです",
+      "の links two nouns, so this says \"my student\"."
+     ],
+     [
+      "がくせいは わたしです",
+      "That flips it round: \"the student is me\"."
+     ],
+     [
+      "わたしは がくせい",
+      "Dropping です is too blunt in polite speech."
+     ]
+    ],
+    "why": "X は Y です is the basic sentence. は marks what you are talking about, です closes it politely."
+   },
+   {
+    "q": "Ask someone what their major is.",
+    "ctx": "",
+    "a": "せんこうは なんですか",
+    "w": [
+     [
+      "せんこうは だれですか",
+      "だれ asks who, not what."
+     ],
+     [
+      "なんは せんこうですか",
+      "A question word cannot take は. It sits where the answer goes."
+     ],
+     [
+      "せんこうは なんです",
+      "A question needs か on the end."
+     ]
+    ],
+    "why": "The question word goes exactly where the answer would, and か turns the sentence into a question."
+   },
+   {
+    "q": "Say \"my friend\".",
+    "ctx": "",
+    "a": "わたしの ともだち",
+    "w": [
+     [
+      "わたしは ともだち",
+      "は marks a topic, so this starts a sentence instead."
+     ],
+     [
+      "ともだちの わたし",
+      "That reverses it: \"my friend's me\"."
+     ],
+     [
+      "わたしと ともだち",
+      "と means \"and\", so this is \"me and a friend\"."
+     ]
+    ],
+    "why": "の joins two nouns with the owner first: わたし の ともだち."
+   },
+   {
+    "q": "Say it is half past seven.",
+    "ctx": "",
+    "a": "しちじはんです",
+    "w": [
+     [
+      "ななじはんです",
+      "Seven o'clock is しちじ, not ななじ."
+     ],
+     [
+      "しちはんじです",
+      "はん comes after じ, not inside it."
+     ],
+     [
+      "はんしちじです",
+      "The hour comes first, then はん."
+     ]
+    ],
+    "why": "Hours take じ and half past is はん on the end. Four, seven and nine are irregular: よじ, しちじ, くじ."
+   },
+   {
+    "q": "Ask whether Tanaka is a teacher.",
+    "ctx": "",
+    "a": "たなかさんは せんせいですか",
+    "w": [
+     [
+      "たなかさんは せんせいか",
+      "です is missing before か in polite speech."
+     ],
+     [
+      "たなかさんが せんせいですか",
+      "が puts the emphasis on who it is, which is not what you are asking."
+     ],
+     [
+      "せんせいは たなかさんですか",
+      "That asks which person the teacher is."
+     ]
+    ],
+    "why": "You keep the statement as it is and add か. Nothing else moves."
+   },
+   {
+    "q": "Someone asks if you are a first-year student. Agree.",
+    "ctx": "",
+    "a": "はい、そうです",
+    "w": [
+     [
+      "はい、います",
+      "います is for things existing, not for agreeing."
+     ],
+     [
+      "はい、あります",
+      "あります is also about existing, not identity."
+     ],
+     [
+      "はい、します",
+      "します means \"do\"."
+     ]
+    ],
+    "why": "そうです is the standard way to confirm a です question."
+   },
+   {
+    "q": "Say you are a Japanese teacher.",
+    "ctx": "",
+    "a": "にほんごの せんせいです",
+    "w": [
+     [
+      "にほんご せんせいです",
+      "Two nouns need の between them."
+     ],
+     [
+      "せんせいの にほんごです",
+      "That means \"the teacher's Japanese\"."
+     ],
+     [
+      "にほんごは せんせいです",
+      "That says \"as for Japanese, it is a teacher\"."
+     ]
+    ],
+    "why": "の covers type as well as possession: にほんごの せんせい is a teacher of Japanese."
+   },
+   {
+    "q": "Ask for someone's phone number.",
+    "ctx": "",
+    "a": "でんわばんごうは なんですか",
+    "w": [
+     [
+      "でんわばんごうは いくらですか",
+      "いくら asks a price."
+     ],
+     [
+      "でんわばんごうは どこですか",
+      "どこ asks where something is."
+     ],
+     [
+      "でんわばんごうは だれですか",
+      "だれ asks who someone is."
+     ]
+    ],
+    "why": "なん is the question word for things and numbers."
+   }
+  ]
+ },
+ {
+  "id": "2",
+  "topic": "Pointing things out, asking prices, saying what something is not",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "これ, それ, あれ, どれ",
+    "b": "Four words for \"this one, that one, that one over there, which one\". これ is near you, それ is near the person you are talking to, あれ is away from both of you, どれ asks which. They stand alone as nouns.",
+    "e": [
+     [
+      "これは いくらですか。",
+      "How much is this?"
+     ],
+     [
+      "それは わたしの かばんです。",
+      "That is my bag."
+     ]
+    ]
+   },
+   {
+    "t": "この, その, あの, どの + noun",
+    "b": "Same four distances, but these cannot stand alone — a noun has to follow immediately. この とけい is \"this watch\". Mixing the two sets up is the classic beginner slip: これ とけい is wrong.",
+    "e": [
+     [
+      "この くつは たかいです。",
+      "These shoes are expensive."
+     ],
+     [
+      "どの かさが いいですか。",
+      "Which umbrella is good?"
+     ]
+    ]
+   },
+   {
+    "t": "ここ, そこ, あそこ, どこ",
+    "b": "The place versions: here, there, over there, where. They work as nouns, so they take は, で, に like any other noun.",
+    "e": [
+     [
+      "ゆうびんきょくは どこですか。",
+      "Where is the post office?"
+     ],
+     [
+      "あそこです。",
+      "It is over there."
+     ]
+    ]
+   },
+   {
+    "t": "だれの + noun",
+    "b": "だれ means \"who\", so だれの means \"whose\" and goes straight in front of the noun, just like any の phrase.",
+    "e": [
+     [
+      "これは だれの さいふですか。",
+      "Whose wallet is this?"
+     ],
+     [
+      "たけしさんのです。",
+      "It's Takeshi's."
+     ]
+    ]
+   },
+   {
+    "t": "Noun も",
+    "b": "も means \"too\" or \"also\" and replaces は entirely — never わたしはも. It marks the thing that is the same as something already mentioned.",
+    "e": [
+     [
+      "わたしも がくせいです。",
+      "I am a student too."
+     ],
+     [
+      "これも ください。",
+      "This one as well, please."
+     ]
+    ]
+   },
+   {
+    "t": "Noun じゃないです",
+    "b": "The negative of です. じゃないです is the everyday polite form; ではありません is its stiffer written cousin. Both mean \"is not\".",
+    "e": [
+     [
+      "わたしは せんせいじゃないです。",
+      "I am not a teacher."
+     ],
+     [
+      "これは わたしのじゃないです。",
+      "This is not mine."
+     ]
+    ]
+   },
+   {
+    "t": "ね and よ at the end",
+    "b": "ね checks that the listener agrees with you, like \"isn't it?\". よ tells the listener something you think they do not know yet. Leaving both off is neutral and perfectly safe.",
+    "e": [
+     [
+      "たかいですね。",
+      "It's expensive, isn't it?"
+     ],
+     [
+      "あそこですよ。",
+      "It's over there, you know."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "You are holding a watch and want to ask the price.",
+    "ctx": "店員：いらっしゃいませ。",
+    "a": "これは いくらですか",
+    "w": [
+     [
+      "それは いくらですか",
+      "それ is for something near the other person. You are holding it."
+     ],
+     [
+      "この いくらですか",
+      "この has to be followed by a noun."
+     ],
+     [
+      "これは なんですか",
+      "That asks what it is, not what it costs."
+     ]
+    ],
+    "why": "これ is the thing in your own hand, and いくら asks the price."
+   },
+   {
+    "q": "A pair of shoes is on a shelf across the shop. Ask how much they are.",
+    "ctx": "",
+    "a": "あれは いくらですか",
+    "w": [
+     [
+      "これは いくらですか",
+      "これ is for something right by you."
+     ],
+     [
+      "それは いくらですか",
+      "それ is for something near the person you are speaking to."
+     ],
+     [
+      "あの いくらですか",
+      "あの needs a noun straight after it."
+     ]
+    ],
+    "why": "あれ is away from both of you, which is what \"over there\" means here."
+   },
+   {
+    "q": "Say \"this bag is cheap\", holding the bag.",
+    "ctx": "",
+    "a": "この かばんは やすいです",
+    "w": [
+     [
+      "これ かばんは やすいです",
+      "これ cannot sit in front of a noun. Use この."
+     ],
+     [
+      "これの かばんは やすいです",
+      "これ does not take の in this pattern."
+     ],
+     [
+      "この かばんは やすいます",
+      "やすい is an adjective, so it does not take ます."
+     ]
+    ],
+    "why": "この, その, あの come before a noun; これ, それ, あれ stand alone."
+   },
+   {
+    "q": "Ask whose umbrella this is.",
+    "ctx": "",
+    "a": "これは だれの かさですか",
+    "w": [
+     [
+      "これは だれ かさですか",
+      "だれ needs の to attach to the noun."
+     ],
+     [
+      "これは なんの かさですか",
+      "That asks what kind of umbrella it is."
+     ],
+     [
+      "だれは これの かさですか",
+      "A question word cannot take は."
+     ]
+    ],
+    "why": "だれの works just like any の phrase and goes straight in front of the noun."
+   },
+   {
+    "q": "Your classmate says they are a student. Say you are one too.",
+    "ctx": "",
+    "a": "わたしも がくせいです",
+    "w": [
+     [
+      "わたしはも がくせいです",
+      "も replaces は. The two never appear together."
+     ],
+     [
+      "わたしも がくせいも です",
+      "Only the thing being added takes も."
+     ],
+     [
+      "わたしと がくせいです",
+      "と means \"and\" between two nouns."
+     ]
+    ],
+    "why": "も means \"too\" and takes the place of は entirely."
+   },
+   {
+    "q": "The clerk hands you a wallet that is not yours. Say so.",
+    "ctx": "",
+    "a": "これは わたしのじゃないです",
+    "w": [
+     [
+      "これは わたしじゃないです",
+      "That says \"this is not me\"."
+     ],
+     [
+      "これは わたしのじゃないます",
+      "じゃないです is already the polite negative."
+     ],
+     [
+      "これは わたしの ないです",
+      "The negative of です is じゃないです, not ないです."
+     ]
+    ],
+    "why": "わたしの on its own means \"mine\", and じゃないです makes it negative."
+   },
+   {
+    "q": "The clerk tells you the price is ￥8,000. Comment that it is expensive.",
+    "ctx": "店員：はちせんえんです。",
+    "a": "たかいですね",
+    "w": [
+     [
+      "たかいですよ",
+      "よ tells someone something new. They just said the price themselves."
+     ],
+     [
+      "たかいですか",
+      "か makes it a question, as if you had not heard."
+     ],
+     [
+      "たかいね",
+      "Dropping です is too casual for a shop assistant."
+     ]
+    ],
+    "why": "ね invites agreement about something you both already know."
+   },
+   {
+    "q": "Ask where the post office is.",
+    "ctx": "",
+    "a": "ゆうびんきょくは どこですか",
+    "w": [
+     [
+      "ゆうびんきょくは どれですか",
+      "どれ asks which one out of several."
+     ],
+     [
+      "ゆうびんきょくは どのですか",
+      "どの must be followed by a noun."
+     ],
+     [
+      "どこは ゆうびんきょくですか",
+      "A question word cannot take は."
+     ]
+    ],
+    "why": "どこ is the question word for places and behaves like any other noun."
+   }
+  ]
+ },
+ {
+  "id": "3",
+  "topic": "Verbs in the present tense, particles, and saying when",
+  "kanji": "一二三四五六七八九十百千円時",
+  "grammar": [
+   {
+    "t": "Three verb groups",
+    "b": "Every verb falls into one of three groups, and the group decides how it conjugates. る-verbs end in -iru or -eru and simply swap る for ます (たべる → たべます). う-verbs change the final u-sound to an i-sound before ます (のむ → のみます). There are only two irregulars: する → します and くる → きます.",
+    "e": [
+     [
+      "たべる → たべます",
+      "to eat"
+     ],
+     [
+      "のむ → のみます",
+      "to drink"
+     ]
+    ]
+   },
+   {
+    "t": "ます and ません",
+    "b": "ます is the polite present. It covers both habits and the future, so いきます is \"I go\" and \"I will go\"; context decides. The negative is ません.",
+    "e": [
+     [
+      "まいにち コーヒーを のみます。",
+      "I drink coffee every day."
+     ],
+     [
+      "あした いきません。",
+      "I am not going tomorrow."
+     ]
+    ]
+   },
+   {
+    "t": "を, で, に, へ",
+    "b": "を marks the direct object, the thing the verb acts on. で marks where an action happens. に marks a destination or a specific time, and also the place you arrive at. へ can replace に for destinations.",
+    "e": [
+     [
+      "ほんを よみます。",
+      "I read a book."
+     ],
+     [
+      "うちで えいがを みます。",
+      "I watch a film at home."
+     ]
+    ]
+   },
+   {
+    "t": "Which time words take に",
+    "b": "Times you can point to on a clock or calendar take に: さんじに, にちようびに. Relative words — きょう, あした, まいにち, こんしゅう — never take に. Neither does いつ.",
+    "e": [
+     [
+      "じゅういちじに ねます。",
+      "I go to bed at eleven."
+     ],
+     [
+      "あした いきます。",
+      "I am going tomorrow."
+     ]
+    ]
+   },
+   {
+    "t": "〜ませんか",
+    "b": "The negative question is how you invite someone, like \"won't you...?\" in English. It is softer than ましょう, which assumes agreement.",
+    "e": [
+     [
+      "ひるごはんを たべませんか。",
+      "Shall we have lunch?"
+     ],
+     [
+      "いいですね。",
+      "That sounds good."
+     ]
+    ]
+   },
+   {
+    "t": "Frequency adverbs",
+    "b": "Put them before the verb: まいにち (every day), よく (often), ときどき (sometimes), あまり (not much), ぜんぜん (not at all). The last two demand a negative verb — あまり たべません.",
+    "e": [
+     [
+      "ときどき えいがを みます。",
+      "I sometimes watch films."
+     ],
+     [
+      "ぜんぜん テレビを みません。",
+      "I don't watch TV at all."
+     ]
+    ]
+   },
+   {
+    "t": "Word order is flexible, the verb is not",
+    "b": "Because particles label each role, you can shuffle the phrases around for emphasis. The one rule that never bends: the verb goes last.",
+    "e": [
+     [
+      "わたしは きょう としょかんで べんきょうします。",
+      "I will study at the library today."
+     ],
+     [
+      "きょう わたしは としょかんで べんきょうします。",
+      "Today I will study at the library."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you drink coffee every morning.",
+    "ctx": "",
+    "a": "まいあさ コーヒーを のみます",
+    "w": [
+     [
+      "まいあさに コーヒーを のみます",
+      "まいあさ is a relative time word, so it takes no に."
+     ],
+     [
+      "まいあさ コーヒーが のみます",
+      "The thing you drink is the object, so it takes を."
+     ],
+     [
+      "まいあさ コーヒーを のむます",
+      "のむ becomes のみます, not のむます."
+     ]
+    ],
+    "why": "う-verbs change their last sound to an i-sound before ます: のむ to のみます."
+   },
+   {
+    "q": "Say you are going to school tomorrow.",
+    "ctx": "",
+    "a": "あした がっこうに いきます",
+    "w": [
+     [
+      "あしたに がっこうに いきます",
+      "あした never takes に."
+     ],
+     [
+      "あした がっこうで いきます",
+      "で marks where an action happens, not where you are heading."
+     ],
+     [
+      "あした がっこうを いきます",
+      "を marks the object, not the destination."
+     ]
+    ],
+    "why": "に marks a destination. Relative time words like あした, きょう and まいにち take no particle."
+   },
+   {
+    "q": "Invite a friend to see a film.",
+    "ctx": "",
+    "a": "えいがを みませんか",
+    "w": [
+     [
+      "えいがを みますか",
+      "That just asks whether they watch films."
+     ],
+     [
+      "えいがが みませんか",
+      "The thing watched takes を."
+     ],
+     [
+      "えいがを みません",
+      "Without か it is a flat statement that you are not watching."
+     ]
+    ],
+    "why": "The negative question 〜ませんか is how you invite someone, leaving them room to decline."
+   },
+   {
+    "q": "Say you do not watch television at all.",
+    "ctx": "",
+    "a": "ぜんぜん テレビを みません",
+    "w": [
+     [
+      "ぜんぜん テレビを みます",
+      "ぜんぜん has to finish with a negative verb."
+     ],
+     [
+      "あまり テレビを みません",
+      "That is \"not much\", which is weaker than \"not at all\"."
+     ],
+     [
+      "ぜんぜん テレビが みません",
+      "The thing watched takes を."
+     ]
+    ],
+    "why": "ぜんぜん and あまり both demand a negative verb at the end."
+   },
+   {
+    "q": "Say you study at the library.",
+    "ctx": "",
+    "a": "としょかんで べんきょうします",
+    "w": [
+     [
+      "としょかんに べんきょうします",
+      "に is for destinations and times, not for where an action happens."
+     ],
+     [
+      "としょかんを べんきょうします",
+      "That would make the library the thing you study."
+     ],
+     [
+      "としょかんで べんきょうます",
+      "する becomes します."
+     ]
+    ],
+    "why": "で marks the place where something happens; に marks where you go."
+   },
+   {
+    "q": "Say you get up at six.",
+    "ctx": "",
+    "a": "ろくじに おきます",
+    "w": [
+     [
+      "ろくじ おきます",
+      "A clock time needs に."
+     ],
+     [
+      "ろくじで おきます",
+      "で is for places, not times."
+     ],
+     [
+      "ろくじに おきります",
+      "おきる is a る-verb: drop る and add ます."
+     ]
+    ],
+    "why": "Times you can point to on a clock or calendar take に. Relative ones do not."
+   },
+   {
+    "q": "Which is the ます-form of かえる (to go home)?",
+    "ctx": "",
+    "a": "かえります",
+    "w": [
+     [
+      "かえます",
+      "かえる looks like a る-verb but is an う-verb, so る becomes り."
+     ],
+     [
+      "かえるます",
+      "The る has to change before ます."
+     ],
+     [
+      "かえました",
+      "That is the past tense."
+     ]
+    ],
+    "why": "かえる is one of the う-verbs that ends in -eru, so it takes かえります, not かえます."
+   },
+   {
+    "q": "Say you sometimes watch films at home.",
+    "ctx": "",
+    "a": "うちで ときどき えいがを みます",
+    "w": [
+     [
+      "うちに ときどき えいがを みます",
+      "An action happening somewhere takes で."
+     ],
+     [
+      "うちで ときどき えいがが みます",
+      "The film is the object, so を."
+     ],
+     [
+      "うちで ときどきに えいがを みます",
+      "Frequency adverbs take no particle."
+     ]
+    ],
+    "why": "Adverbs like ときどき, よく and たいてい sit before the verb with nothing attached."
+   }
+  ]
+ },
+ {
+  "id": "4",
+  "topic": "Where things are, and talking about the past",
+  "kanji": "日月火水木金土年半上下中",
+  "grammar": [
+   {
+    "t": "あります and います",
+    "b": "Both mean \"there is\". います is for things that move under their own power — people and animals — and あります is for everything else. The thing that exists is marked with が.",
+    "e": [
+     [
+      "つくえの うえに ほんが あります。",
+      "There is a book on the desk."
+     ],
+     [
+      "こうえんに こどもが います。",
+      "There is a child in the park."
+     ]
+    ]
+   },
+   {
+    "t": "Saying where something is",
+    "b": "The pattern is X は Y の [position] です. Position words sit between の and です: うえ (above), した (under), まえ (in front), うしろ (behind), なか (inside), となり (next to), ちかく (near).",
+    "e": [
+     [
+      "ぎんこうは えきの となりです。",
+      "The bank is next to the station."
+     ],
+     [
+      "ねこは いすの したに います。",
+      "The cat is under the chair."
+     ]
+    ]
+   },
+   {
+    "t": "Past tense of です",
+    "b": "です becomes でした, and じゃないです becomes じゃなかったです. Nothing else in the sentence changes.",
+    "e": [
+     [
+      "きのうは やすみでした。",
+      "Yesterday was a day off."
+     ],
+     [
+      "たかくなかったです。",
+      "It was not expensive."
+     ]
+    ]
+   },
+   {
+    "t": "Past tense of verbs",
+    "b": "ます becomes ました and ません becomes ませんでした. The verb group does not matter at this point — the ending does all the work.",
+    "e": [
+     [
+      "きのう えいがを みました。",
+      "I watched a film yesterday."
+     ],
+     [
+      "あさごはんを たべませんでした。",
+      "I didn't eat breakfast."
+     ]
+    ]
+   },
+   {
+    "t": "Counting hours with 〜じかん",
+    "b": "じかん counts a span of time, as opposed to じ which names a point on the clock. にじ is two o'clock; にじかん is two hours. No particle is needed before the verb.",
+    "e": [
+     [
+      "さんじかん べんきょうしました。",
+      "I studied for three hours."
+     ],
+     [
+      "にじかん まちました。",
+      "I waited for two hours."
+     ]
+    ]
+   },
+   {
+    "t": "と for \"and\" and \"with\"",
+    "b": "と joins two nouns into a complete list — ほんと ノート means a book and a notebook, with nothing left out. The same particle marks the person you do something with.",
+    "e": [
+     [
+      "パンと たまごを たべました。",
+      "I ate bread and eggs."
+     ],
+     [
+      "ともだちと いきました。",
+      "I went with a friend."
+     ]
+    ]
+   },
+   {
+    "t": "たくさん",
+    "b": "たくさん means \"a lot\" and usually sits right before the verb, or before the noun with の. It does not take a particle of its own.",
+    "e": [
+     [
+      "しゃしんを たくさん とりました。",
+      "I took a lot of photos."
+     ],
+     [
+      "たくさん たべました。",
+      "I ate a lot."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say there is a cat under the chair.",
+    "ctx": "",
+    "a": "いすの したに ねこが います",
+    "w": [
+     [
+      "いすの したに ねこが あります",
+      "あります is for things that do not move by themselves."
+     ],
+     [
+      "いすの したに ねこを います",
+      "The thing that exists takes が."
+     ],
+     [
+      "ねこは いすの したに あります",
+      "Again, a cat is alive, so います."
+     ]
+    ],
+    "why": "います covers people and animals; あります covers everything else."
+   },
+   {
+    "q": "Say the bank is next to the station.",
+    "ctx": "",
+    "a": "ぎんこうは えきの となりです",
+    "w": [
+     [
+      "ぎんこうは えきの となりに います",
+      "A bank is not alive, and です is enough here."
+     ],
+     [
+      "ぎんこうは となりの えきです",
+      "That means \"the station next door\"."
+     ],
+     [
+      "ぎんこうは えき となりです",
+      "Position words need の in front of them."
+     ]
+    ],
+    "why": "The pattern is X は Y の [position] です, with の joining the landmark to the position word."
+   },
+   {
+    "q": "Say you did not eat breakfast.",
+    "ctx": "",
+    "a": "あさごはんを たべませんでした",
+    "w": [
+     [
+      "あさごはんを たべなかったです",
+      "That is the short form, which comes in Lesson 9."
+     ],
+     [
+      "あさごはんを たべませんだった",
+      "The past of ません is ませんでした."
+     ],
+     [
+      "あさごはんを たべましたではない",
+      "Past and negative do not stack like that."
+     ]
+    ],
+    "why": "ました is the past, and ませんでした is the past negative."
+   },
+   {
+    "q": "Say yesterday was a day off.",
+    "ctx": "",
+    "a": "きのうは やすみでした",
+    "w": [
+     [
+      "きのうは やすみです",
+      "That puts it in the present."
+     ],
+     [
+      "きのうは やすみました",
+      "That means \"I rested\", using the verb."
+     ],
+     [
+      "きのうは やすみだったです",
+      "With a noun, the polite past is でした."
+     ]
+    ],
+    "why": "The past of です is でした. Nothing else in the sentence changes."
+   },
+   {
+    "q": "Say you waited for two hours.",
+    "ctx": "",
+    "a": "にじかん まちました",
+    "w": [
+     [
+      "にじ まちました",
+      "にじ is two o'clock, a point in time."
+     ],
+     [
+      "にじかんに まちました",
+      "A length of time takes no particle."
+     ],
+     [
+      "ふたつじかん まちました",
+      "Hours are counted with the いち, に, さん set."
+     ]
+    ],
+    "why": "じ names a point on the clock; じかん measures a span of time."
+   },
+   {
+    "q": "Say you went with a friend.",
+    "ctx": "",
+    "a": "ともだちと いきました",
+    "w": [
+     [
+      "ともだちに いきました",
+      "に marks a destination, so this says you went to a friend."
+     ],
+     [
+      "ともだちで いきました",
+      "で marks a place or a means, not a companion."
+     ],
+     [
+      "ともだちを いきました",
+      "を marks an object."
+     ]
+    ],
+    "why": "と marks the person you do something with, as well as \"and\" between nouns."
+   },
+   {
+    "q": "Say there is a book and a notebook on the desk.",
+    "ctx": "",
+    "a": "つくえの うえに ほんと ノートが あります",
+    "w": [
+     [
+      "つくえの うえに ほんや ノートが あります",
+      "や implies there is more you have not listed."
+     ],
+     [
+      "つくえの うえで ほんと ノートが あります",
+      "Existence takes に, not で."
+     ],
+     [
+      "つくえの うえに ほんと ノートが います",
+      "Books do not move by themselves, so あります."
+     ]
+    ],
+    "why": "と gives a complete list; に marks where something exists."
+   },
+   {
+    "q": "Say you took a lot of photographs.",
+    "ctx": "",
+    "a": "しゃしんを たくさん とりました",
+    "w": [
+     [
+      "しゃしんを たくさんを とりました",
+      "たくさん takes no particle of its own."
+     ],
+     [
+      "たくさんの しゃしんを とりました が",
+      "The trailing が leaves the sentence unfinished."
+     ],
+     [
+      "しゃしんが たくさん とりました",
+      "The thing photographed is the object, so を."
+     ]
+    ],
+    "why": "たくさん normally sits just before the verb with nothing attached."
+   }
+  ]
+ },
+ {
+  "id": "5",
+  "topic": "Adjectives, what you like, and suggestions",
+  "kanji": "山川天気雨大小高長白",
+  "grammar": [
+   {
+    "t": "Two kinds of adjective",
+    "b": "い-adjectives end in い and carry their own tense: たかい, たかくないです. な-adjectives behave like nouns and lean on です: しずかです, しずかじゃないです. The difference matters in every pattern that follows, so learn which kind each new word is.",
+    "e": [
+     [
+      "この ホテルは たかいです。",
+      "This hotel is expensive."
+     ],
+     [
+      "この まちは しずかです。",
+      "This town is quiet."
+     ]
+    ]
+   },
+   {
+    "t": "Adjectives in the past",
+    "b": "い-adjectives change their own ending: たかかったです, たかくなかったです. な-adjectives just change です to でした or じゃなかったです. いい is irregular throughout — よかったです, not いかったです.",
+    "e": [
+     [
+      "たのしかったです。",
+      "It was fun."
+     ],
+     [
+      "てんきが よかったです。",
+      "The weather was good."
+     ]
+    ]
+   },
+   {
+    "t": "Adjectives in front of nouns",
+    "b": "Put the adjective straight before the noun. い-adjectives attach directly (おおきい いぬ), な-adjectives need their な (しずかな まち). That な is the whole reason for the name.",
+    "e": [
+     [
+      "おもしろい ほんを よみました。",
+      "I read an interesting book."
+     ],
+     [
+      "きれいな うみでした。",
+      "It was a beautiful sea."
+     ]
+    ]
+   },
+   {
+    "t": "好き and きらい",
+    "b": "Both are な-adjectives, not verbs, so the thing liked is marked with が, not を. Stack だい in front for \"really like\" and あまり with a negative for \"not much\".",
+    "e": [
+     [
+      "にほんごが すきです。",
+      "I like Japanese."
+     ],
+     [
+      "さかなが あまり すきじゃないです。",
+      "I don't much like fish."
+     ]
+    ]
+   },
+   {
+    "t": "〜ましょう and 〜ましょうか",
+    "b": "Swap ます for ましょう to say \"let's\". Adding か makes it a question — \"shall we?\" — which leaves the other person room to say no.",
+    "e": [
+     [
+      "ひるごはんを たべましょう。",
+      "Let's have lunch."
+     ],
+     [
+      "いきましょうか。",
+      "Shall we go?"
+     ]
+    ]
+   },
+   {
+    "t": "Counting things with 〜つ",
+    "b": "The ひとつ ふたつ みっつ set counts objects up to ten with no counter word needed. It is the safe fallback when you cannot remember the specific counter.",
+    "e": [
+     [
+      "みかんを みっつ ください。",
+      "Three oranges, please."
+     ],
+     [
+      "ひとつ いくらですか。",
+      "How much for one?"
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say this hotel is expensive.",
+    "ctx": "",
+    "a": "この ホテルは たかいです",
+    "w": [
+     [
+      "この ホテルは たかいます",
+      "Adjectives never take ます."
+     ],
+     [
+      "この ホテルは たかいだです",
+      "い-adjectives attach straight to です."
+     ],
+     [
+      "この ホテルは たかくです",
+      "たかく is the form used before other words, not before です."
+     ]
+    ],
+    "why": "An い-adjective takes です as it is: たかいです."
+   },
+   {
+    "q": "Say it was fun.",
+    "ctx": "",
+    "a": "たのしかったです",
+    "w": [
+     [
+      "たのしいでした",
+      "い-adjectives carry their own past tense and do not take でした."
+     ],
+     [
+      "たのしかったでした",
+      "かった is already the past, so でした is one past too many."
+     ],
+     [
+      "たのしくでした",
+      "たのしく is used before another word, not in the past."
+     ]
+    ],
+    "why": "い-adjectives change their own ending: たのしい becomes たのしかったです."
+   },
+   {
+    "q": "Say \"a quiet town\".",
+    "ctx": "",
+    "a": "しずかな まち",
+    "w": [
+     [
+      "しずか まち",
+      "な-adjectives need their な before a noun."
+     ],
+     [
+      "しずかの まち",
+      "の joins two nouns; しずか is an adjective."
+     ],
+     [
+      "しずかい まち",
+      "しずか is not an い-adjective."
+     ]
+    ],
+    "why": "な-adjectives keep their な when they sit in front of a noun. That is where the name comes from."
+   },
+   {
+    "q": "Say you like Japanese.",
+    "ctx": "",
+    "a": "にほんごが すきです",
+    "w": [
+     [
+      "にほんごを すきです",
+      "すき is an adjective, not a verb, so the thing liked takes が."
+     ],
+     [
+      "にほんごは すきます",
+      "すき never takes ます."
+     ],
+     [
+      "にほんごが すきい です",
+      "すき is a な-adjective with no い."
+     ]
+    ],
+    "why": "好き and きらい are な-adjectives, so what you like is marked with が."
+   },
+   {
+    "q": "Suggest having lunch together.",
+    "ctx": "",
+    "a": "ひるごはんを たべましょう",
+    "w": [
+     [
+      "ひるごはんを たべましょうか",
+      "With か it becomes \"shall we?\", a question rather than a suggestion."
+     ],
+     [
+      "ひるごはんを たべません",
+      "That says you are not eating."
+     ],
+     [
+      "ひるごはんを たべたましょう",
+      "ましょう attaches to the ます-stem: たべましょう."
+     ]
+    ],
+    "why": "Swapping ます for ましょう gives \"let's\". Adding か turns it into an offer."
+   },
+   {
+    "q": "Say it was not expensive.",
+    "ctx": "",
+    "a": "たかくなかったです",
+    "w": [
+     [
+      "たかいじゃなかったです",
+      "じゃない is for nouns and な-adjectives."
+     ],
+     [
+      "たかくないでした",
+      "ない carries the past itself: なかった."
+     ],
+     [
+      "たかくありませんだった",
+      "The polite form would be たかくありませんでした."
+     ]
+    ],
+    "why": "い-adjectives go たかい, たかくない, たかくなかった, each carrying its own tense."
+   },
+   {
+    "q": "Ask for three oranges.",
+    "ctx": "",
+    "a": "みかんを みっつ ください",
+    "w": [
+     [
+      "みかんを さん ください",
+      "A bare number needs a counter."
+     ],
+     [
+      "みかんを さんつ ください",
+      "Three objects is みっつ, not さんつ."
+     ],
+     [
+      "みかんが みっつ ください",
+      "What you are asking for takes を."
+     ]
+    ],
+    "why": "The ひとつ, ふたつ, みっつ set counts objects up to ten with no extra counter."
+   },
+   {
+    "q": "Say the weather was good.",
+    "ctx": "",
+    "a": "てんきが よかったです",
+    "w": [
+     [
+      "てんきが いかったです",
+      "いい is irregular and becomes よかった in the past."
+     ],
+     [
+      "てんきが いいでした",
+      "い-adjectives do not take でした."
+     ],
+     [
+      "てんきが よいました",
+      "Adjectives never take ます."
+     ]
+    ],
+    "why": "いい is irregular throughout: よくない, よかった, よくなかった."
+   }
+  ]
+ },
+ {
+  "id": "6",
+  "topic": "The te-form, requests, and permission",
+  "kanji": "見行出入来休食読書",
+  "grammar": [
+   {
+    "t": "The te-form",
+    "b": "The single most useful form in the language, and the one worth drilling until it is automatic. る-verbs: drop る, add て (たべる → たべて). う-verbs follow their final sound: う/つ/る → って, む/ぶ/ぬ → んで, く → いて, ぐ → いで, す → して. いく is the odd one out: いって.",
+    "e": [
+     [
+      "のむ → のんで",
+      "to drink"
+     ],
+     [
+      "かく → かいて",
+      "to write"
+     ]
+    ]
+   },
+   {
+    "t": "〜てください",
+    "b": "te-form plus ください makes a polite request. Softer than an order, firmer than a hint. Leaving off ください makes it casual, for people close to you.",
+    "e": [
+     [
+      "もういちど いってください。",
+      "Please say that once more."
+     ],
+     [
+      "ちょっと まってください。",
+      "Please wait a moment."
+     ]
+    ]
+   },
+   {
+    "t": "Linking actions with the te-form",
+    "b": "The te-form also strings actions together in sequence: do this, then that. Only the final verb carries the tense, so everything before it stays in te-form however far in the past the whole sentence is.",
+    "e": [
+     [
+      "あさ おきて、あさごはんを たべます。",
+      "I get up in the morning and eat breakfast."
+     ],
+     [
+      "うちに かえって、ねました。",
+      "I went home and went to bed."
+     ]
+    ]
+   },
+   {
+    "t": "〜てもいいです",
+    "b": "Permission: \"it is fine to...\". As a question it asks for permission, which is how you will mostly use it.",
+    "e": [
+     [
+      "ここに すわってもいいですか。",
+      "May I sit here?"
+     ],
+     [
+      "たべてもいいですよ。",
+      "You may eat it."
+     ]
+    ]
+   },
+   {
+    "t": "〜てはいけません",
+    "b": "The flat prohibition — \"you must not\". Strong, so it comes from someone with authority: a teacher, a sign, a rule. In speech it often contracts to 〜ちゃだめ.",
+    "e": [
+     [
+      "ここで たばこを すってはいけません。",
+      "You must not smoke here."
+     ],
+     [
+      "しゃしんを とってはいけません。",
+      "You must not take photographs."
+     ]
+    ]
+   },
+   {
+    "t": "〜から for reasons",
+    "b": "から means \"because\" and goes at the end of the reason, not the start. The order is reason から result, the reverse of English.",
+    "e": [
+     [
+      "あたまが いたいですから、かえります。",
+      "I have a headache, so I am going home."
+     ],
+     [
+      "あしたは やすみですから、だいじょうぶです。",
+      "Tomorrow is a holiday, so it is fine."
+     ]
+    ]
+   },
+   {
+    "t": "〜ましょうか to offer help",
+    "b": "The same ましょうか from Lesson 5 doubles as an offer when you are the only one doing the work: \"shall I...?\".",
+    "e": [
+     [
+      "てつだいましょうか。",
+      "Shall I help you?"
+     ],
+     [
+      "まどを あけましょうか。",
+      "Shall I open the window?"
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Which is the te-form of のむ?",
+    "ctx": "",
+    "a": "のんで",
+    "w": [
+     [
+      "のみて",
+      "む-verbs go to んで, not みて."
+     ],
+     [
+      "のって",
+      "That is the te-form of verbs ending in う, つ or る."
+     ],
+     [
+      "のいで",
+      "いで comes from verbs ending in ぐ."
+     ]
+    ],
+    "why": "む, ぶ and ぬ all become んで: のむ to のんで, あそぶ to あそんで."
+   },
+   {
+    "q": "Ask someone to wait a moment.",
+    "ctx": "",
+    "a": "ちょっと まってください",
+    "w": [
+     [
+      "ちょっと まちてください",
+      "つ-verbs go to って: まつ to まって."
+     ],
+     [
+      "ちょっと まつてください",
+      "The verb has to be in te-form first."
+     ],
+     [
+      "ちょっと まってます",
+      "That says you are waiting, rather than asking them to."
+     ]
+    ],
+    "why": "te-form plus ください makes a polite request."
+   },
+   {
+    "q": "Ask whether you may sit here.",
+    "ctx": "",
+    "a": "ここに すわってもいいですか",
+    "w": [
+     [
+      "ここに すわってはいけませんか",
+      "That asks whether sitting is forbidden."
+     ],
+     [
+      "ここに すわりてもいいですか",
+      "すわる is an う-verb: すわって."
+     ],
+     [
+      "ここに すわってもいいます",
+      "いい is an adjective and does not take ます."
+     ]
+    ],
+    "why": "te-form plus もいいです asks for or grants permission."
+   },
+   {
+    "q": "Say you have a headache, so you are going home.",
+    "ctx": "",
+    "a": "あたまが いたいですから、かえります",
+    "w": [
+     [
+      "かえりますから、あたまが いたいです",
+      "から goes after the reason, so this reverses the logic."
+     ],
+     [
+      "あたまが いたいから です、かえります",
+      "から attaches straight to the sentence before it."
+     ],
+     [
+      "あたまを いたいですから、かえります",
+      "The part that hurts takes が."
+     ]
+    ],
+    "why": "Reason comes first, then から, then the result, which is the reverse of English."
+   },
+   {
+    "q": "Offer to open the window.",
+    "ctx": "",
+    "a": "まどを あけましょうか",
+    "w": [
+     [
+      "まどを あけてください",
+      "That asks the other person to open it."
+     ],
+     [
+      "まどを あけませんか",
+      "That invites them to open it with you."
+     ],
+     [
+      "まどを あけますか",
+      "That asks whether they are going to open it."
+     ]
+    ],
+    "why": "ましょうか offers to do something yourself."
+   }
+  ]
+ },
+ {
+  "id": "7",
+  "topic": "Things in progress, describing people, joining sentences",
+  "kanji": "人先生学校友父母男女子",
+  "grammar": [
+   {
+    "t": "〜ている for actions in progress",
+    "b": "te-form plus いる is the present continuous: happening right now. In casual speech the い disappears — たべてる.",
+    "e": [
+     [
+      "いま ごはんを たべています。",
+      "I am eating right now."
+     ],
+     [
+      "なにを していますか。",
+      "What are you doing?"
+     ]
+    ]
+   },
+   {
+    "t": "〜ている for a state that resulted",
+    "b": "The same form also describes a state left behind by a past change, which English handles with a plain present. けっこんしています means \"is married\", not \"is getting married\". It covers しっています (know), すんでいます (live), つとめています (work for).",
+    "e": [
+     [
+      "あには けっこんしています。",
+      "My older brother is married."
+     ],
+     [
+      "ナナイモに すんでいます。",
+      "I live in Nanaimo."
+     ]
+    ]
+   },
+   {
+    "t": "Describing features with が",
+    "b": "To describe a part of someone, name the part with が and then the adjective: かみが ながいです. The person is the topic with は, the feature takes が.",
+    "e": [
+     [
+      "メアリーさんは かみが ながいです。",
+      "Mary has long hair."
+     ],
+     [
+      "たけしさんは せが たかいです。",
+      "Takeshi is tall."
+     ]
+    ]
+   },
+   {
+    "t": "Te-forms of adjectives and nouns",
+    "b": "Adjectives and nouns have te-forms too, for joining descriptions. い-adjectives swap い for くて (やすくて), な-adjectives and nouns take で (しずかで, がくせいで).",
+    "e": [
+     [
+      "この みせは やすくて おいしいです。",
+      "This restaurant is cheap and tasty."
+     ],
+     [
+      "しずかで きれいな まちです。",
+      "It is a quiet, pretty town."
+     ]
+    ]
+   },
+   {
+    "t": "Verb stem + に行く",
+    "b": "Take the ます-stem, add に, then a motion verb: \"go in order to do\". たべに いきます is \"go to eat\".",
+    "e": [
+     [
+      "えいがを みに いきます。",
+      "I am going to see a film."
+     ],
+     [
+      "ひるごはんを たべに かえります。",
+      "I am going home to eat lunch."
+     ]
+    ]
+   },
+   {
+    "t": "Counting people",
+    "b": "ひとり and ふたり are irregular; from three on it is the number plus にん — さんにん, よにん (not よんにん), ごにん.",
+    "e": [
+     [
+      "かぞくは よにんです。",
+      "There are four people in my family."
+     ],
+     [
+      "ともだちが ふたり きました。",
+      "Two friends came."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you are eating right now.",
+    "ctx": "",
+    "a": "いま ごはんを たべています",
+    "w": [
+     [
+      "いま ごはんを たべます",
+      "That is the plain present, which covers habits and the future."
+     ],
+     [
+      "いま ごはんを たべてます です",
+      "です does not follow a verb like this."
+     ],
+     [
+      "いま ごはんを たべるています",
+      "ている attaches to the te-form: たべて."
+     ]
+    ],
+    "why": "te-form plus いる is the present continuous."
+   },
+   {
+    "q": "Say your older brother is married.",
+    "ctx": "",
+    "a": "あには けっこんしています",
+    "w": [
+     [
+      "あには けっこんします",
+      "That means he is going to get married."
+     ],
+     [
+      "あには けっこんしました",
+      "That reports the wedding as an event, not his current state."
+     ],
+     [
+      "あには けっこんです",
+      "けっこん needs する to work as a verb."
+     ]
+    ],
+    "why": "With verbs of change, ている describes the state that resulted. It is \"is married\", not \"is getting married\"."
+   },
+   {
+    "q": "Say Mary has long hair.",
+    "ctx": "",
+    "a": "メアリーさんは かみが ながいです",
+    "w": [
+     [
+      "メアリーさんの かみは ながいです が",
+      "The trailing が leaves it hanging."
+     ],
+     [
+      "メアリーさんは かみを ながいです",
+      "The feature takes が, not を."
+     ],
+     [
+      "メアリーさんは ながい かみが います",
+      "います is for living things existing."
+     ]
+    ],
+    "why": "The person is the topic with は and the feature takes が: 〜は 〜が [adjective]."
+   },
+   {
+    "q": "Say this restaurant is cheap and tasty.",
+    "ctx": "",
+    "a": "この みせは やすくて おいしいです",
+    "w": [
+     [
+      "この みせは やすいで おいしいです",
+      "い-adjectives take くて, not で."
+     ],
+     [
+      "この みせは やすくて おいしいでした",
+      "That puts it in the past."
+     ],
+     [
+      "この みせは やすいと おいしいです",
+      "と joins nouns, not adjectives."
+     ]
+    ],
+    "why": "い-adjectives join with くて; な-adjectives and nouns join with で."
+   },
+   {
+    "q": "Say you are going to see a film.",
+    "ctx": "",
+    "a": "えいがを みに いきます",
+    "w": [
+     [
+      "えいがを みるに いきます",
+      "The pattern uses the ます-stem: み."
+     ],
+     [
+      "えいがを みてに いきます",
+      "The te-form does not go before に here."
+     ],
+     [
+      "えいがを みに います",
+      "います means \"exist\", not \"go\"."
+     ]
+    ],
+    "why": "Stem plus に plus a motion verb means going in order to do something."
+   }
+  ]
+ },
+ {
+  "id": "8",
+  "topic": "Casual speech, reporting what people say and think",
+  "kanji": "話聞語何名",
+  "grammar": [
+   {
+    "t": "Short forms",
+    "b": "The dictionary form is the short present: たべる, のむ, いく. The negative drops ます and uses ない: たべない, のまない, いかない. For う-verbs the final sound becomes あ, except う-endings which become わ — かう → かわない. する → しない, くる → こない, ある → ない.",
+    "e": [
+     [
+      "たべる / たべない",
+      "eat / do not eat"
+     ],
+     [
+      "いく / いかない",
+      "go / do not go"
+     ]
+    ]
+   },
+   {
+    "t": "When to use short forms",
+    "b": "Short forms are how friends and family talk. Use them down the social ladder or sideways to people you know well, and keep ます for teachers, strangers and anyone at work. Getting this wrong sounds rude rather than friendly.",
+    "e": [
+     [
+      "あした なにを する？",
+      "What are you doing tomorrow?"
+     ],
+     [
+      "べんきょうする。",
+      "I'm going to study."
+     ]
+    ]
+   },
+   {
+    "t": "〜と思います",
+    "b": "To say what you think, put the thought in short form, then と思います. The と is the quotation marker — everything before it is the thought.",
+    "e": [
+     [
+      "あした あめが ふると おもいます。",
+      "I think it will rain tomorrow."
+     ],
+     [
+      "たかいと おもいます。",
+      "I think it is expensive."
+     ]
+    ]
+   },
+   {
+    "t": "〜と言っていました",
+    "b": "The same structure reports what someone said. Mark the speaker with は, quote in short form, finish with といっていました.",
+    "e": [
+     [
+      "たけしさんは いそがしいと いっていました。",
+      "Takeshi said he was busy."
+     ],
+     [
+      "あした くると いっていました。",
+      "He said he will come tomorrow."
+     ]
+    ]
+   },
+   {
+    "t": "〜ないでください",
+    "b": "The negative request: please do not. Take the short negative, drop the い, add でください.",
+    "e": [
+     [
+      "わすれないでください。",
+      "Please do not forget."
+     ],
+     [
+      "しゃしんを とらないでください。",
+      "Please do not take photographs."
+     ]
+    ]
+   },
+   {
+    "t": "〜のが好きです",
+    "b": "To like doing something, turn the verb into a noun with の, then mark it with が. The same trick works with じょうず (good at) and へた (bad at).",
+    "e": [
+     [
+      "ほんを よむのが すきです。",
+      "I like reading books."
+     ],
+     [
+      "りょうりを するのが じょうずです。",
+      "He is good at cooking."
+     ]
+    ]
+   },
+   {
+    "t": "なにか and なにも",
+    "b": "なにか means \"something\" and takes no particle. なにも means \"nothing\" and needs a negative verb. The same split runs through だれか／だれも and どこか／どこも.",
+    "e": [
+     [
+      "なにか たべましたか。",
+      "Did you eat something?"
+     ],
+     [
+      "なにも たべませんでした。",
+      "I ate nothing."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Which is the short negative of いく?",
+    "ctx": "",
+    "a": "いかない",
+    "w": [
+     [
+      "いきない",
+      "う-verbs change the final sound to あ: いか."
+     ],
+     [
+      "いくない",
+      "The final う has to change before ない."
+     ],
+     [
+      "いけない",
+      "That is the potential form turning negative."
+     ]
+    ],
+    "why": "う-verbs take the あ row before ない, except う endings which become わ."
+   },
+   {
+    "q": "Say you think it will rain tomorrow.",
+    "ctx": "",
+    "a": "あした あめが ふると おもいます",
+    "w": [
+     [
+      "あした あめが ふりますと おもいます",
+      "The quoted part goes in short form."
+     ],
+     [
+      "あした あめが ふると おもます",
+      "おもう becomes おもいます."
+     ],
+     [
+      "あした あめが ふるを おもいます",
+      "と is the quotation marker here, not を."
+     ]
+    ],
+    "why": "Put the thought in short form, then と, then 思います."
+   },
+   {
+    "q": "Report that Takeshi said he was busy.",
+    "ctx": "",
+    "a": "たけしさんは いそがしいと いっていました",
+    "w": [
+     [
+      "たけしさんは いそがしいと いいました",
+      "For reporting what someone said, いっていました is the natural form."
+     ],
+     [
+      "たけしさんは いそがしいですと いっていました",
+      "The quoted part takes the short form."
+     ],
+     [
+      "たけしさんが いそがしいと いっていました",
+      "The speaker is the topic, so は."
+     ]
+    ],
+    "why": "Mark the speaker with は, quote in short form, and finish with といっていました."
+   },
+   {
+    "q": "Ask someone not to take photographs.",
+    "ctx": "",
+    "a": "しゃしんを とらないでください",
+    "w": [
+     [
+      "しゃしんを とらなくてください",
+      "The pattern is ないで, not なくて."
+     ],
+     [
+      "しゃしんを とりませんでください",
+      "It attaches to the short negative: とらない."
+     ],
+     [
+      "しゃしんを とらないください",
+      "で is needed between ない and ください."
+     ]
+    ],
+    "why": "Take the short negative, drop the い, and add でください."
+   },
+   {
+    "q": "Say you like reading books.",
+    "ctx": "",
+    "a": "ほんを よむのが すきです",
+    "w": [
+     [
+      "ほんを よむが すきです",
+      "The verb needs の to become a noun first."
+     ],
+     [
+      "ほんを よみますのが すきです",
+      "の attaches to the short form."
+     ],
+     [
+      "ほんを よむのを すきです",
+      "すき takes が."
+     ]
+    ],
+    "why": "の turns the verb into a noun, and すき marks what is liked with が."
+   }
+  ]
+ },
+ {
+  "id": "9",
+  "topic": "The past in short form, and describing nouns with whole sentences",
+  "kanji": "東西南北国外",
+  "grammar": [
+   {
+    "t": "Past short forms",
+    "b": "The past short form is the te-form with て swapped for た: たべて → たべた, のんで → のんだ, いって → いった. The negative replaces ない with なかった: たべなかった. Because it follows the te-form, every te-form you already know converts for free.",
+    "e": [
+     [
+      "たべた / たべなかった",
+      "ate / did not eat"
+     ],
+     [
+      "いった / いかなかった",
+      "went / did not go"
+     ]
+    ]
+   },
+   {
+    "t": "Past short forms in quotes",
+    "b": "Slot the past short form into the same と思います and と言っていました frames from Lesson 8. Only the quoted part changes tense; the frame stays in the present.",
+    "e": [
+     [
+      "もう たべたと おもいます。",
+      "I think he has already eaten."
+     ],
+     [
+      "おもしろかったと いっていました。",
+      "She said it was interesting."
+     ]
+    ]
+   },
+   {
+    "t": "Describing nouns with a whole clause",
+    "b": "Japanese puts the description in front of the noun, however long it is: きのう みた えいが is \"the film I saw yesterday\". The verb inside goes in short form, and there is no relative pronoun — no \"that\" or \"which\".",
+    "e": [
+     [
+      "きのう みた えいがは おもしろかったです。",
+      "The film I saw yesterday was interesting."
+     ],
+     [
+      "ははが つくった りょうりが すきです。",
+      "I like the food my mother made."
+     ]
+    ]
+   },
+   {
+    "t": "もう and まだ",
+    "b": "もう + past means \"already\". まだ + 〜ていません means \"not yet\" — note that English uses a past tense here and Japanese does not. まだ with a positive verb means \"still\".",
+    "e": [
+     [
+      "もう ひるごはんを たべました。",
+      "I have already eaten lunch."
+     ],
+     [
+      "まだ たべていません。",
+      "I have not eaten yet."
+     ]
+    ]
+   },
+   {
+    "t": "から with short forms",
+    "b": "から joins reason to result just as in Lesson 6, but in casual speech the reason sits in short form: さむいから, いかないから.",
+    "e": [
+     [
+      "さむいから、うちに いた。",
+      "It was cold, so I stayed home."
+     ],
+     [
+      "あしたは しけんが あるから、べんきょうします。",
+      "I have a test tomorrow, so I will study."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Which is the past short form of たべる?",
+    "ctx": "",
+    "a": "たべた",
+    "w": [
+     [
+      "たべった",
+      "る-verbs simply swap て for た: たべて, たべた."
+     ],
+     [
+      "たべました",
+      "That is the polite past, not the short form."
+     ],
+     [
+      "たべなかった",
+      "That is the past negative."
+     ]
+    ],
+    "why": "Take the te-form and change て to た. Every te-form you know converts for free."
+   },
+   {
+    "q": "Say the film you saw yesterday was interesting.",
+    "ctx": "",
+    "a": "きのう みた えいがは おもしろかったです",
+    "w": [
+     [
+      "きのう みました えいがは おもしろかったです",
+      "The verb in front of a noun takes the short form."
+     ],
+     [
+      "えいがは きのう みたが おもしろかったです",
+      "The description goes in front of the noun it describes."
+     ],
+     [
+      "きのう みた えいがは おもしろいでした",
+      "い-adjectives do not take でした."
+     ]
+    ],
+    "why": "Japanese puts the whole description before the noun, with no word for \"that\" or \"which\"."
+   },
+   {
+    "q": "Say you have not eaten yet.",
+    "ctx": "",
+    "a": "まだ たべていません",
+    "w": [
+     [
+      "まだ たべませんでした",
+      "That is a flat past negative, not \"not yet\"."
+     ],
+     [
+      "もう たべていません",
+      "もう with a negative means \"not any more\"."
+     ],
+     [
+      "まだ たべません",
+      "The pattern needs ていません."
+     ]
+    ],
+    "why": "\"Not yet\" is まだ plus ていません, even though English uses a past tense here."
+   },
+   {
+    "q": "Say you have already eaten lunch.",
+    "ctx": "",
+    "a": "もう ひるごはんを たべました",
+    "w": [
+     [
+      "まだ ひるごはんを たべました",
+      "まだ means \"still\" or \"not yet\"."
+     ],
+     [
+      "もう ひるごはんを たべます",
+      "もう with \"already\" needs the past."
+     ],
+     [
+      "もう ひるごはんを たべています",
+      "That says you are in the middle of eating."
+     ]
+    ],
+    "why": "もう plus the past means \"already\"."
+   },
+   {
+    "q": "Say it was cold, so you stayed home (casually, to a friend).",
+    "ctx": "",
+    "a": "さむかったから、うちに いた",
+    "w": [
+     [
+      "さむいでしたから、うちに いた",
+      "い-adjectives do not take でした."
+     ],
+     [
+      "うちに いたから、さむかった",
+      "That reverses cause and effect."
+     ],
+     [
+      "さむかったですから、うちに いた",
+      "Mixing polite です with the casual いた is inconsistent."
+     ]
+    ],
+    "why": "In casual speech both halves stay in short form, with から after the reason."
+   }
+  ]
+ },
+ {
+  "id": "10",
+  "topic": "Comparing things, intentions, and change",
+  "kanji": "今前後間毎午",
+  "grammar": [
+   {
+    "t": "Comparing two things",
+    "b": "AのほうがBより + adjective says A is more... than B. You can flip it to BよりAのほうが with no change in meaning. In an answer, のほうが alone is enough.",
+    "e": [
+     [
+      "でんしゃの ほうが バスより はやいです。",
+      "The train is faster than the bus."
+     ],
+     [
+      "なつの ほうが すきです。",
+      "I prefer summer."
+     ]
+    ]
+   },
+   {
+    "t": "Comparing three or more",
+    "b": "With a whole group, use [group]でいちばん + adjective. The group can be a category (くだもので), a place (にほんで) or a list.",
+    "e": [
+     [
+      "くだもので なにが いちばん すきですか。",
+      "Which fruit do you like best?"
+     ],
+     [
+      "りんごが いちばん すきです。",
+      "I like apples best."
+     ]
+    ]
+   },
+   {
+    "t": "の standing in for a noun",
+    "b": "Once the noun is obvious, replace it with の: あかいの is \"the red one\". This is the same の you met in 〜のが好きです, doing the same job.",
+    "e": [
+     [
+      "もっと やすいのが ありますか。",
+      "Do you have a cheaper one?"
+     ],
+     [
+      "おおきいのを ください。",
+      "The big one, please."
+     ]
+    ]
+   },
+   {
+    "t": "〜つもりです",
+    "b": "Short form plus つもりです states a firm intention — something you have decided, not a vague hope.",
+    "e": [
+     [
+      "なつやすみに にほんに いくつもりです。",
+      "I intend to go to Japan in the summer."
+     ],
+     [
+      "かいものは しないつもりです。",
+      "I do not plan to go shopping."
+     ]
+    ]
+   },
+   {
+    "t": "Adjective + なる",
+    "b": "なる means \"become\". い-adjectives change their ending to く (さむくなる), な-adjectives and nouns take に (げんきになる, せんせいになる).",
+    "e": [
+     [
+      "さむく なりました。",
+      "It has got cold."
+     ],
+     [
+      "にほんごが じょうずに なりました。",
+      "My Japanese has got better."
+     ]
+    ]
+   },
+   {
+    "t": "どこかに and どこにも",
+    "b": "どこかに means \"(to) somewhere\", どこにも with a negative means \"(to) nowhere\". Matching pairs exist for なにか／なにも and だれか／だれも.",
+    "e": [
+     [
+      "なつやすみに どこかに いきましたか。",
+      "Did you go anywhere in the summer?"
+     ],
+     [
+      "どこにも いきませんでした。",
+      "I did not go anywhere."
+     ]
+    ]
+   },
+   {
+    "t": "で for means of transport",
+    "b": "The same で that marks where an action happens also marks what you do it by: train, bus, bike. On foot is the exception — あるいて, the te-form of あるく.",
+    "e": [
+     [
+      "でんしゃで がっこうに いきます。",
+      "I go to school by train."
+     ],
+     [
+      "あるいて かえりました。",
+      "I walked home."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say the train is faster than the bus.",
+    "ctx": "",
+    "a": "でんしゃの ほうが バスより はやいです",
+    "w": [
+     [
+      "でんしゃより バスの ほうが はやいです",
+      "That says the bus is faster."
+     ],
+     [
+      "でんしゃの ほうが バスより はやくです",
+      "The adjective takes です as it is."
+     ],
+     [
+      "でんしゃが バスの ほうが はやいです",
+      "The thing that wins takes のほうが."
+     ]
+    ],
+    "why": "A の ほうが B より means A is more. Reversing the two swaps the meaning."
+   },
+   {
+    "q": "Ask which fruit they like best.",
+    "ctx": "",
+    "a": "くだもので なにが いちばん すきですか",
+    "w": [
+     [
+      "くだものが なにが いちばん すきですか",
+      "The group takes で."
+     ],
+     [
+      "くだもので なにが もっと すきですか",
+      "もっと is \"more\", not \"most\"."
+     ],
+     [
+      "くだもので だれが いちばん すきですか",
+      "だれ asks about people."
+     ]
+    ],
+    "why": "Within a group, use [group]で なにが いちばん."
+   },
+   {
+    "q": "Say you intend to go to Japan in the summer.",
+    "ctx": "",
+    "a": "なつやすみに にほんに いくつもりです",
+    "w": [
+     [
+      "なつやすみに にほんに いきますつもりです",
+      "つもり follows the short form."
+     ],
+     [
+      "なつやすみに にほんに いくつもります",
+      "つもり is a noun and takes です."
+     ],
+     [
+      "なつやすみに にほんに いって つもりです",
+      "The te-form does not go before つもり."
+     ]
+    ],
+    "why": "Short form plus つもりです states a decision you have already made."
+   },
+   {
+    "q": "Say it has got cold.",
+    "ctx": "",
+    "a": "さむく なりました",
+    "w": [
+     [
+      "さむい なりました",
+      "い-adjectives change to く before なる."
+     ],
+     [
+      "さむに なりました",
+      "に is for な-adjectives and nouns."
+     ],
+     [
+      "さむく なりました です",
+      "ました already closes the sentence."
+     ]
+    ],
+    "why": "い-adjectives take く before なる; な-adjectives and nouns take に."
+   },
+   {
+    "q": "Say you go to school by train.",
+    "ctx": "",
+    "a": "でんしゃで がっこうに いきます",
+    "w": [
+     [
+      "でんしゃに がっこうに いきます",
+      "に is the destination, and you cannot have two."
+     ],
+     [
+      "でんしゃを がっこうに いきます",
+      "The means of transport takes で."
+     ],
+     [
+      "でんしゃで がっこうで いきます",
+      "The destination takes に."
+     ]
+    ],
+    "why": "で covers the means as well as the place. Walking is the exception: あるいて."
+   }
+  ]
+ },
+ {
+  "id": "11",
+  "topic": "What you want to do, listing activities, and experience",
+  "kanji": "車電本右左",
+  "grammar": [
+   {
+    "t": "〜たい",
+    "b": "Swap ます for たい to say you want to do something. The result behaves like an い-adjective: たべたいです, たべたくないです, たべたかったです. The object can take が instead of を.",
+    "e": [
+     [
+      "にほんに いきたいです。",
+      "I want to go to Japan."
+     ],
+     [
+      "なにも たべたくないです。",
+      "I do not want to eat anything."
+     ]
+    ]
+   },
+   {
+    "t": "〜たり〜たりする",
+    "b": "To give a sample of what you did rather than a complete list, take past short forms, add り, and finish with する in the tense you need. The implication is \"among other things\".",
+    "e": [
+     [
+      "にちようびは ほんを よんだり、えいがを みたり しました。",
+      "On Sunday I read and watched films, among other things."
+     ],
+     [
+      "うちで そうじしたり せんたくしたり します。",
+      "At home I clean, do laundry and so on."
+     ]
+    ]
+   },
+   {
+    "t": "〜ことがある",
+    "b": "Past short form plus ことがあります says you have done something at least once in your life. It is about experience, not about the past as such, so it does not work for yesterday.",
+    "e": [
+     [
+      "にほんに いったことが あります。",
+      "I have been to Japan."
+     ],
+     [
+      "すしを たべたことが ありません。",
+      "I have never eaten sushi."
+     ]
+    ]
+   },
+   {
+    "t": "Noun や Noun",
+    "b": "や lists examples rather than everything, unlike と which is exhaustive. Often followed by など, \"and so on\".",
+    "e": [
+     [
+      "ほんや ざっしを かいました。",
+      "I bought books, magazines and so on."
+     ],
+     [
+      "やさいや くだものが すきです。",
+      "I like vegetables, fruit and the like."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you want to go to Japan.",
+    "ctx": "",
+    "a": "にほんに いきたいです",
+    "w": [
+     [
+      "にほんに いくたいです",
+      "たい attaches to the ます-stem: いき."
+     ],
+     [
+      "にほんに いきたいます",
+      "たい behaves like an い-adjective, so です."
+     ],
+     [
+      "にほんに いきたいでした",
+      "The past would be いきたかったです."
+     ]
+    ],
+    "why": "Swap ます for たい. The result conjugates like an い-adjective."
+   },
+   {
+    "q": "Say that on Sunday you read and watched films, among other things.",
+    "ctx": "",
+    "a": "にちようびは ほんを よんだり、えいがを みたり しました",
+    "w": [
+     [
+      "にちようびは ほんを よんで、えいがを みて しました",
+      "The te-form lists actions in order, not as samples."
+     ],
+     [
+      "にちようびは ほんを よみたり、えいがを みたり しました",
+      "たり attaches to the past short form: よんだ."
+     ],
+     [
+      "にちようびは ほんを よんだり、えいがを みたり います",
+      "The pattern ends with する."
+     ]
+    ],
+    "why": "Past short form plus り, repeated, then する. It means \"among other things\"."
+   },
+   {
+    "q": "Say you have never eaten sushi.",
+    "ctx": "",
+    "a": "すしを たべたことが ありません",
+    "w": [
+     [
+      "すしを たべることが ありません",
+      "Experience uses the past short form: たべた."
+     ],
+     [
+      "すしを たべたことが いません",
+      "こと is not alive, so あります."
+     ],
+     [
+      "すしを たべませんでした",
+      "That is simply \"I did not eat it\", about one occasion."
+     ]
+    ],
+    "why": "Past short form plus ことがある is about life experience, not about the past itself."
+   },
+   {
+    "q": "Say you bought books, magazines and so on.",
+    "ctx": "",
+    "a": "ほんや ざっしを かいました",
+    "w": [
+     [
+      "ほんと ざっしを かいました",
+      "と gives a complete list with nothing left out."
+     ],
+     [
+      "ほんや ざっしや かいました",
+      "The last item still needs its own particle, here を."
+     ],
+     [
+      "ほんも ざっしを かいました",
+      "も means \"too\", which is a different idea."
+     ]
+    ],
+    "why": "や lists examples and suggests there were others; と is exhaustive."
+   }
+  ]
+ },
+ {
+  "id": "12",
+  "topic": "Explaining, overdoing, advice and obligation",
+  "kanji": "万",
+  "grammar": [
+   {
+    "t": "〜んです",
+    "b": "Short form plus んです frames a statement as an explanation of the situation — giving a reason, asking for one, or softening a request. な-adjectives and nouns need な before it: しずかなんです, がくせいなんです.",
+    "e": [
+     [
+      "あたまが いたいんです。",
+      "The thing is, I have a headache."
+     ],
+     [
+      "どうしたんですか。",
+      "What happened?"
+     ]
+    ]
+   },
+   {
+    "t": "〜すぎる",
+    "b": "Add すぎる to a verb stem or an adjective root for \"too much\". たべすぎる is to overeat, たかすぎる is too expensive. It conjugates as a る-verb.",
+    "e": [
+     [
+      "ゆうべ たべすぎました。",
+      "I ate too much last night."
+     ],
+     [
+      "この くつは たかすぎます。",
+      "These shoes are too expensive."
+     ]
+    ]
+   },
+   {
+    "t": "〜ほうがいいです",
+    "b": "Advice. Use the past short form for \"you should\" (ねたほうがいいです) and the negative short form for \"you should not\" (いかないほうがいいです). The past form here has nothing to do with past time.",
+    "e": [
+     [
+      "くすりを のんだほうが いいです。",
+      "You should take some medicine."
+     ],
+     [
+      "むりを しないほうが いいです。",
+      "You should not overdo it."
+     ]
+    ]
+   },
+   {
+    "t": "〜ので",
+    "b": "Another \"because\", a shade softer and more formal than から. It attaches to short forms, with な after な-adjectives and nouns.",
+    "e": [
+     [
+      "ねつが あるので、やすみます。",
+      "I have a fever, so I will take the day off."
+     ],
+     [
+      "あめなので、いきません。",
+      "It is raining, so I will not go."
+     ]
+    ]
+   },
+   {
+    "t": "〜なければいけません",
+    "b": "Obligation: \"must\". Take the short negative, drop い, add ければいけません. The casual contraction なきゃ is everywhere in speech — べんきょうしなきゃ.",
+    "e": [
+     [
+      "くすりを のまなければ いけません。",
+      "I have to take medicine."
+     ],
+     [
+      "あした はやく おきなきゃ。",
+      "I have to get up early tomorrow."
+     ]
+    ]
+   },
+   {
+    "t": "〜でしょうか",
+    "b": "Softens a question, adding a note of \"I wonder\". Useful when asking something you are not sure the other person can answer.",
+    "e": [
+     [
+      "あめが ふるでしょうか。",
+      "I wonder if it will rain."
+     ],
+     [
+      "これで いいでしょうか。",
+      "Would this be all right?"
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "The doctor asks what is wrong. Explain that you have a headache.",
+    "ctx": "医者：どうしましたか。",
+    "a": "あたまが いたいんです",
+    "w": [
+     [
+      "あたまが いたいです",
+      "Correct Japanese, but it states a fact rather than explaining your situation."
+     ],
+     [
+      "あたまが いたいなんです",
+      "な is only needed after な-adjectives and nouns."
+     ],
+     [
+      "あたまを いたいんです",
+      "The part that hurts takes が."
+     ]
+    ],
+    "why": "んです frames what you say as the explanation behind the situation, which is what the question invites."
+   },
+   {
+    "q": "Say you ate too much last night.",
+    "ctx": "",
+    "a": "ゆうべ たべすぎました",
+    "w": [
+     [
+      "ゆうべ たべるすぎました",
+      "すぎる attaches to the stem: たべ."
+     ],
+     [
+      "ゆうべ たべすぎでした",
+      "すぎる is a verb, so たべすぎました."
+     ],
+     [
+      "ゆうべ たくさん たべすぎます",
+      "That puts it in the present."
+     ]
+    ],
+    "why": "Add すぎる to a verb stem or an adjective root for doing something to excess."
+   },
+   {
+    "q": "Advise someone to take some medicine.",
+    "ctx": "",
+    "a": "くすりを のんだほうが いいです",
+    "w": [
+     [
+      "くすりを のむほうが いいです",
+      "This pattern uses the past short form, のんだ."
+     ],
+     [
+      "くすりを のまないほうが いいです",
+      "That advises against taking it."
+     ],
+     [
+      "くすりを のんだほうが いいます",
+      "いい is an adjective and takes です."
+     ]
+    ],
+    "why": "Past short form plus ほうがいいです gives advice. The past form here has nothing to do with past time."
+   },
+   {
+    "q": "Say you have to take medicine.",
+    "ctx": "",
+    "a": "くすりを のまなければ いけません",
+    "w": [
+     [
+      "くすりを のまなければ いけます",
+      "The set phrase is いけません."
+     ],
+     [
+      "くすりを のまないければ いけません",
+      "Drop the い from のまない before ければ."
+     ],
+     [
+      "くすりを のまなくても いいです",
+      "That says you do not have to."
+     ]
+    ],
+    "why": "Take the short negative, drop い, add ければいけません. In speech it contracts to のまなきゃ."
+   },
+   {
+    "q": "Say you have a fever, so you will take the day off.",
+    "ctx": "",
+    "a": "ねつが あるので、やすみます",
+    "w": [
+     [
+      "ねつが あるですので、やすみます",
+      "ので attaches straight to the short form."
+     ],
+     [
+      "ねつが あるので、やすみました",
+      "That puts the result in the past."
+     ],
+     [
+      "ねつが ありますので、やすみます",
+      "Grammatical, but the short form before ので is the normal pattern here."
+     ]
+    ],
+    "why": "ので is a softer, slightly more formal \"because\" than から."
+   }
+  ]
+ },
+ {
+  "id": "13",
+  "topic": "What you can do, giving reasons, how things look",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Potential verbs",
+    "b": "A separate conjugation for \"can do\". る-verbs take られる (たべられる), う-verbs change the final u to e plus る (よむ → よめる), する → できる, くる → こられる. The object usually shifts from を to が.",
+    "e": [
+     [
+      "にほんごが はなせます。",
+      "I can speak Japanese."
+     ]
+    ]
+   },
+   {
+    "t": "〜し",
+    "b": "Stacks up reasons: \"and what is more\". Attaches to short forms and implies the list could go on.",
+    "e": [
+     [
+      "やすいし、おいしいです。",
+      "It is cheap, and tasty too."
+     ]
+    ]
+   },
+   {
+    "t": "〜そうです (it looks like)",
+    "b": "Attached to an adjective root or verb stem, it reports how something looks to you right now. おいしそう is \"looks delicious\".",
+    "e": [
+     [
+      "この ケーキは おいしそうです。",
+      "This cake looks delicious."
+     ]
+    ]
+   },
+   {
+    "t": "〜てみる",
+    "b": "te-form plus みる means to try something and see how it goes.",
+    "e": [
+     [
+      "きものを きてみました。",
+      "I tried wearing a kimono."
+     ]
+    ]
+   },
+   {
+    "t": "なら",
+    "b": "Picks up a topic someone else raised and comments on it: \"if we are talking about X\".",
+    "e": [
+     [
+      "にほんごなら、たけしさんが じょうずです。",
+      "If it is Japanese you need, Takeshi is good at it."
+     ]
+    ]
+   },
+   {
+    "t": "Frequency per period",
+    "b": "Period に number + counter: いっしゅうかんに さんかい, three times a week.",
+    "e": [
+     [
+      "いっしゅうかんに さんかい ジムに いきます。",
+      "I go to the gym three times a week."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you can speak Japanese.",
+    "ctx": "",
+    "a": "にほんごが はなせます",
+    "w": [
+     [
+      "にほんごを はなせます",
+      "With potential verbs the object usually shifts to が."
+     ],
+     [
+      "にほんごが はなすできます",
+      "The potential of はなす is はなせる."
+     ],
+     [
+      "にほんごが はなせるます",
+      "はなせる is a る-verb: はなせます."
+     ]
+    ],
+    "why": "う-verbs change the final u to e and add る: はなす to はなせる."
+   },
+   {
+    "q": "Say it is cheap, and tasty too.",
+    "ctx": "",
+    "a": "やすいし、おいしいです",
+    "w": [
+     [
+      "やすくて、おいしいです",
+      "Correct, but て simply joins. し stacks up reasons."
+     ],
+     [
+      "やすいですし、おいしい",
+      "The polite ending belongs at the end of the sentence."
+     ],
+     [
+      "やすいしと、おいしいです",
+      "し does not combine with と."
+     ]
+    ],
+    "why": "し attaches to short forms and implies the list of reasons could go on."
+   },
+   {
+    "q": "Say this cake looks delicious.",
+    "ctx": "",
+    "a": "この ケーキは おいしそうです",
+    "w": [
+     [
+      "この ケーキは おいしいそうです",
+      "With い on the end it means \"I hear it is delicious\"."
+     ],
+     [
+      "この ケーキは おいしみたいです",
+      "みたい is a different pattern, closer to \"seems\"."
+     ],
+     [
+      "この ケーキは おいしそうます",
+      "そう takes です."
+     ]
+    ],
+    "why": "Drop the い from the adjective and add そう for how something looks to you."
+   }
+  ]
+ },
+ {
+  "id": "14",
+  "topic": "Wanting things, giving and receiving, suggestions",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "ほしい",
+    "b": "\"Want\" for things rather than actions. It is an い-adjective and the thing wanted takes が.",
+    "e": [
+     [
+      "あたらしい くるまが ほしいです。",
+      "I want a new car."
+     ]
+    ]
+   },
+   {
+    "t": "〜かもしれません",
+    "b": "\"Might\". Weaker than でしょう, attaches to short forms.",
+    "e": [
+     [
+      "あした あめが ふるかもしれません。",
+      "It might rain tomorrow."
+     ]
+    ]
+   },
+   {
+    "t": "あげる, くれる, もらう",
+    "b": "Three verbs for giving, chosen by direction. あげる is giving away from me, くれる is someone giving to me, もらう is me receiving. Getting the direction wrong is the classic mistake here.",
+    "e": [
+     [
+      "ともだちに プレゼントを あげました。",
+      "I gave my friend a present."
+     ]
+    ]
+   },
+   {
+    "t": "〜たらどうですか",
+    "b": "Suggesting a course of action to someone else: \"why not...?\".",
+    "e": [
+     [
+      "びょういんに いったら どうですか。",
+      "Why not go to the hospital?"
+     ]
+    ]
+   },
+   {
+    "t": "Number + も and しか + negative",
+    "b": "も after a number says the amount is surprisingly large; しか with a negative verb says it is disappointingly small.",
+    "e": [
+     [
+      "ひゃくえんしか ありません。",
+      "I only have a hundred yen."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you want a new car.",
+    "ctx": "",
+    "a": "あたらしい くるまが ほしいです",
+    "w": [
+     [
+      "あたらしい くるまを ほしいです",
+      "ほしい is an adjective, so the thing wanted takes が."
+     ],
+     [
+      "あたらしい くるまが ほしいます",
+      "ほしい is an い-adjective and takes です."
+     ],
+     [
+      "あたらしい くるまが ほしたいです",
+      "たい is for verbs; ほしい is for things."
+     ]
+    ],
+    "why": "ほしい wants a thing; 〜たい wants to do something."
+   },
+   {
+    "q": "Say your friend gave you a present.",
+    "ctx": "",
+    "a": "ともだちが プレゼントを くれました",
+    "w": [
+     [
+      "ともだちが プレゼントを あげました",
+      "あげる is giving away from you, not to you."
+     ],
+     [
+      "ともだちに プレゼントを くれました",
+      "The giver takes が."
+     ],
+     [
+      "ともだちが プレゼントを もらいました",
+      "もらう is from your side: you receive."
+     ]
+    ],
+    "why": "くれる is the one that points at you. あげる points away, もらう is receiving."
+   },
+   {
+    "q": "Say you only have a hundred yen.",
+    "ctx": "",
+    "a": "ひゃくえんしか ありません",
+    "w": [
+     [
+      "ひゃくえんしか あります",
+      "しか always finishes with a negative."
+     ],
+     [
+      "ひゃくえんも ありません",
+      "も after a number means the amount is large."
+     ],
+     [
+      "ひゃくえんだけ ありません",
+      "だけ is neutral and does not need a negative."
+     ]
+    ],
+    "why": "しか plus a negative means \"only\", with a sense of it not being enough."
+   }
+  ]
+ },
+ {
+  "id": "15",
+  "topic": "Intentions, preparation, and longer descriptions",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Volitional form",
+    "b": "The casual \"let's\": る-verbs take よう (たべよう), う-verbs change u to o plus う (のむ → のもう), する → しよう, くる → こよう. It is the short-form counterpart of ましょう.",
+    "e": [
+     [
+      "ひるごはんを たべよう。",
+      "Let's have lunch."
+     ]
+    ]
+   },
+   {
+    "t": "Volitional + と思っています",
+    "b": "States a plan you have been turning over, slightly less fixed than つもり.",
+    "e": [
+     [
+      "なつやすみに にほんに いこうと おもっています。",
+      "I am thinking of going to Japan in the summer."
+     ]
+    ]
+   },
+   {
+    "t": "〜ておく",
+    "b": "Doing something in advance, in preparation. Contracts to 〜とく in speech.",
+    "e": [
+     [
+      "きっぷを かっておきます。",
+      "I will buy the tickets in advance."
+     ]
+    ]
+   },
+   {
+    "t": "Sentences that qualify nouns",
+    "b": "The Lesson 9 pattern stretched further: a whole clause in front of a noun, with the verb in short form.",
+    "e": [
+     [
+      "わたしが とまった ホテルは きれいでした。",
+      "The hotel I stayed at was lovely."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say \"let's eat lunch\" to a friend, casually.",
+    "ctx": "",
+    "a": "ひるごはんを たべよう",
+    "w": [
+     [
+      "ひるごはんを たべましょう",
+      "Correct, but that is the polite form."
+     ],
+     [
+      "ひるごはんを たべるよう",
+      "る-verbs drop る before よう."
+     ],
+     [
+      "ひるごはんを たべろう",
+      "That is not a form of たべる."
+     ]
+    ],
+    "why": "る-verbs take よう and う-verbs change u to o plus う: のむ to のもう."
+   },
+   {
+    "q": "Say you are thinking of going to Japan.",
+    "ctx": "",
+    "a": "にほんに いこうと おもっています",
+    "w": [
+     [
+      "にほんに いくと おもっています",
+      "That means you think someone will go."
+     ],
+     [
+      "にほんに いこうと おもいます",
+      "With ています it sounds like a plan you have been turning over."
+     ],
+     [
+      "にほんに いくつもりと おもっています",
+      "つもり does not combine with と思う."
+     ]
+    ],
+    "why": "Volitional plus と思っています is a plan you are weighing up."
+   },
+   {
+    "q": "Say you will buy the tickets in advance.",
+    "ctx": "",
+    "a": "きっぷを かっておきます",
+    "w": [
+     [
+      "きっぷを かってあります",
+      "てある describes a state someone has left behind."
+     ],
+     [
+      "きっぷを かっています",
+      "That says you are in the middle of buying them."
+     ],
+     [
+      "きっぷを かうておきます",
+      "おく attaches to the te-form: かって."
+     ]
+    ],
+    "why": "ておく is doing something ahead of time, ready for later."
+   }
+  ]
+ },
+ {
+  "id": "16",
+  "topic": "Doing things for people, polite requests, and timing",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "〜てあげる, 〜てくれる, 〜てもらう",
+    "b": "The giving verbs applied to actions rather than objects: doing something for someone, someone doing it for me, getting someone to do it.",
+    "e": [
+     [
+      "ともだちが てつだってくれました。",
+      "My friend helped me out."
+     ]
+    ]
+   },
+   {
+    "t": "〜ていただけませんか",
+    "b": "The most polite way to ask for something. Use it with strangers and anyone senior to you.",
+    "e": [
+     [
+      "たすけていただけませんか。",
+      "Could you please help me?"
+     ]
+    ]
+   },
+   {
+    "t": "〜といい",
+    "b": "Expressing a hope: \"it would be good if\". With ですね it becomes a wish for the other person.",
+    "e": [
+     [
+      "あめが やむと いいですね。",
+      "I hope the rain stops."
+     ]
+    ]
+   },
+   {
+    "t": "〜とき",
+    "b": "\"When\". The clause before とき is in short form, and its tense is relative to the main clause, not to now.",
+    "e": [
+     [
+      "こどものとき、よく およぎました。",
+      "When I was a child I swam a lot."
+     ]
+    ]
+   },
+   {
+    "t": "〜てすみませんでした",
+    "b": "Apologising for something specific you did.",
+    "e": [
+     [
+      "おくれて すみませんでした。",
+      "I am sorry for being late."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say your friend helped you out.",
+    "ctx": "",
+    "a": "ともだちが てつだってくれました",
+    "w": [
+     [
+      "ともだちが てつだってあげました",
+      "あげる points away from you."
+     ],
+     [
+      "ともだちに てつだってくれました",
+      "The person doing the favour takes が."
+     ],
+     [
+      "ともだちが てつだってもらいました",
+      "With もらう you would be the one receiving: ともだちに てつだってもらいました."
+     ]
+    ],
+    "why": "てくれる is a favour coming towards you."
+   },
+   {
+    "q": "Ask a stranger politely if they could help you.",
+    "ctx": "",
+    "a": "たすけていただけませんか",
+    "w": [
+     [
+      "たすけてください",
+      "A plain request, too direct for a stranger."
+     ],
+     [
+      "たすけてもらいませんか",
+      "That is not the set polite form."
+     ],
+     [
+      "たすけていただきませんか",
+      "The polite request uses the potential: いただけ."
+     ]
+    ],
+    "why": "ていただけませんか is the most polite of the request forms."
+   },
+   {
+    "q": "Say that when you were a child, you swam a lot.",
+    "ctx": "",
+    "a": "こどものとき、よく およぎました",
+    "w": [
+     [
+      "こどもとき、よく およぎました",
+      "A noun needs の before とき."
+     ],
+     [
+      "こどものとき、よく およぐました",
+      "およぐ becomes およぎます."
+     ],
+     [
+      "こどもだったとき、よく およぎました が",
+      "The trailing が leaves it hanging."
+     ]
+    ],
+    "why": "Nouns take の before とき; verbs and adjectives take the short form."
+   }
+  ]
+ },
+ {
+  "id": "17",
+  "topic": "Hearsay, conditions, and what you need not do",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "〜そうです (I hear)",
+    "b": "Attached to a short form, this reports second-hand information. Note the contrast with Lesson 13: that one attaches to a stem and means \"looks like\".",
+    "e": [
+     [
+      "たけしさんは にほんに かえるそうです。",
+      "I hear Takeshi is going back to Japan."
+     ]
+    ]
+   },
+   {
+    "t": "〜って",
+    "b": "The casual version of と or そうです, very common in speech.",
+    "e": [
+     [
+      "あした やすみだって。",
+      "Apparently tomorrow is a day off."
+     ]
+    ]
+   },
+   {
+    "t": "〜たら",
+    "b": "The all-purpose \"if/when\". Take the past short form and add ら.",
+    "e": [
+     [
+      "あめが ふったら、いきません。",
+      "If it rains, I will not go."
+     ]
+    ]
+   },
+   {
+    "t": "〜なくてもいいです",
+    "b": "\"You do not have to\". Take the short negative, drop い, add くてもいいです.",
+    "e": [
+     [
+      "あした こなくてもいいです。",
+      "You do not have to come tomorrow."
+     ]
+    ]
+   },
+   {
+    "t": "〜みたいです",
+    "b": "\"Seems like\", based on your own impression. After nouns it works like a な-adjective.",
+    "e": [
+     [
+      "かぜを ひいたみたいです。",
+      "It seems I have caught a cold."
+     ]
+    ]
+   },
+   {
+    "t": "〜前に and 〜てから",
+    "b": "Ordering events: 〜前に (before, with the dictionary form) and 〜てから (after, with the te-form).",
+    "e": [
+     [
+      "ねる まえに はを みがきます。",
+      "I brush my teeth before bed."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you hear Takeshi is going back to Japan.",
+    "ctx": "",
+    "a": "たけしさんは にほんに かえるそうです",
+    "w": [
+     [
+      "たけしさんは にほんに かえりそうです",
+      "Attached to the stem it means \"looks like he is about to\"."
+     ],
+     [
+      "たけしさんは にほんに かえるみたいです",
+      "みたい is your own impression, not something you were told."
+     ],
+     [
+      "たけしさんは にほんに かえるとです",
+      "と does not work on its own here."
+     ]
+    ],
+    "why": "Short form plus そうです reports what you heard. Stem plus そう is how something looks."
+   },
+   {
+    "q": "Say that if it rains, you will not go.",
+    "ctx": "",
+    "a": "あめが ふったら、いきません",
+    "w": [
+     [
+      "あめが ふるたら、いきません",
+      "たら attaches to the past short form: ふった."
+     ],
+     [
+      "あめが ふりましたら、いきません",
+      "The short form is normal before たら."
+     ],
+     [
+      "あめが ふると、いきません",
+      "と is for automatic results, not for decisions."
+     ]
+    ],
+    "why": "Past short form plus ら is the all-purpose \"if\" or \"when\"."
+   },
+   {
+    "q": "Say you do not have to come tomorrow.",
+    "ctx": "",
+    "a": "あした こなくてもいいです",
+    "w": [
+     [
+      "あした こないでもいいです",
+      "The pattern uses なくて, not ないで."
+     ],
+     [
+      "あした こなければいけません",
+      "That says the opposite: you must come."
+     ],
+     [
+      "あした きなくてもいいです",
+      "くる becomes こない, so こなくて."
+     ]
+    ],
+    "why": "Short negative, drop い, add くてもいいです."
+   }
+  ]
+ },
+ {
+  "id": "18",
+  "topic": "Pairs of verbs, regret, and simultaneous actions",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Transitive and intransitive pairs",
+    "b": "Japanese has matched pairs: one verb for doing something to an object, another for the thing doing it itself. あける (I open it) against あく (it opens); おとす against おちる. The transitive one takes を.",
+    "e": [
+     [
+      "ドアを あけました。 / ドアが あきました。",
+      "I opened the door. / The door opened."
+     ]
+    ]
+   },
+   {
+    "t": "Intransitive + ている",
+    "b": "With intransitive verbs, ている describes the state things are now in: まどが あいている, the window is open.",
+    "e": [
+     [
+      "でんきが ついています。",
+      "The light is on."
+     ]
+    ]
+   },
+   {
+    "t": "〜てしまう",
+    "b": "Two senses: finishing something off, or doing something you regret. Contracts to 〜ちゃう in speech.",
+    "e": [
+     [
+      "さいふを なくしてしまいました。",
+      "I went and lost my wallet."
+     ]
+    ]
+   },
+   {
+    "t": "〜と for automatic results",
+    "b": "\"Whenever A, B follows\". Used for natural consequences and instructions, not for one-off plans.",
+    "e": [
+     [
+      "はるに なると、さくらが さきます。",
+      "When spring comes, the cherry blossoms bloom."
+     ]
+    ]
+   },
+   {
+    "t": "〜ながら",
+    "b": "Two actions by one person at the same time. Attach ながら to the ます-stem; the main verb comes last.",
+    "e": [
+     [
+      "おんがくを ききながら べんきょうします。",
+      "I study while listening to music."
+     ]
+    ]
+   },
+   {
+    "t": "〜ばよかったです",
+    "b": "Regret about something you did or did not do: \"I should have\".",
+    "e": [
+     [
+      "もっと べんきょうすれば よかったです。",
+      "I should have studied more."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say the door opened (by itself).",
+    "ctx": "",
+    "a": "ドアが あきました",
+    "w": [
+     [
+      "ドアを あけました",
+      "That says you opened it."
+     ],
+     [
+      "ドアが あけました",
+      "あける needs someone doing it, and takes を."
+     ],
+     [
+      "ドアを あきました",
+      "あく does not take an object."
+     ]
+    ],
+    "why": "あく happens by itself and takes が; あける is done by someone and takes を."
+   },
+   {
+    "q": "Say you went and lost your wallet.",
+    "ctx": "",
+    "a": "さいふを なくしてしまいました",
+    "w": [
+     [
+      "さいふを なくしておきました",
+      "ておく is doing something deliberately in advance."
+     ],
+     [
+      "さいふを なくしました",
+      "Correct, but it loses the note of regret."
+     ],
+     [
+      "さいふを なくすてしまいました",
+      "しまう attaches to the te-form: なくして."
+     ]
+    ],
+    "why": "てしまう adds either completion or regret. Here it is regret."
+   },
+   {
+    "q": "Say you study while listening to music.",
+    "ctx": "",
+    "a": "おんがくを ききながら べんきょうします",
+    "w": [
+     [
+      "おんがくを きくながら べんきょうします",
+      "ながら attaches to the ます-stem: きき."
+     ],
+     [
+      "おんがくを きいてながら べんきょうします",
+      "The te-form does not go before ながら."
+     ],
+     [
+      "べんきょうしながら おんがくを ききます",
+      "The main action goes last, so this swaps which one matters."
+     ]
+    ],
+    "why": "Stem plus ながら, with the main activity in the second half."
+   }
+  ]
+ },
+ {
+  "id": "19",
+  "topic": "Honorific language and thanking people",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Honorific verbs",
+    "b": "Keigo raises the other person. Some verbs have special honorific forms — いらっしゃる for いる/いく/くる, めしあがる for たべる — and the rest use お + stem + になる.",
+    "e": [
+     [
+      "せんせいは なにを めしあがりますか。",
+      "What will you have, sensei?"
+     ]
+    ]
+   },
+   {
+    "t": "Respectful advice",
+    "b": "お + stem + ください is the polite imperative you hear in announcements and shops.",
+    "e": [
+     [
+      "こちらに おかけください。",
+      "Please have a seat here."
+     ]
+    ]
+   },
+   {
+    "t": "〜てくれてありがとう",
+    "b": "Thanking someone for a specific action. The polite version is 〜てくださってありがとうございます.",
+    "e": [
+     [
+      "てつだってくれて ありがとう。",
+      "Thanks for helping me."
+     ]
+    ]
+   },
+   {
+    "t": "〜てよかったです",
+    "b": "Relief or satisfaction that something turned out well: \"I am glad that...\".",
+    "e": [
+     [
+      "にほんごを べんきょうして よかったです。",
+      "I am glad I studied Japanese."
+     ]
+    ]
+   },
+   {
+    "t": "〜はずです",
+    "b": "\"Is supposed to\" — what you expect on the basis of what you know.",
+    "e": [
+     [
+      "たけしさんは もう ついたはずです。",
+      "Takeshi should have arrived by now."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Ask your teacher politely what they will have to eat.",
+    "ctx": "",
+    "a": "せんせいは なにを めしあがりますか",
+    "w": [
+     [
+      "せんせいは なにを たべますか",
+      "Polite, but it does not raise the other person."
+     ],
+     [
+      "せんせいは なにを いただきますか",
+      "いただく lowers you, so it is wrong for their action."
+     ],
+     [
+      "せんせいは なにを めしあがってですか",
+      "めしあがる conjugates normally: めしあがります."
+     ]
+    ],
+    "why": "Honorific verbs raise the other person. めしあがる is the honorific of たべる and のむ."
+   },
+   {
+    "q": "Thank a friend for helping you.",
+    "ctx": "",
+    "a": "てつだってくれて ありがとう",
+    "w": [
+     [
+      "てつだってあげて ありがとう",
+      "あげる points away from you."
+     ],
+     [
+      "てつだうくれて ありがとう",
+      "It attaches to the te-form: てつだって."
+     ],
+     [
+      "てつだってもらって ありがとう",
+      "Possible, but てくれて is the natural way to thank someone."
+     ]
+    ],
+    "why": "てくれて ありがとう thanks someone for a specific thing they did for you."
+   },
+   {
+    "q": "Say you are glad you studied Japanese.",
+    "ctx": "",
+    "a": "にほんごを べんきょうして よかったです",
+    "w": [
+     [
+      "にほんごを べんきょうして いいです",
+      "The set phrase is よかったです."
+     ],
+     [
+      "にほんごを べんきょうすると よかったです",
+      "That is a conditional, not a reflection."
+     ],
+     [
+      "にほんごを べんきょうしてよかったでした",
+      "よかった already carries the past."
+     ]
+    ],
+    "why": "te-form plus よかったです expresses relief or satisfaction about something that turned out well."
+   }
+  ]
+ },
+ {
+  "id": "20",
+  "topic": "Humble language and embedded questions",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Extra-modest expressions",
+    "b": "A small set of verbs that lower you in formal settings: ございます, おります, いたします, まいります.",
+    "e": [
+     [
+      "やまだと もうします。",
+      "My name is Yamada."
+     ]
+    ]
+   },
+   {
+    "t": "Humble expressions",
+    "b": "お + stem + する lowers your own action when it affects someone senior.",
+    "e": [
+     [
+      "にもつを おもちします。",
+      "Let me carry your bag."
+     ]
+    ]
+   },
+   {
+    "t": "〜ないで",
+    "b": "Doing one thing without doing another.",
+    "e": [
+     [
+      "あさごはんを たべないで きました。",
+      "I came without eating breakfast."
+     ]
+    ]
+   },
+   {
+    "t": "Questions inside sentences",
+    "b": "A question tucked inside a bigger sentence: short form plus か, or かどうか when there is no question word.",
+    "e": [
+     [
+      "なんじに はじまるか しっていますか。",
+      "Do you know what time it starts?"
+     ]
+    ]
+   },
+   {
+    "t": "〜という",
+    "b": "Introducing a name you do not expect the listener to know.",
+    "e": [
+     [
+      "「げんき」という きょうかしょです。",
+      "It is a textbook called Genki."
+     ]
+    ]
+   },
+   {
+    "t": "〜やすい and 〜にくい",
+    "b": "Attached to the ます-stem: easy to do, hard to do.",
+    "e": [
+     [
+      "この ペンは かきやすいです。",
+      "This pen is easy to write with."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Introduce yourself humbly as Yamada in a formal setting.",
+    "ctx": "",
+    "a": "やまだと もうします",
+    "w": [
+     [
+      "やまだと いいます",
+      "Polite and fine day to day, but not the humble form."
+     ],
+     [
+      "やまだと おっしゃいます",
+      "おっしゃる raises the other person, so you cannot use it about yourself."
+     ],
+     [
+      "やまだと もうしますです",
+      "もうします already closes the sentence."
+     ]
+    ],
+    "why": "もうす is the humble counterpart of いう, used about your own actions."
+   },
+   {
+    "q": "Offer to carry your boss's bag.",
+    "ctx": "",
+    "a": "にもつを おもちします",
+    "w": [
+     [
+      "にもつを もってあげます",
+      "てあげる sounds like you are doing them a favour from above."
+     ],
+     [
+      "にもつを おもちになります",
+      "That is the honorific form, which raises your own action."
+     ],
+     [
+      "にもつを おもちです",
+      "です does not work as a verb here."
+     ]
+    ],
+    "why": "お plus stem plus する lowers your own action when it affects someone senior."
+   },
+   {
+    "q": "Ask whether they know what time it starts.",
+    "ctx": "",
+    "a": "なんじに はじまるか しっていますか",
+    "w": [
+     [
+      "なんじに はじまりますか しっていますか",
+      "The embedded question takes the short form."
+     ],
+     [
+      "なんじに はじまるか しりますか",
+      "Knowing something is しっています."
+     ],
+     [
+      "なんじに はじまるを しっていますか",
+      "An embedded question keeps か."
+     ]
+    ],
+    "why": "A question inside a larger sentence keeps か and takes the short form."
+   }
+  ]
+ },
+ {
+  "id": "21",
+  "topic": "The passive, and things left in a state",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Passive sentences",
+    "b": "る-verbs take られる, う-verbs change u to a plus れる (よむ → よまれる). The person affected becomes the topic and the doer takes に. Japanese often uses it where something unwelcome happened to you.",
+    "e": [
+     [
+      "どろぼうに さいふを とられました。",
+      "I had my wallet stolen by a thief."
+     ]
+    ]
+   },
+   {
+    "t": "〜てある",
+    "b": "Something was done deliberately and the result is still there. Pairs with the transitive verb, unlike 〜ている with the intransitive.",
+    "e": [
+     [
+      "まどが あけてあります。",
+      "The window has been left open."
+     ]
+    ]
+   },
+   {
+    "t": "〜間に",
+    "b": "\"While\" — something happens inside the span of something else.",
+    "e": [
+     [
+      "るすの あいだに どろぼうが はいりました。",
+      "A burglar got in while I was out."
+     ]
+    ]
+   },
+   {
+    "t": "Adjective + する",
+    "b": "Where なる is \"become\", する is \"make it become\": make it bigger, quieter, cleaner.",
+    "e": [
+     [
+      "へやを きれいに しました。",
+      "I made the room clean."
+     ]
+    ]
+   },
+   {
+    "t": "〜てほしい",
+    "b": "Wanting someone else to do something.",
+    "e": [
+     [
+      "てつだってほしいです。",
+      "I want you to help me."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you had your wallet stolen by a thief.",
+    "ctx": "",
+    "a": "どろぼうに さいふを とられました",
+    "w": [
+     [
+      "どろぼうが さいふを とられました",
+      "The person who did it takes に in a passive sentence."
+     ],
+     [
+      "どろぼうに さいふを とりました",
+      "That says you did the taking."
+     ],
+     [
+      "どろぼうに さいふを とられました です",
+      "ました already closes the sentence."
+     ]
+    ],
+    "why": "In a passive sentence the affected person is the topic and the doer takes に."
+   },
+   {
+    "q": "Say the window has been left open.",
+    "ctx": "",
+    "a": "まどが あけてあります",
+    "w": [
+     [
+      "まどが あいています",
+      "That describes the state without implying anyone did it."
+     ],
+     [
+      "まどを あけてあります",
+      "With てある the thing takes が."
+     ],
+     [
+      "まどが あけておきます",
+      "ておく is doing something in advance."
+     ]
+    ],
+    "why": "てある means someone did it on purpose and the result is still there."
+   },
+   {
+    "q": "Say a burglar got in while you were out.",
+    "ctx": "",
+    "a": "るすの あいだに どろぼうが はいりました",
+    "w": [
+     [
+      "るすの あいだで どろぼうが はいりました",
+      "あいだに is the set phrase for something happening within a span."
+     ],
+     [
+      "るすの あいだに どろぼうが はいっています",
+      "That describes a present state."
+     ],
+     [
+      "るすの あいだに どろぼうを はいりました",
+      "はいる does not take an object."
+     ]
+    ],
+    "why": "あいだに marks something happening inside the span of something else."
+   }
+  ]
+ },
+ {
+  "id": "22",
+  "topic": "Making and letting people do things, and conditions",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Causative sentences",
+    "b": "\"Make\" or \"let\" someone do something. る-verbs take させる, う-verbs change u to a plus せる. Whether it is forcing or allowing depends on context and on the particle: を for making, に for letting.",
+    "e": [
+     [
+      "せんせいは がくせいに さくぶんを かかせました。",
+      "The teacher made the students write an essay."
+     ]
+    ]
+   },
+   {
+    "t": "Causative + てあげる/てくれる/てもらう",
+    "b": "Combines with the giving verbs to make permission explicit: let me do it, please let me do it.",
+    "e": [
+     [
+      "いかせてください。",
+      "Please let me go."
+     ]
+    ]
+   },
+   {
+    "t": "Verb stem + なさい",
+    "b": "A firm instruction from a parent or teacher. It appears constantly on exam papers.",
+    "e": [
+     [
+      "はやく ねなさい。",
+      "Go to bed, now."
+     ]
+    ]
+   },
+   {
+    "t": "〜ば",
+    "b": "Another conditional, closer to pure \"if\" than たら. う-verbs change u to eば; る-verbs drop る and add れば.",
+    "e": [
+     [
+      "あした あめが ふれば、いきません。",
+      "If it rains tomorrow, I will not go."
+     ]
+    ]
+   },
+   {
+    "t": "〜のに",
+    "b": "\"Even though\" — marks a contrast that disappoints expectations.",
+    "e": [
+     [
+      "たくさん べんきょうしたのに、わすれました。",
+      "Even though I studied a lot, I forgot it."
+     ]
+    ]
+   },
+   {
+    "t": "〜のように and 〜のような",
+    "b": "\"Like\" — comparing one thing to another.",
+    "e": [
+     [
+      "ゆめのような はなしです。",
+      "It is a story like a dream."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say the teacher made the students write an essay.",
+    "ctx": "",
+    "a": "せんせいは がくせいに さくぶんを かかせました",
+    "w": [
+     [
+      "せんせいは がくせいを さくぶんを かかせました",
+      "A sentence cannot have two を."
+     ],
+     [
+      "せんせいは がくせいに さくぶんを かきました",
+      "That says the teacher did the writing."
+     ],
+     [
+      "せんせいは がくせいに さくぶんを かかれました",
+      "That is the passive, not the causative."
+     ]
+    ],
+    "why": "かく becomes かかせる. With another object present, the person made to act takes に."
+   },
+   {
+    "q": "Ask to be allowed to go.",
+    "ctx": "",
+    "a": "いかせてください",
+    "w": [
+     [
+      "いってください",
+      "That asks someone else to go."
+     ],
+     [
+      "いかれてください",
+      "That is the passive."
+     ],
+     [
+      "いかせるください",
+      "It attaches to the te-form: いかせて."
+     ]
+    ],
+    "why": "Causative te-form plus ください asks for permission: \"please let me\"."
+   },
+   {
+    "q": "Say that even though you studied a lot, you forgot it.",
+    "ctx": "",
+    "a": "たくさん べんきょうしたのに、わすれました",
+    "w": [
+     [
+      "たくさん べんきょうしたので、わすれました",
+      "ので gives a reason, so this says studying caused it."
+     ],
+     [
+      "たくさん べんきょうしましたのに、わすれました",
+      "のに attaches to the short form."
+     ],
+     [
+      "たくさん べんきょうしたのに、わすれます",
+      "The result belongs in the past."
+     ]
+    ],
+    "why": "のに marks a contrast that disappoints what you would expect."
+   }
+  ]
+ },
+ {
+  "id": "23",
+  "topic": "Being made to do things, and deciding",
+  "kanji": "",
+  "grammar": [
+   {
+    "t": "Causative-passive",
+    "b": "Being made to do something you did not want to do. Build the causative, then make it passive: のませる → のまされる. The feeling of reluctance is built in.",
+    "e": [
+     [
+      "パーティーで うたわされました。",
+      "I was made to sing at the party."
+     ]
+    ]
+   },
+   {
+    "t": "〜ても",
+    "b": "\"Even if\". Take the te-form and add も.",
+    "e": [
+     [
+      "あめが ふっても いきます。",
+      "I will go even if it rains."
+     ]
+    ]
+   },
+   {
+    "t": "〜ことにする",
+    "b": "Deciding to do something, as a one-off decision.",
+    "e": [
+     [
+      "にほんに いくことに しました。",
+      "I have decided to go to Japan."
+     ]
+    ]
+   },
+   {
+    "t": "〜ことにしている",
+    "b": "Something you have made a habit of, as a matter of policy.",
+    "e": [
+     [
+      "まいあさ はしることに しています。",
+      "I make a point of running every morning."
+     ]
+    ]
+   },
+   {
+    "t": "〜まで",
+    "b": "\"Until\" — the point where something stops.",
+    "e": [
+     [
+      "あめが やむまで まちます。",
+      "I will wait until the rain stops."
+     ]
+    ]
+   },
+   {
+    "t": "〜方 (かた)",
+    "b": "Attached to the ます-stem, it means \"the way of doing\": つかいかた, how to use.",
+    "e": [
+     [
+      "この かんじの かきかたを おしえてください。",
+      "Please tell me how to write this kanji."
+     ]
+    ]
+   }
+  ],
+  "drills": [
+   {
+    "q": "Say you were made to sing at the party.",
+    "ctx": "",
+    "a": "パーティーで うたわされました",
+    "w": [
+     [
+      "パーティーで うたわせました",
+      "That means you made someone else sing."
+     ],
+     [
+      "パーティーで うたわれました",
+      "That is the plain passive."
+     ],
+     [
+      "パーティーで うたいさせられました",
+      "うたう becomes うたわせる, then うたわされる."
+     ]
+    ],
+    "why": "Causative plus passive: you had no choice, and the reluctance is built into the form."
+   },
+   {
+    "q": "Say you will go even if it rains.",
+    "ctx": "",
+    "a": "あめが ふっても いきます",
+    "w": [
+     [
+      "あめが ふったら いきます",
+      "That is \"if it rains, I will go\", without the concession."
+     ],
+     [
+      "あめが ふるても いきます",
+      "ても attaches to the te-form: ふって."
+     ],
+     [
+      "あめが ふっても いきません",
+      "That says you will not go."
+     ]
+    ],
+    "why": "te-form plus も means \"even if\"."
+   },
+   {
+    "q": "Say you have decided to go to Japan.",
+    "ctx": "",
+    "a": "にほんに いくことに しました",
+    "w": [
+     [
+      "にほんに いくことに なりました",
+      "That means it was decided for you."
+     ],
+     [
+      "にほんに いくことを しました",
+      "The pattern uses に."
+     ],
+     [
+      "にほんに いったことに しました",
+      "With the past form it would be about experience."
+     ]
+    ],
+    "why": "ことにする is your own decision; ことになる is a decision that came from elsewhere."
+   }
+  ]
+ }
+]
