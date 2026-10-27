@@ -303,6 +303,126 @@ static bool plausiblePointer(struct LingoScanner* s, const struct LingoMem* mem,
 	return p && isTextByte(*p);
 }
 
+/* What the text box shows: the message from start, printed up to upto,
+ * as its last two lines since the box was last cleared (FB) — the box is two
+ * lines tall and scrolls (FA) or breaks (FE) between them. *boxStart gets
+ * where the current box of text began, which names this "page". */
+static bool visibleText(const struct LingoMem* mem, uint32_t start, uint32_t upto, struct LingoText* out, uint32_t* boxStart) {
+	size_t avail;
+	const uint8_t* p = lingoResolve(mem, start, &avail);
+	if (!p || upto < start) {
+		return false;
+	}
+	size_t n = upto - start;
+	if (n > avail) {
+		n = avail;
+	}
+	if (n > LINGO_MAX_SCAN_BYTES) {
+		n = LINGO_MAX_SCAN_BYTES;
+	}
+	uint32_t line[2][LINGO_MAX_TEXT / 2];
+	int len[2] = { 0, 0 };
+	int cur = 0; /* the line being printed: 0 or 1 */
+	uint32_t page = start;
+	for (size_t i = 0; i < n;) {
+		uint8_t b = p[i++];
+		if (b == 0xFF) {
+			break;
+		}
+		if (b == 0xFB) { /* new box */
+			len[0] = len[1] = 0;
+			cur = 0;
+			page = start + (uint32_t) i;
+			continue;
+		}
+		if (b == 0xFE || b == 0xFA) { /* next line, scrolling the box if it was the second */
+			if (cur == 0) {
+				cur = 1;
+				len[1] = 0;
+			} else {
+				memcpy(line[0], line[1], sizeof(uint32_t) * (size_t) len[1]);
+				len[0] = len[1];
+				len[1] = 0;
+			}
+			continue;
+		}
+		if (b == 0xFC) {
+			if (i >= n) {
+				break;
+			}
+			int args = fcArgs(p[i++]);
+			if (args < 0) {
+				return false;
+			}
+			i += (size_t) args;
+			continue;
+		}
+		uint32_t cp;
+		if (b == 0xFD) {
+			++i;
+			cp = 0xFF0A;
+		} else {
+			cp = lingoGen3Char(b);
+			if (!cp) {
+				return false;
+			}
+		}
+		if (len[cur] < LINGO_MAX_TEXT / 2) {
+			line[cur][len[cur]++] = cp;
+		}
+	}
+	out->len = 0;
+	for (int k = 0; k <= cur; ++k) {
+		if (k && out->len) {
+			out->cp[out->len++] = '\n';
+		}
+		for (int j = 0; j < len[k]; ++j) {
+			out->cp[out->len++] = line[k][j];
+		}
+	}
+	while (out->len && (out->cp[out->len - 1] == 0x3000 || out->cp[out->len - 1] == '\n')) {
+		--out->len;
+	}
+	out->hasCodes = false;
+	out->start = page;
+	out->hash = hashText(out);
+	*boxStart = page;
+	return out->len > 0;
+}
+
+/* True if the bytes from a to b are text with no end of message between. */
+static bool sameMessage(const struct LingoMem* mem, uint32_t a, uint32_t b) {
+	size_t avail;
+	const uint8_t* p = lingoResolve(mem, a, &avail);
+	if (!p || b - a > avail) {
+		return false;
+	}
+	for (uint32_t i = 0; i < b - a; ++i) {
+		if (p[i] == 0xFF || !isTextByte(p[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+/* A text pointer has been confirmed as dialogue (its whole message reads as
+ * Japanese): report what the box shows, every time it changes. */
+static bool reportVisible(struct LingoScanner* s, const struct LingoMem* mem, uint32_t msgStart, uint32_t upto,
+                          struct LingoText* out) {
+	struct LingoText t;
+	uint32_t page;
+	if (!visibleText(mem, msgStart, upto, &t, &page)) {
+		return false;
+	}
+	if (t.start == s->currentStart && t.hash == s->currentHash) {
+		return false;
+	}
+	*out = t;
+	s->currentStart = t.start;
+	s->currentHash = t.hash;
+	return true;
+}
+
 static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const uint32_t* cur, uint32_t* prev,
                        size_t words, uint32_t base, struct LingoText* out) {
 	bool found = false;
@@ -321,7 +441,7 @@ static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const
 		 * of this word) and, right after it, "const u8 *text". The index walks
 		 * forward while the pointer stays put. */
 		uint32_t di = (v >> 16) - (p >> 16);
-		if (!found && i + 1 < words && di >= 1 && di <= 4 && cur[i + 1] == prev[i + 1]) {
+		if (!found && i + 1 < words && di >= 1 && di <= 8 && cur[i + 1] == prev[i + 1]) {
 			uint32_t text = cur[i + 1];
 			uint32_t region = text >> 24;
 			if ((region == 0x02 || region == 0x03 || region == 0x08 || region == 0x09) && plausiblePointer(s, mem, text + 1)) {
@@ -329,23 +449,25 @@ static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const
 				if (c->value != text || s->frame - c->lastFrame > 45) {
 					c->steps = 0;
 					c->value = text;
+					c->msgStart = 0; /* not yet checked */
 				}
 				c->steps++;
 				c->lastFrame = s->frame;
-				if (c->steps >= 3) {
-					struct LingoText t;
-					if (lingoExtractMessage(mem, text, text, &t) &&
-					    (t.start != s->currentStart || t.hash != s->currentHash)) {
-						*out = t;
-						s->currentStart = t.start;
-						s->currentHash = t.hash;
-						found = true;
+				if (c->steps >= 2 && !c->msgStart) {
+					/* check once that the whole message is Japanese text */
+					struct LingoText whole;
+					if (lingoExtractMessage(mem, text, text, &whole)) {
+						c->msgStart = text;
 					}
+				}
+				if (c->msgStart && reportVisible(s, mem, text, text + (v >> 16), out)) {
+					found = true;
 				}
 			}
 		}
 		uint32_t delta = v - p;
-		if (delta >= 1 && delta <= 4 && (v >> 24) == (p >> 24) && plausiblePointer(s, mem, v)) {
+		if (delta >= 1 && delta <= 8 && (v >> 24) == (p >> 24) && plausiblePointer(s, mem, v)) {
+			/* Emerald, FireRed, LeafGreen: the text printer's character pointer */
 			struct LingoCandidate* c = findCandidate(s, addr, true);
 			if (s->frame - c->lastFrame > 45) {
 				c->steps = 0;
@@ -357,24 +479,36 @@ static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const
 			}
 			c->value = v;
 			c->lastFrame = s->frame;
-			if (!found && c->steps >= 3 && c->ones * 2 >= c->steps) {
-				struct LingoText t;
-				if (lingoExtractMessage(mem, v - 1, c->msgStart, &t) &&
-				    (t.start != s->currentStart || t.hash != s->currentHash)) {
-					*out = t;
-					s->currentStart = t.start;
-					s->currentHash = t.hash;
+			if (!c->msgStart) {
+				c->msgStart = findStart(mem, v - 1); /* joined mid-message */
+			}
+			if (!found && c->steps >= 3 && c->ones * 2 >= c->steps && c->msgStart && v - c->msgStart < LINGO_MAX_SCAN_BYTES) {
+				if (!c->checked) {
+					struct LingoText whole;
+					c->checked = lingoExtractMessage(mem, c->msgStart, c->msgStart, &whole) ? 1 : 2;
+				}
+				if (c->checked == 1 && reportVisible(s, mem, c->msgStart, v, out)) {
 					found = true;
 				}
 			}
 		} else {
-			/* A jump: if this variable was a text pointer, a new message starts here. */
 			struct LingoCandidate* c = findCandidate(s, addr, false);
+			if (c && c->checked == 1 && v > p && v - c->msgStart < LINGO_MAX_SCAN_BYTES && sameMessage(mem, p, v)) {
+				/* skipped ahead in the same message (the player pressed A) */
+				c->value = v;
+				c->lastFrame = s->frame;
+				if (!found && reportVisible(s, mem, c->msgStart, v, out)) {
+					found = true;
+				}
+				continue;
+			}
+			/* A jump: if this variable was a text pointer, a new message starts here. */
 			if (c) {
 				c->msgStart = v;
 				c->value = v;
 				c->steps = 0;
 				c->ones = 0;
+				c->checked = 0;
 			}
 		}
 	}

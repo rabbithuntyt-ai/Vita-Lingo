@@ -725,7 +725,8 @@ static int collectRuns(const struct LingoTable* t, const struct LingoRegions* rs
 	if (to > units) {
 		to = units;
 	}
-	bool strict = t->mode == LCM_SJIS;
+	/* tables Lingo guessed get the stricter test, so stray data isn't shown */
+	bool strict = t->mode == LCM_SJIS || !strcmp(t->source, "found automatically");
 	uint32_t i = from;
 	while (i < to && nRuns < maxRuns) {
 		uint32_t step;
@@ -1045,6 +1046,24 @@ bool lingoReaderStep(struct LingoReader* rd, const struct LingoRegions* rs, stru
 		rd->candHash = h;
 		rd->candStart = start;
 		rd->candStable = 0;
+	}
+	/* Once this game has been seen typing its dialogue out, text that just
+	 * appears somewhere that never typed (menus, names, other data) is left
+	 * out: that was the "random lines" when nothing was being said. */
+	bool typed = grewAge[pick] <= 20;
+	if (typed) {
+		rd->lastTypedScan = rd->scan;
+	}
+	if (!typed && rd->lastTypedScan) {
+		bool placeTyped = false;
+		for (int k = 0; k < 32; ++k) {
+			if (rd->seen[k].start == start && rd->seen[k].grewScan) {
+				placeTyped = true;
+			}
+		}
+		if (!placeTyped) {
+			return false;
+		}
 	}
 	/* a line still typing out is shown as it grows (it replaces itself in
 	 * the panel); anything else once it has held still */

@@ -55,6 +55,42 @@ bool lingoNetUp(char* ip, size_t n) {
 
 #define CA_FILE "app0:lingo/cacert.pem"
 
+/* The certificate list, handed to OpenSSL from memory: reading it by file
+ * name from app0: failed on the Vita ("unable to get local issuer
+ * certificate"), so Lingo reads the file itself. */
+static char* sCa;
+static size_t sCaLen;
+
+static void tls(CURL* c) {
+	if (!sCa) {
+		FILE* f = fopen(CA_FILE, "rb");
+		if (f) {
+			fseek(f, 0, SEEK_END);
+			long n = ftell(f);
+			fseek(f, 0, SEEK_SET);
+			sCa = n > 0 ? malloc((size_t) n) : NULL;
+			if (sCa && fread(sCa, 1, (size_t) n, f) == (size_t) n) {
+				sCaLen = (size_t) n;
+			} else {
+				free(sCa);
+				sCa = NULL;
+			}
+			fclose(f);
+		}
+	}
+	bool blob = false;
+	if (sCa) {
+		struct curl_blob b = { sCa, sCaLen, CURL_BLOB_NOCOPY };
+		blob = curl_easy_setopt(c, CURLOPT_CAINFO_BLOB, &b) == CURLE_OK;
+	}
+	if (!blob) {
+		curl_easy_setopt(c, CURLOPT_CAINFO, CA_FILE);
+	}
+	curl_easy_setopt(c, CURLOPT_CAPATH, NULL);
+	curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER, 1L);
+	curl_easy_setopt(c, CURLOPT_SSL_VERIFYHOST, 2L);
+}
+
 static bool httpUp(void) {
 	if (sHttp) {
 		return true;
@@ -127,9 +163,7 @@ static char* httpGet(const char* url, size_t* len) {
 	curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(c, CURLOPT_MAXREDIRS, 4L);
 	curl_easy_setopt(c, CURLOPT_USERAGENT, "Lingo/1.1 (PS Vita)");
-	curl_easy_setopt(c, CURLOPT_CAINFO, CA_FILE);
-	curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER, 1L);
-	curl_easy_setopt(c, CURLOPT_SSL_VERIFYHOST, 2L);
+	tls(c);
 	curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 12L);
 	curl_easy_setopt(c, CURLOPT_TIMEOUT, 40L);
 	curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
@@ -195,9 +229,7 @@ bool lingoNetDownload(const char* url, const char* path, volatile float* progres
 	curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(c, CURLOPT_MAXREDIRS, 6L);
 	curl_easy_setopt(c, CURLOPT_USERAGENT, "Lingo/1.1 (PS Vita)");
-	curl_easy_setopt(c, CURLOPT_CAINFO, CA_FILE);
-	curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER, 1L);
-	curl_easy_setopt(c, CURLOPT_SSL_VERIFYHOST, 2L);
+	tls(c);
 	curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 15L);
 	curl_easy_setopt(c, CURLOPT_LOW_SPEED_LIMIT, 1000L);
 	curl_easy_setopt(c, CURLOPT_LOW_SPEED_TIME, 30L);

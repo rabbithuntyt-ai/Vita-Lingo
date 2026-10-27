@@ -65,8 +65,10 @@ static void testScanner(void) {
 	rom[0x4FFF] = 0xFF;
 	memcpy(rom + 0x5000, msg2, m2);
 	struct LingoText out;
-	int reports = 0;
-	char s[1024];
+	int reports = 0, pages = 0;
+	char s[1024], last1[1024] = "", last2[1024] = "";
+	uint32_t firstStart = 0, lastStart = 0;
+	int firstFrame = -1;
 	uint32_t textPtr = buf, scriptPtr = 0x08000100;
 	for (int f = 0; f < 400; ++f) {
 		*(uint32_t*) (iwram + (frameCtr - 0x03000000)) = f;
@@ -78,19 +80,24 @@ static void testScanner(void) {
 		*(uint32_t*) (ewram + (printer - 0x02000000)) = textPtr;
 		if (lingoScannerStep(&sc, &mem, &out)) {
 			utf8(&out, s, sizeof s);
-			printf("  frame %d: report %d at %08X: %s\n", f, reports + 1, out.start, s);
-			if (reports == 0) {
-				CHECK(out.start == buf, "first message start %08X", out.start);
-				CHECK(strstr(s, "オダマキ") && strstr(s, "しているんだ"), "first message text %s", s);
-				CHECK(f < 40, "first message found late at frame %d", f);
-			} else if (reports == 1) {
-				CHECK(out.start == 0x08005000, "second message start %08X", out.start);
-				CHECK(!strcmp(s, "きみの　なまえは　なんて　いうの？"), "second message text %s", s);
+			/* the box types out live: one report per change, same start while it grows */
+			if (out.start != lastStart) {
+				++pages;
+				lastStart = out.start;
+				if (pages == 1) { firstStart = out.start; firstFrame = f; }
 			}
+			snprintf(pages == 1 ? last1 : last2, sizeof last1, "%s", s);
+			if (getenv("SCAN_VERBOSE")) printf("    f%d %08X %s\n", f, out.start, s);
 			++reports;
 		}
 	}
-	CHECK(reports == 2, "expected 2 reports, got %d", reports);
+	printf("  %d live updates over %d messages\n  last of first: %s\n  last of second: %s\n", reports, pages, last1, last2);
+	CHECK(pages == 2, "expected 2 messages, got %d", pages);
+	CHECK(firstStart == buf, "first message start %08X", firstStart);
+	CHECK(firstFrame >= 0 && firstFrame < 30, "first message shown late at frame %d", firstFrame);
+	CHECK(!strcmp(last1, "やあ！　ぼくは　オダマキ。\nポケモンの　けんきゅうを　しているんだ。"), "first message as the box shows it: %s", last1);
+	CHECK(!strcmp(last2, "きみの　なまえは　なんて　いうの？"), "second message as the box shows it: %s", last2);
+	CHECK(reports > 20, "should update as it types (%d updates)", reports);
 
 	/* a player mashing A: three characters type, then the rest appears at once */
 	uint8_t msg3[256];

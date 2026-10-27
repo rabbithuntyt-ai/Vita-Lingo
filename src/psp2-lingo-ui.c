@@ -1,6 +1,7 @@
 /* Lingo / Kaku shared UI: chalkboard drawing, fonts, input, storage,
  * the title screen and the in-game study panel. */
 #include "psp2-lingo-ui.h"
+#include "psp2-lingo-kana.h"
 #include "psp2-lingo-font.h"
 #include "psp2-lingo-rom.h"
 #include "psp2-lingo-quiz.h"
@@ -834,6 +835,8 @@ struct Msg {
 	struct LingoToken tok[LINGO_MAX_TOKENS];
 	int nTok;
 	double arrived;
+	double changed; /* last time it grew */
+	bool met;       /* its words counted for checkpoints (once it has finished typing) */
 };
 
 static struct LingoDict* sDict;
@@ -1011,7 +1014,11 @@ bool lingoPanelWantsTeach(void) {
 }
 
 void lingoPanelSetSource(const char* system, const char* baseName, const uint8_t* rom, size_t romSize) {
-	/* Gen 3 Pokémon also run the text-window scanner alongside */
+	if (sSupported) {
+		/* Gen 3 Pokémon: only the text box itself, exactly as it prints */
+		lingoTextGameUnloaded();
+		return;
+	}
 	lingoTextSetGame(system, sGameKey, baseName, rom, romSize);
 }
 
@@ -1181,6 +1188,10 @@ static void pushText(const struct LingoText* t) {
 		}
 	}
 	if (!m) {
+		if (top && !top->met && sDict && sBookLoaded) {
+			lingoBookMeet(&sBook, sDict, &top->text, top->tok, top->nTok);
+			top->met = true;
+		}
 		m = &sHist[sHistHead];
 		sHistHead = (sHistHead + 1) % HISTORY;
 		if (sHistN < HISTORY) {
@@ -1194,9 +1205,17 @@ static void pushText(const struct LingoText* t) {
 		}
 	}
 	m->text = *t;
+	m->changed = uiTime();
+	m->met = false;
 	retokenize(m);
-	if (sDict && sBookLoaded) {
-		lingoBookMeet(&sBook, sDict, &m->text, m->tok, m->nTok);
+}
+
+/* words count as met once their line has finished typing out */
+static void meetSettled(void) {
+	struct Msg* top = msgAt(0);
+	if (top && !top->met && sDict && sBookLoaded && uiTime() - top->changed > 1.5) {
+		lingoBookMeet(&sBook, sDict, &top->text, top->tok, top->nTok);
+		top->met = true;
 	}
 }
 
@@ -1222,12 +1241,14 @@ void lingoPanelFrame(const struct LingoMem* mem, int saveDirty) {
 	sPrevDirty = saveDirty;
 	/* Gen 3 Pokémon: two readers (the text window and the message buffer);
 	 * everything else: tables, learning and the screen */
-	if (sSupported && lingoScannerStep(sScanner, mem, &sPending)) {
+	if (sSupported) {
+		if (lingoScannerStep(sScanner, mem, &sPending)) {
+			pushText(&sPending);
+		}
+	} else if (lingoTextStep(&sPending)) {
 		pushText(&sPending);
 	}
-	if (lingoTextStep(&sPending)) {
-		pushText(&sPending);
-	}
+	meetSettled();
 }
 
 static void tokenUtf8(const struct Msg* m, int t, char* out, size_t n) {
@@ -1567,6 +1588,364 @@ static float breakdownRow(struct Msg* m, int t, float x, float y, float w, bool 
 	return h + (tok->nIds && tok->reason[0][0] ? 18 : 0);
 }
 
+/* ---- the word-by-word line ---- */
+
+enum WordKind { WK_OTHER, WK_VERB, WK_NOUN, WK_ADJ, WK_PARTICLE, WK_ADVERB, WK_NAME };
+
+static const struct {
+	const char* label;
+	uint32_t color;
+} KINDS[] = {
+	[WK_OTHER] = { "expression", RGBA(0xd8, 0xd8, 0xc8, 0xff) },
+	[WK_VERB] = { "verb", RGBA(0xff, 0x9e, 0x8a, 0xff) },
+	[WK_NOUN] = { "noun", RGBA(0x9c, 0xc8, 0xf0, 0xff) },
+	[WK_ADJ] = { "adjective", RGBA(0xa6, 0xe3, 0xbd, 0xff) },
+	[WK_PARTICLE] = { "particle", RGBA(0x9d, 0xb2, 0xa4, 0xff) },
+	[WK_ADVERB] = { "adverb", RGBA(0xf1, 0xd3, 0x7c, 0xff) },
+	[WK_NAME] = { "name", RGBA(0xf4, 0xa6, 0xc0, 0xff) },
+};
+
+static enum WordKind kindOf(const struct LingoEntry* e, const struct LingoToken* t) {
+	if (!e) {
+		return WK_NAME;
+	}
+	unsigned p = e->pos;
+	bool inflected = t && t->reason[0][0];
+	if (p & LPOS_PRT) {
+		return WK_PARTICLE;
+	}
+	if (p & (LPOS_V1 | LPOS_V5 | LPOS_VK)) {
+		return WK_VERB;
+	}
+	if ((p & LPOS_VS) && (inflected || !(p & LPOS_NOUN))) {
+		return WK_VERB;
+	}
+	if (p & (LPOS_ADJI | LPOS_ADJNA)) {
+		return WK_ADJ;
+	}
+	if (p & LPOS_NOUN) {
+		return WK_NOUN;
+	}
+	if (p & LPOS_ADV) {
+		return WK_ADVERB;
+	}
+	return WK_OTHER;
+}
+
+/* What particles do, in a word or two (the dictionary's glosses are long) */
+static const char* particleMeaning(const char* s) {
+	static const char* const P[][2] = {
+		{ "は", "topic" },      { "が", "subject" },  { "を", "object" },   { "に", "to / at" },  { "で", "at / by" },
+		{ "の", "'s / of" },    { "と", "and / with" }, { "も", "also" },     { "へ", "toward" },   { "から", "from / so" },
+		{ "まで", "until" },     { "よ", "! (telling)" }, { "ね", "right?" },   { "か", "? (asking)" }, { "な", "! / don't" },
+		{ "や", "and (lists)" }, { "より", "than" },     { "ぞ", "! (strong)" }, { "さ", "you see" },  { "わ", "! (soft)" },
+		{ "って", "quoting" },   { "けど", "but" },      { "のに", "even though" }, { "ので", "because" }, { "だけ", "only" },
+	};
+	for (size_t i = 0; i < sizeof(P) / sizeof(P[0]); ++i) {
+		if (!strcmp(P[i][0], s)) {
+			return P[i][1];
+		}
+	}
+	return NULL;
+}
+
+struct WordInfo {
+	char surface[96];
+	char romaji[96];
+	char meaning[96];
+	char furigana[64];
+	enum WordKind kind;
+	bool known;
+};
+
+static void wordInfo(struct Msg* m, int t, struct WordInfo* wi) {
+	struct LingoToken* tok = &m->tok[t];
+	memset(wi, 0, sizeof(*wi));
+	tokenUtf8(m, t, wi->surface, sizeof(wi->surface));
+	struct LingoEntry e;
+	bool have = tok->nIds && sDict && lingoDictEntry(sDict, tok->ids[0], &e);
+	wi->known = have;
+	wi->kind = have ? kindOf(&e, tok) : WK_NAME;
+	/* romaji from the kana as written; for kanji, from the dictionary reading */
+	uint32_t cps[64];
+	int n = tok->len < 64 ? tok->len : 64;
+	memcpy(cps, m->text.cp + tok->start, (size_t) n * sizeof(uint32_t));
+	if (hasKanji(wi->surface) && have) {
+		n = lingoUtf8Decode(e.reading, cps, 64);
+		if (strcmp(e.headword, wi->surface) == 0 && strcmp(e.reading, wi->surface)) {
+			snprintf(wi->furigana, sizeof(wi->furigana), "%s", e.reading);
+		}
+	}
+	lingoRomaji(cps, n, wi->kind == WK_PARTICLE, wi->romaji, sizeof(wi->romaji));
+	if (!have) {
+		snprintf(wi->meaning, sizeof(wi->meaning), "%s", tokenSpecies(&m->text, tok) >= 0 ? "Pokémon" : "");
+		return;
+	}
+	const char* pm = wi->kind == WK_PARTICLE ? particleMeaning(wi->surface) : NULL;
+	if (pm) {
+		snprintf(wi->meaning, sizeof(wi->meaning), "%s", pm);
+	} else {
+		lingoShortGloss(e.gloss, wi->meaning, sizeof(wi->meaning));
+	}
+}
+
+/* fits s into w pixels at px, with an ellipsis */
+static void fitText(char* s, float px, float w) {
+	if (uiTextW(px, s) <= w) {
+		return;
+	}
+	size_t l = strlen(s);
+	while (l > 0) {
+		--l;
+		while (l > 0 && ((unsigned char) s[l] & 0xC0) == 0x80) {
+			--l;
+		}
+		s[l] = 0;
+		char t[128];
+		snprintf(t, sizeof(t), "%s…", s);
+		if (uiTextW(px, t) <= w) {
+			snprintf(s, 96, "%s", t);
+			return;
+		}
+	}
+}
+
+/* The line as blocks: the word (coloured by kind, furigana over kanji),
+ * romaji under it, and a short meaning under that. Tap one for the full
+ * definition. Returns the height used. */
+static float wordBlocks(struct Msg* m, float x0, float y0, float w, bool draw, float alpha) {
+	const float WORD = 21, ROW = 74, GAP = 6, MAXW = 150;
+	float x = x0, y = y0;
+	for (int t = 0; t < m->nTok; ++t) {
+		uint32_t first = m->text.cp[m->tok[t].start];
+		if (first == '\n') {
+			if (x > x0) {
+				x = x0;
+				y += ROW;
+			}
+			continue;
+		}
+		if (first == 0x3000 || first == ' ') {
+			x += 8;
+			continue;
+		}
+		struct WordInfo wi;
+		wordInfo(m, t, &wi);
+		bool punct = !wi.known && !wi.meaning[0] && m->tok[t].len == 1 && !lingoIsKana(first) && !(first >= 0x4E00 && first <= 0x9FFF);
+		float ww = uiJpW(WORD, wi.surface);
+		float bw = ww;
+		if (!punct) {
+			float rw = uiTextW(11, wi.romaji), mw = uiTextW(11, wi.meaning);
+			bw = fmaxf(bw, fminf(MAXW, fmaxf(rw, mw)));
+			bw = fmaxf(bw, 24);
+		}
+		bw += 12;
+		if (x + bw > x0 + w && x > x0) {
+			x = x0;
+			y += ROW;
+		}
+		if (draw) {
+			uint32_t col = KINDS[wi.kind].color;
+			bool sel = t == sSelTok;
+			if (!punct) {
+				uiRound(x, y, bw, ROW - 8, 10, sel ? uiAlpha(col, 0.28f * alpha) : uiAlpha(col, 0.09f * alpha));
+				uiRound(x, y + ROW - 12, bw, 4, 2, uiAlpha(col, (sel ? 0.95f : 0.6f) * alpha)); /* colour bar */
+			}
+			float cx = x + (bw - ww) / 2;
+			if (wi.furigana[0]) {
+				float fw = uiJpW(9, wi.furigana);
+				uiJp(x + (bw - fw) / 2, y + 12, 9, uiAlpha(C_YELLOW, alpha), wi.furigana);
+			}
+			uiJp(cx, y + 34, WORD, uiAlpha(punct ? C_SOFT : (wi.known ? C_CHALK : col), alpha), wi.surface);
+			if (!punct) {
+				char r[96], mn[96];
+				snprintf(r, sizeof(r), "%s", wi.romaji);
+				snprintf(mn, sizeof(mn), "%s", wi.meaning);
+				fitText(r, 11, bw - 8);
+				fitText(mn, 11, bw - 8);
+				uiTextCentered(x + bw / 2, y + 48, 11, uiAlpha(C_MUTED, alpha), r);
+				uiTextCentered(x + bw / 2, y + 61, 11, uiAlpha(col, alpha), mn);
+				if (uiTapped(x, y, bw, ROW - 8) && fabsf(IN.y - IN.sy) < 10) {
+					sSelTok = sSelTok == t ? -1 : t;
+					sSelEntry = 0;
+					uiDust(x + bw / 2, y + 30, col, 6);
+				}
+				/* hold a word to correct a letter Lingo misread */
+				if (m->text.hasCodes && IN.down && uiHeld(x, y, bw, ROW - 8) && fabsf(IN.x - IN.sx) < 8 &&
+				    fabsf(IN.y - IN.sy) < 8 && sPressAt > 0 && uiTime() - sPressAt > 0.7) {
+					sFixMsg = m;
+					sPressAt = 0;
+				}
+			}
+		}
+		x += bw + GAP;
+	}
+	return y - y0 + ROW;
+}
+
+/* The selected word's full entry, under the line. Returns the height used. */
+static float wordDetail(struct Msg* m, float x, float y, float w) {
+	if (sSelTok < 0 || sSelTok >= m->nTok) {
+		uiText(x + 4, y + 18, 13, C_SOFT, "Tap a word for its full meaning. Hold it to fix a misread letter.");
+		return 30;
+	}
+	struct LingoToken* t = &m->tok[sSelTok];
+	struct WordInfo wi;
+	wordInfo(m, sSelTok, &wi);
+	uint32_t col = KINDS[wi.kind].color;
+	float y0 = y;
+	if (!t->nIds || !sDict) {
+		uiRound(x, y, w, 96, 12, C_SHEET_HI);
+		uiJp(x + 14, y + 40, 26, col, wi.surface);
+		uiText(x + 14, y + 62, 13, C_MUTED, wi.romaji);
+		const char* why = tokenSpecies(&m->text, t) >= 0 ? "A Pokémon's name, written in katakana like all of them."
+		                                                  : "Not in the dictionary: katakana like this is usually a name or a made-up word.";
+		uiTextWrap(x + 14, y + 84, w - 28, 13, 17, C_CHALK, why, 1);
+		return 104;
+	}
+	if (sSelEntry >= t->nIds) {
+		sSelEntry = 0;
+	}
+	struct LingoEntry e;
+	lingoDictEntry(sDict, t->ids[sSelEntry], &e);
+	wi.kind = kindOf(&e, t);
+	col = KINDS[wi.kind].color;
+	/* measure first, then draw on a sheet */
+	float h = 0;
+	for (int pass = 0; pass < 2; ++pass) {
+		bool draw = pass == 1;
+		if (draw) {
+			uiRound(x, y0, w, h, 12, C_SHEET_HI);
+			uiRound(x, y0, 5, h, 2, col);
+		}
+		float yy = y0 + 10;
+		float hy = yy + 30;
+		if (hasKanji(e.headword)) {
+			float hw = uiJpW(28, e.headword), rw = uiJpW(12, e.reading);
+			if (draw) {
+				uiJp(x + 16 + (hw - rw) / 2, yy + 8, 12, C_YELLOW, e.reading);
+			}
+			hy = yy + 42;
+		}
+		if (draw) {
+			uiJp(x + 16, hy, 28, C_CHALK, e.headword);
+			float hw = uiJpW(28, e.headword);
+			char r[96];
+			uint32_t rc[64];
+			int rn = lingoUtf8Decode(e.reading, rc, 64);
+			lingoRomaji(rc, rn, wi.kind == WK_PARTICLE, r, sizeof(r));
+			uiText(x + 28 + hw, hy - 14, 13, C_MUTED, r);
+			uiRound(x + 28 + hw, hy - 6, uiTextW(11, KINDS[wi.kind].label) + 14, 18, 9, uiAlpha(col, 0.25f));
+			uiText(x + 35 + hw, hy + 7, 11, col, KINDS[wi.kind].label);
+			/* save */
+			bool saved = deckHas(e.headword, e.reading);
+			float bx = x + w - 92, by = yy;
+			uiRound(bx, by, 80, 30, 10, saved ? uiAlpha(C_YELLOW, 0.3f) : C_SHEET);
+			uiRoundOutline(bx, by, 80, 30, 10, 2, C_YELLOW);
+			uiText(bx + 10, by + 21, 14, C_YELLOW, saved ? "★ Saved" : "☆ Save");
+			if (!saved && uiTapped(bx, by, 80, 30)) {
+				struct SavedWord sw;
+				memset(&sw, 0, sizeof(sw));
+				snprintf(sw.head, sizeof(sw.head), "%s", e.headword);
+				snprintf(sw.reading, sizeof(sw.reading), "%s", e.reading);
+				snprintf(sw.gloss, sizeof(sw.gloss), "%s", e.gloss);
+				lingoUtf8FromCodepoints(m->text.cp, m->text.len, sw.context, sizeof(sw.context));
+				if (deckAdd(&sw)) {
+					toast("★ Saved for review in Kaku");
+					uiDust(bx + 40, by + 15, C_YELLOW, 18);
+				}
+			}
+		}
+		yy = hy + 12;
+		if (t->reason[sSelEntry][0]) {
+			char buf[220];
+			const char* note = grammarNote(t->reason[sSelEntry]);
+			snprintf(buf, sizeof(buf), "%s ← %s%s%s", wi.surface, t->reason[sSelEntry], note ? ". " : "", note ? note : "");
+			yy += draw ? uiTextWrap(x + 16, yy + 14, w - 32, 13, 17, C_GREEN, buf, 3) : 17 * 3;
+		}
+		/* the meanings, one per line */
+		const char* g = e.gloss;
+		if (*g == '[') {
+			const char* q = strchr(g, ']');
+			g = q ? q + 2 : g;
+		}
+		yy += 6;
+		int lines = draw ? uiTextWrap(x + 16, yy + 16, w - 32, 15, 20, C_CHALK, g, 5) : 0;
+		if (!draw) {
+			lines = 20 * 3;
+		}
+		yy += lines + 10;
+		/* other words this could be */
+		if (t->nIds > 1) {
+			float ox = x + 16;
+			if (draw) {
+				uiText(ox, yy + 14, 12, C_SOFT, "Or:");
+			}
+			ox += 30;
+			for (int k = 0; k < t->nIds; ++k) {
+				struct LingoEntry o;
+				lingoDictEntry(sDict, t->ids[k], &o);
+				float ow = uiJpW(15, o.headword) + 16;
+				if (ox + ow > x + w - 10) {
+					break;
+				}
+				if (draw) {
+					bool on = k == sSelEntry;
+					uiRound(ox, yy, ow, 22, 8, on ? uiAlpha(C_YELLOW, 0.25f) : C_SHEET);
+					uiJp(ox + 8, yy + 17, 15, on ? C_YELLOW : C_SOFT, o.headword);
+					if (uiTapped(ox, yy, ow, 22)) {
+						sSelEntry = k;
+					}
+				}
+				ox += ow + 6;
+			}
+			yy += 30;
+		}
+		if (!draw) {
+			h = yy - y0 + 4;
+		} else {
+			y = yy;
+		}
+	}
+	return h + 6;
+}
+
+/* Below the game: earlier lines (tap one to look at it again) and the colour key. */
+static void earlierLines(float x, float y, float w, float h) {
+	uiRound(x, y, w, h, 14, C_SHEET);
+	/* the key */
+	float kx = x + 12, ky = y + h - 12;
+	static const enum WordKind ORDER[] = { WK_VERB, WK_NOUN, WK_ADJ, WK_ADVERB, WK_PARTICLE, WK_NAME };
+	for (size_t i = 0; i < sizeof(ORDER) / sizeof(ORDER[0]); ++i) {
+		uint32_t col = KINDS[ORDER[i]].color;
+		uiRound(kx, ky - 9, 12, 8, 3, col);
+		uiText(kx + 16, ky, 11, col, KINDS[ORDER[i]].label);
+		kx += 16 + uiTextW(11, KINDS[ORDER[i]].label) + 14;
+	}
+	float ly = y + 22;
+	uiText(x + 12, ly, 12, C_SOFT, sHistN > 1 ? "Earlier lines" : "Earlier lines will collect here");
+	ly += 6;
+	for (int b = 0; b < sHistN && ly < y + h - 40; ++b) {
+		if (b == sView) {
+			continue;
+		}
+		struct Msg* m = msgAt(b);
+		char s[400];
+		lingoUtf8FromCodepoints(m->text.cp, m->text.len, s, sizeof(s));
+		for (char* p = s; *p; ++p) {
+			if (*p == '\n') {
+				*p = ' ';
+			}
+		}
+		int hgt = uiTextWrap(x + 12, ly + 18, w - 24, 13, 18, uiAlpha(C_MUTED, 0.9f), s, 1);
+		if (uiTapped(x + 4, ly, w - 8, hgt + 4)) {
+			sView = b;
+			sSelTok = -1;
+		}
+		ly += hgt + 4;
+	}
+}
+
 static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, bool retro, const char* system, const char* game) {
 	static double last;
 	double now = uiTime();
@@ -1645,24 +2024,23 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 		}
 	}
 
-	/* message area */
+	/* the line on show, word by word with meanings */
 	float my = 96, mh = SCREEN_H - my - 12;
 	uiRound(px0, my, pw, mh, 16, C_SHEET);
 	uiRoundOutline(px0, my, pw, mh, 16, 2, C_LINE_SOFT);
 	struct Msg* cur = msgAt(sView);
 	if (cur) {
-		/* tabs: words / breakdown, and voice buttons */
 		float tx = px0 + 14, ty = my + 10;
-		if (chip(tx, ty, 74, 26, sBreakdown ? "Words" : "Words ✓", NULL, sBreakdown ? C_SOFT : C_YELLOW)) {
-			sBreakdown = false;
-		}
-		if (chip(tx + 80, ty, 104, 26, sBreakdown ? "Breakdown ✓" : "Breakdown", NULL, sBreakdown ? C_YELLOW : C_SOFT)) {
-			sBreakdown = true;
-			sScroll = 0;
+		if (sView) {
+			if (chip(tx, ty, 96, 26, "↓ Newest", NULL, C_YELLOW)) {
+				sView = 0;
+				sSelTok = -1;
+			}
+			tx += 102;
 		}
 		if (cur->text.hasCodes && (cur->text.start >> 24) < 8) {
 			/* text that isn't dialogue (a menu, a name list): stop reading it */
-			if (chip(tx + 190, ty, 58, 26, "Hide", NULL, C_RED)) {
+			if (chip(tx, ty, 58, 26, "Hide", NULL, C_RED)) {
 				lingoTextIgnore(cur->text.start);
 				toast("Text from there will be skipped");
 			}
@@ -1679,79 +2057,39 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 				act = LPA_TRANSCRIBE;
 			}
 		}
-		if (sView) {
-			if (chip(px0 + pw - 104, my + mh - 36, 92, 26, "↓ Newest", NULL, C_YELLOW)) {
-				sView = 0;
-				sSelTok = -1;
-			}
-		}
-		float cy0 = my + 44, ch = mh - 50;
+		float cy0 = my + 42, ch = mh - 48;
 		uiClip(px0 + 4, cy0, pw - 8, ch);
-		if (!sBreakdown) {
-			float a = (float) ((now - cur->arrived) * 4);
-			float slide = a < 1 ? (1 - a) * 14 : 0;
-			float used = layoutMessage(cur, px0 + 22, cy0 + 32 + slide, pw - 44, 24, true, true, a);
-			float ey = cy0 + 32 + used + 12;
-			if (sHistN > 1 && ey < my + mh - 50) {
-				uiSegment(px0 + 22, ey - 8, px0 + pw - 22, ey - 8, 1.5f, C_LINE_SOFT);
-				uiText(px0 + 22, ey + 12, 13, C_SOFT, sView ? "Newer and earlier lines" : "Earlier");
-				ey += 22;
-				for (int b = 0; b < sHistN && ey < my + mh - 30; ++b) {
-					if (b == sView) {
-						continue;
-					}
-					struct Msg* m = msgAt(b);
-					char s[300];
-					lingoUtf8FromCodepoints(m->text.cp, m->text.len, s, sizeof(s));
-					for (char* p = s; *p; ++p) {
-						if (*p == '\n') {
-							*p = ' ';
-						}
-					}
-					int hgt = uiTextWrap(px0 + 22, ey + 16, pw - 44, 14, 20, uiAlpha(C_MUTED, 0.85f), s, 2);
-					if (uiTapped(px0 + 10, ey - 2, pw - 20, hgt + 6)) {
-						sView = b;
-						sSelTok = -1;
-					}
-					ey += hgt + 10;
-				}
-			}
-		} else {
-			/* drag to scroll */
+		/* drag to scroll when a long line and its definition don't fit */
+		static float scroll;
+		static struct Msg* scrolledFor;
+		if (scrolledFor != cur) {
+			scroll = 0;
+			scrolledFor = cur;
+		}
+		{
+			static float lastY;
 			if (IN.down && IN.sx > px0 && IN.sy > cy0) {
-				static float lastY;
 				if (IN.pressed) {
 					lastY = IN.y;
 				}
-				sScroll += IN.y - lastY;
+				if (fabsf(IN.y - IN.sy) > 10) {
+					scroll += IN.y - lastY;
+				}
 				lastY = IN.y;
 			}
-			float total = 0;
-			for (int t = 0; t < cur->nTok; ++t) {
-				uint32_t c0 = cur->text.cp[cur->tok[t].start];
-				if (c0 == '\n' || c0 == 0x3000) {
-					continue;
-				}
-				total += breakdownRow(cur, t, 0, 0, 0, false) + 8;
-			}
-			float minScroll = fminf(0, ch - 40 - total);
-			sScroll = fmaxf(minScroll, fminf(0, sScroll));
-			float y = cy0 + 28 + sScroll;
-			for (int t = 0; t < cur->nTok; ++t) {
-				uint32_t c0 = cur->text.cp[cur->tok[t].start];
-				if (c0 == '\n' || c0 == 0x3000) {
-					continue;
-				}
-				float rh = breakdownRow(cur, t, 0, 0, 0, false);
-				if (y + rh > cy0 && y - 24 < cy0 + ch) {
-					breakdownRow(cur, t, px0 + 22, y, pw - 44, true);
-					if (cur->tok[t].nIds && uiTapped(px0 + 10, y - 22, pw - 20, rh) && fabsf(IN.y - IN.sy) < 10) {
-						sSelTok = t;
-						sSelEntry = 0;
-					}
-				}
-				y += rh + 8;
-			}
+		}
+		float a = (float) ((now - cur->arrived) * 4);
+		float y = cy0 + 8 + scroll;
+		float used = wordBlocks(cur, px0 + 14, y, pw - 28, true, a > 1 ? 1 : a);
+		y += used + 6;
+		y += wordDetail(cur, px0 + 14, y, pw - 28);
+		float contentH = y - (cy0 + 8 + scroll);
+		float minScroll = fminf(0, ch - 16 - contentH);
+		if (scroll < minScroll) {
+			scroll = minScroll;
+		}
+		if (scroll > 0) {
+			scroll = 0;
 		}
 		uiNoClip();
 	} else {
@@ -1762,39 +2100,20 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 		}
 		uiJpCentered(px0 + pw / 2, my + 130, 46, uiAlpha(C_CHALK, 0.18f), "…");
 		if (reading) {
-			uiTextWrap(px0 + 24, my + 180, pw - 48, 17, 25, C_CHALK, "Talk to someone in the game. Their words will appear here.", 3);
+			uiTextWrap(px0 + 24, my + 180, pw - 48, 17, 25, C_CHALK, "Talk to someone in the game. Their words will appear here with their meanings.", 3);
 		} else {
 			uiTextWrap(px0 + 24, my + 170, pw - 48, 16, 23, C_CHALK,
 			           "Lingo is learning how this game stores its text. Play normally and let some dialogue print; "
 			           "lines will start appearing here.",
 			           4);
 			uiTextWrap(px0 + 24, my + 270, pw - 48, 14, 20, C_SOFT,
-			           "Faster: tap Teach and type one line you can see. Some games draw text as pictures; for those, "
-			           "use Look up.",
-			           4);
-		}
-		if (retro) {
-			/* words looked up by hand */
-			const char* words[5];
-			const char* meanings[5];
-			int n = lingoRecentLookups(words, meanings, 5);
-			float y = my + 350;
-			if (n) {
-				uiText(px0 + 24, y, 12, C_SOFT, "Looked up this session");
-			}
-			for (int i = 0; i < n && y < my + mh - 30; ++i) {
-				y += 26;
-				uiJp(px0 + 24, y, 16, C_CHALK, words[i]);
-				char m[64];
-				lingoShortGloss(meanings[i], m, sizeof(m));
-				uiTextWrap(px0 + 34 + uiJpW(16, words[i]), y - 1, pw - 60 - uiJpW(16, words[i]), 12, 16, C_MUTED, m, 1);
-			}
+			           "Faster: tap Teach and type one line you can see. Lingo can also read the screen itself.", 4);
 		}
 	}
-	/* word card below the game */
+	/* below the game: earlier lines and the colour key */
 	float cardY = gy + gh + 14;
-	if (SCREEN_H - cardY - 12 >= 90) {
-		drawWordCard(gx, cardY, gw, SCREEN_H - cardY - 12, cur);
+	if (SCREEN_H - cardY - 12 >= 70) {
+		earlierLines(gx, cardY, gw, SCREEN_H - cardY - 12);
 	}
 	(void) game;
 	/* toast */

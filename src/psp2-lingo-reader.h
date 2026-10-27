@@ -132,6 +132,7 @@ struct LingoReader {
 		uint16_t len;
 		uint32_t grewScan;
 	} seen[32];
+	uint32_t lastTypedScan; /* when a line was last seen typing itself out */
 };
 
 void lingoReaderInit(struct LingoReader* rd, struct LingoTable* table);

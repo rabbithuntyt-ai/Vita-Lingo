@@ -112,10 +112,12 @@ static void sendAll(int fd, const char* data, size_t len) {
 static void respond(int fd, int code, const char* type, const char* body) {
 	char head[256];
 	const char* text = code == 200 ? "OK" : code == 403 ? "Forbidden" : code == 400 ? "Bad Request" : "Error";
+	/* %u, not %zu: the Vita's C library prints "%zu" literally, which made
+	 * "Content-Length: zu" and phones refused the page (ERR_INVALID_RESPONSE) */
 	int n = snprintf(head, sizeof(head),
-	                 "HTTP/1.1 %d %s\r\nContent-Type: %s\r\nContent-Length: %zu\r\nConnection: close\r\n"
+	                 "HTTP/1.1 %d %s\r\nContent-Type: %s\r\nContent-Length: %u\r\nConnection: close\r\n"
 	                 "Cache-Control: no-store\r\n\r\n",
-	                 code, text, type, strlen(body));
+	                 code, text, type, (unsigned) strlen(body));
 	sendAll(fd, head, n);
 	sendAll(fd, body, strlen(body));
 }
@@ -345,6 +347,15 @@ static void* serverThread(void* arg) {
 		struct timeval tv = { 20, 0 };
 		setsockopt(c, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 		handle(u, c);
+		/* let the reply drain to the phone before the socket goes away */
+#ifdef SHUT_WR
+		shutdown(c, SHUT_WR);
+#endif
+		char drain[256];
+		struct timeval quick = { 1, 0 };
+		setsockopt(c, SOL_SOCKET, SO_RCVTIMEO, &quick, sizeof(quick));
+		while (recv(c, drain, sizeof(drain), 0) > 0) {
+		}
 		close(c);
 	}
 	return NULL;

@@ -17,6 +17,23 @@ int main(void) {
 	const char* sm[][2] = { { "つ", "っ" }, { "っ", "つ" }, { "や", "ゃ" }, { "ょ", "よ" }, { "あ", "ぁ" }, { "ツ", "ッ" }, { "ヨ", "ョ" }, { "か", "か" }, { "わ", "ゎ" } };
 	for (unsigned i = 0; i < sizeof sm / sizeof sm[0]; ++i) expect(lingoKanaToggleSmall, sm[i][0], sm[i][1]);
 	expect(lingoKanaSwapScript, "あ", "ア"); expect(lingoKanaSwapScript, "ン", "ん"); expect(lingoKanaSwapScript, "ー", "ー");
+	static const char* const R[][3] = {
+		{ "ポケモン", "", "pokemon" }, { "きょう", "", "kyou" }, { "しゃしん", "", "shashin" }, { "ちゃん", "", "chan" },
+		{ "がっこう", "", "gakkou" }, { "まっちゃ", "", "matcha" }, { "コーヒー", "", "koohii" }, { "は", "p", "wa" },
+		{ "へ", "p", "e" }, { "を", "p", "o" }, { "はい", "", "hai" }, { "ふぁいと", "", "faito" }, { "きんえん", "", "kin'en" },
+		{ "じゃあ", "", "jaa" }, { "つづく", "", "tsuzuku" }, { "オダマキ", "", "odamaki" }, { "にんげん", "", "ningen" },
+		{ "パーティー", "", "paatii" }, { "ゆうしゃ", "", "yuusha" },
+	};
+	for (unsigned i = 0; i < sizeof R / sizeof R[0]; ++i) {
+		uint32_t cp[32];
+		int n = lingoUtf8Decode(R[i][0], cp, 32);
+		char out[64];
+		lingoRomaji(cp, n, R[i][1][0] == 'p', out, sizeof out);
+		if (strcmp(out, R[i][2])) {
+			printf("FAIL romaji %s -> %s, want %s\n", R[i][0], out, R[i][2]);
+			++failures;
+		}
+	}
 	printf(failures ? "%d FAILED\n" : "all passed\n", failures);
 	return failures != 0;
 }

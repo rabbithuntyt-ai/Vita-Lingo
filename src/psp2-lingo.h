@@ -61,6 +61,7 @@ struct LingoCandidate {
 	uint32_t lastFrame;
 	uint16_t steps;     /* consecutive small advances */
 	uint16_t ones;      /* of those, advances by exactly one byte */
+	uint8_t checked;    /* the message from msgStart: 0 unchecked, 1 Japanese, 2 not */
 };
 
 struct LingoScanner {
