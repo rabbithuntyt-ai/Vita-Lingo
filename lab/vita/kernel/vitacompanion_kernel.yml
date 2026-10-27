@@ -1,0 +1,22 @@
+vitacompanion_kernel:
+  attributes: 0
+  version:
+    major: 1
+    minor: 8
+  main:
+    start: module_start
+    stop: module_stop
+  libraries:
+    VitaCompanionKernel:
+      syscall: true
+      functions:
+        - vitaCompanionKernelGetApiVersion
+        - vitaCompanionKernelSetButtons
+        - vitaCompanionKernelSetAnalog
+        - vitaCompanionKernelSetTouch
+        - vitaCompanionKernelReset
+        - vitaCompanionKernelRequestReboot
+        - vitaCompanionKernelForceReboot
+        - vitaLabKernelGetFrame
+        - vitaLabKernelGetPerf
+        - vitaLabKernelSetClocks

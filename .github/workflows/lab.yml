@@ -1,0 +1,90 @@
+name: Vita Lab
+on:
+  push:
+    branches: [main]
+    paths: ['lab/**', '.github/workflows/lab.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  VITASDK: /home/runner/vitasdk
+jobs:
+  vita:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - id: sdk
+        uses: actions/cache/restore@v4
+        with:
+          path: /home/runner/vitasdk
+          key: vitasdk-v6
+      - if: steps.sdk.outputs.cache-hit != 'true'
+        run: bash ci/install-sdk.sh
+      - name: Build the plugins and the Vita Lab VPK
+        run: |
+          set -o pipefail
+          export PATH="$VITASDK/bin:$PATH"
+          # taiHEN headers/stubs and taipool, which the plugins use
+          if [ ! -f "$VITASDK/arm-vita-eabi/include/taihen.h" ] || [ ! -f "$VITASDK/arm-vita-eabi/lib/libtaipool.a" ]; then
+            vdpm install --noconfirm taihen taipool < /dev/null || vdpm install taihen taipool < <(yes) || true
+            ls "$VITASDK/arm-vita-eabi/include/taihen.h" "$VITASDK/arm-vita-eabi/lib/libtaipool.a"
+          fi
+          gcc -Wall -O1 -fsanitize=address -o /tmp/test_config lab/vita/app/test_config.c lab/vita/app/config.c
+          /tmp/test_config
+          mkdir -p lab/vita/build && cd lab/vita/build
+          cmake .. 2>&1 | tee -a $GITHUB_WORKSPACE/lab-log.txt
+          make -j"$(nproc)" 2>&1 | tee -a $GITHUB_WORKSPACE/lab-log.txt
+          ls -la *.vpk *.suprx *.skprx
+          unzip -l VitaLab.vpk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vita
+          path: lab/vita/build/VitaLab.vpk
+      - if: failure()
+        run: |
+          git config user.name ci; git config user.email actions@github.com
+          cp lab-log.txt /tmp/ 2>/dev/null || echo none > /tmp/lab-log.txt
+          git switch --orphan "ci-lab-${{ github.run_number }}"
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp /tmp/lab-log.txt . && git add -A && git commit -qm "lab log" && git push -q -f origin HEAD
+
+  pc:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - name: Test against a fake Vita, then build for Windows, macOS and Linux
+        working-directory: lab/pc
+        run: |
+          go vet ./...
+          go test -race -count=1 ./...
+          mkdir -p out
+          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o out/vitalab.exe .
+          GOOS=darwin GOARCH=arm64 go build -trimpath -ldflags "-s -w" -o out/vitalab-mac-apple-silicon .
+          GOOS=darwin GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o out/vitalab-mac-intel .
+          GOOS=linux GOARCH=amd64 go build -trimpath -ldflags "-s -w" -o out/vitalab-linux .
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pc
+          path: lab/pc/out/*
+
+  release:
+    needs: [vita, pc]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dl
+          merge-multiple: true
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp lab/README.md dl/VitaLab-README.md
+          ls -la dl
+          gh release create "lab-${{ github.run_number }}" dl/* --latest=false \
+            --title "Vita Lab ${{ github.run_number }}" --notes-file lab/README.md --target "$GITHUB_SHA"

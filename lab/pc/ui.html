@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vita Lab</title>
+<style>
+:root{--bg:#141c1b;--card:#1f2a28;--line:#2f3f3c;--text:#e9ece6;--soft:#9aa8a0;--green:#7cd99a;--red:#ff8a7a;--yellow:#f4d36b;--blue:#8cc4f0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui,Segoe UI,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line)}
+header h1{font-size:18px;margin:0}
+#conn{color:var(--soft)}
+main{display:grid;grid-template-columns:minmax(480px,960px) 340px;gap:16px;padding:16px}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px}
+#screenWrap{position:relative}
+#screen{width:100%;aspect-ratio:960/544;display:block;border-radius:8px;background:#000;cursor:crosshair;user-select:none;-webkit-user-drag:none}
+#overlay{position:absolute;top:8px;left:8px;background:#000a;padding:2px 8px;border-radius:6px;font:12px monospace}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+button{background:#2b3a37;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--green)}
+button:active{background:#3a4d49}
+input,select{background:#121918;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px}
+h2{font-size:14px;margin:4px 0 8px;color:var(--soft);font-weight:600}
+.bar{height:8px;background:#121918;border-radius:4px;overflow:hidden;margin:2px 0 6px}
+.bar i{display:block;height:100%;background:var(--green)}
+#log{white-space:pre-wrap;font:12px monospace;max-height:180px;overflow:auto;color:var(--soft)}
+.big{font-size:28px;font-weight:700}
+kbd{background:#2b3a37;border-radius:4px;padding:0 4px;font-size:12px}
+.pad{display:grid;grid-template-columns:repeat(3,44px);gap:4px}
+.pad button{padding:8px 0}
+</style>
+</head>
+<body>
+<header><h1>Vita Lab</h1><span id="conn">connecting…</span></header>
+<main>
+<section>
+  <div class="card" id="screenWrap">
+    <img id="screen" alt="Vita screen" draggable="false">
+    <div id="overlay">–</div>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <label>Quality <select id="step"><option value="2">fast (480×272)</option><option value="1">full (960×544)</option></select></label>
+    <label><input type="checkbox" id="live" checked> live</label>
+    <button id="save">Save screenshot</button>
+    <span style="color:var(--soft)">Click = tap, drag = swipe. Keys: <kbd>arrows</kbd> d-pad, <kbd>Z</kbd> ✕, <kbd>X</kbd> ○, <kbd>A</kbd> □, <kbd>S</kbd> △, <kbd>Q</kbd> L, <kbd>W</kbd> R, <kbd>Enter</kbd> start, <kbd>Shift</kbd> select, <kbd>Home</kbd> PS</span>
+  </div>
+  <div class="row">
+    <div class="pad"><span></span><button data-b="up">▲</button><span></span><button data-b="left">◀</button><span></span><button data-b="right">▶</button><span></span><button data-b="down">▼</button><span></span></div>
+    <div class="pad"><span></span><button data-b="triangle">△</button><span></span><button data-b="square">□</button><span></span><button data-b="circle">○</button><span></span><button data-b="cross">✕</button><span></span></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><button data-b="l">L</button><button data-b="r">R</button><button data-b="select">Select</button><button data-b="start">Start</button><button data-b="ps">PS</button></div>
+  </div>
+</section>
+<aside>
+  <div class="card">
+    <h2>Performance</h2>
+    <div><span class="big" id="fps">–</span> fps · <span id="app">–</span></div>
+    <div id="cpus"></div>
+    <div id="clocks" style="color:var(--soft)">–</div>
+    <div class="row">
+      <select id="arm"><option>444</option><option>333</option><option>266</option><option>222</option><option>166</option></select>
+      <select id="gpu"><option>222</option><option>166</option><option>111</option></select>
+      <button id="setclk">Set CPU/GPU</button><button id="defclk">Default</button>
+    </div>
+    <div class="row"><input id="benchSecs" value="30" size="3"> s <button id="bench">Benchmark</button></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h2>Apps</h2>
+    <div class="row"><input type="file" id="vpk" accept=".vpk"><button id="install">Install VPK</button></div>
+    <div class="row"><input id="title" placeholder="TITLEID e.g. LNGO00001" size="16">
+      <button id="launch">Launch</button><button id="quit">Quit</button><button id="uninstall" style="border-color:var(--red)">Uninstall</button></div>
+    <div class="row"><button id="apps">Running apps</button><button id="crashes">Crash dumps</button><button id="reboot">Reboot Vita</button></div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <h2>Command</h2>
+    <div class="row"><input id="cmd" placeholder="e.g. press cross; wait 100ms; release cross" style="flex:1"><button id="send">Send</button></div>
+    <div id="log"></div>
+  </div>
+</aside>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const H = {'X-Vitalab': '1'};
+const log = t => { const l = $('#log'); l.textContent = new Date().toLocaleTimeString() + '  ' + t + '\n' + l.textContent; };
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? {headers: H} : {method: 'POST', headers: {...H, 'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  const t = await r.text();
+  if (!r.ok) throw new Error(t);
+  try { return JSON.parse(t); } catch { return t; }
+}
+// live screen: fetch the next frame as soon as the last one arrives
+let busy = false, frames = 0, last = performance.now();
+async function nextFrame() {
+  if (!$('#live').checked || busy) return;
+  busy = true;
+  try {
+    const r = await fetch('/api/shot?step=' + $('#step').value + '&t=' + Date.now(), {headers: H});
+    if (r.ok) {
+      const b = await r.blob(), old = $('#screen').src;
+      $('#screen').src = URL.createObjectURL(b);
+      if (old.startsWith('blob:')) URL.revokeObjectURL(old);
+      frames++;
+      $('#conn').textContent = 'connected to ' + (r.headers.get('X-Vita') || 'Vita');
+      $('#conn').style.color = 'var(--green)';
+      const now = performance.now();
+      if (now - last > 1000) { $('#overlay').textContent = (frames * 1000 / (now - last)).toFixed(1) + ' pictures/s · game ' + (r.headers.get('X-Fps') || '?') + ' fps'; frames = 0; last = now; }
+    } else { $('#conn').textContent = await r.text(); $('#conn').style.color = 'var(--red)'; await new Promise(z => setTimeout(z, 1000)); }
+  } catch (e) { $('#conn').textContent = 'no connection'; $('#conn').style.color = 'var(--red)'; await new Promise(z => setTimeout(z, 1000)); }
+  busy = false;
+  setTimeout(nextFrame, 0);
+}
+$('#live').onchange = nextFrame;
+nextFrame();
+// tap and swipe
+const pos = e => { const r = $('#screen').getBoundingClientRect(); return [Math.round((e.clientX - r.left) * 960 / r.width), Math.round((e.clientY - r.top) * 544 / r.height)]; };
+let down = null;
+$('#screen').onmousedown = e => { down = pos(e); e.preventDefault(); };
+$('#screen').onmouseup = async e => {
+  if (!down) return;
+  const up = pos(e), [x1, y1] = down; down = null;
+  try {
+    if (Math.hypot(up[0] - x1, up[1] - y1) < 8) { await api('/api/tap', {x: x1, y: y1}); log('tap ' + x1 + ',' + y1); }
+    else { await api('/api/swipe', {x1, y1, x2: up[0], y2: up[1]}); log('swipe'); }
+  } catch (err) { log(err.message); }
+};
+// buttons: held while the key or mouse is down
+const keys = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',z:'cross',x:'circle',a:'square',s:'triangle',q:'l',w:'r',Enter:'start',Shift:'select',Home:'ps'};
+const held = new Set();
+const input = (b, on) => api('/api/input', {button: b, down: on}).catch(e => log(e.message));
+document.addEventListener('keydown', e => { if (e.target.tagName === 'INPUT') return; const b = keys[e.key] || keys[e.key.toLowerCase()]; if (b && !held.has(b)) { held.add(b); input(b, true); e.preventDefault(); } });
+document.addEventListener('keyup', e => { const b = keys[e.key] || keys[e.key.toLowerCase()]; if (b && held.has(b)) { held.delete(b); input(b, false); } });
+document.querySelectorAll('[data-b]').forEach(el => { el.onmousedown = () => input(el.dataset.b, true); el.onmouseup = el.onmouseleave = () => input(el.dataset.b, false); });
+// stats
+async function stats() {
+  try {
+    const s = await api('/api/stats');
+    $('#fps').textContent = s.FPS; $('#app').textContent = s.App || '–';
+    $('#cpus').innerHTML = s.CPU.map((c, i) => `<div style="color:var(--soft)">core ${i}: ${c}%</div><div class="bar"><i style="width:${c}%;background:${c > 90 ? 'var(--red)' : c > 70 ? 'var(--yellow)' : 'var(--green)'}"></i></div>`).join('');
+    $('#clocks').textContent = `CPU ${s.ARM} MHz · bus ${s.Bus} · GPU ${s.GPU} · crossbar ${s.Xbar}`;
+  } catch (e) {}
+  setTimeout(stats, 1500);
+}
+stats();
+const run = (label, fn) => async () => { try { log(label + ': ' + (await fn() || 'ok')); } catch (e) { log(label + ': ' + e.message); } };
+$('#setclk').onclick = run('clocks', () => api('/api/cmd', {line: `clock ${$('#arm').value} 222 ${$('#gpu').value} ${$('#gpu').value >= 222 ? 166 : 111}`}));
+$('#defclk').onclick = run('clocks', () => api('/api/cmd', {line: 'clock default'}));
+$('#bench').onclick = run('benchmark', async () => { log('benchmarking for ' + $('#benchSecs').value + ' s…'); const r = await api('/api/bench', {seconds: +$('#benchSecs').value}); return `avg ${r.FPSAvg.toFixed(1)} fps, min ${r.FPSMin}, 1% low ${r.FPS1Low}, max ${r.FPSMax}; CPU ${r.CPUAvg.map(c => c.toFixed(0) + '%').join(' / ')}`; });
+$('#launch').onclick = run('launch', () => api('/api/cmd', {line: 'launch ' + $('#title').value.trim()}));
+$('#quit').onclick = run('quit', () => api('/api/cmd', {line: 'quit ' + $('#title').value.trim()}));
+$('#uninstall').onclick = run('uninstall', () => confirm('Uninstall ' + $('#title').value + ' from the Vita?') ? api('/api/cmd', {line: 'delete ' + $('#title').value.trim()}) : 'cancelled');
+$('#apps').onclick = run('apps', () => api('/api/cmd', {line: 'apps'}));
+$('#reboot').onclick = run('reboot', () => confirm('Reboot the Vita?') ? api('/api/cmd', {line: 'reboot'}) : 'cancelled');
+$('#crashes').onclick = run('crash dumps', async () => { const l = await api('/api/crashes'); return l.length ? l.map(e => e.Name + ' (' + e.Size + ' bytes)').join(', ') + ' — fetch with: vitalab crashes --get <folder>' : 'none'; });
+$('#send').onclick = run('command', () => api('/api/cmd', {line: $('#cmd').value}));
+$('#cmd').onkeydown = e => { if (e.key === 'Enter') $('#send').onclick(); };
+$('#save').onclick = async () => { const r = await fetch('/api/shot?step=1', {headers: H}); if (!r.ok) return log(await r.text()); const a = document.createElement('a'); a.href = URL.createObjectURL(await r.blob()); a.download = 'vita-' + Date.now() + '.png'; a.click(); };
+$('#install').onclick = run('install', async () => {
+  const f = $('#vpk').files[0]; if (!f) return 'pick a .vpk first';
+  log('uploading ' + f.name + '…');
+  const r = await fetch('/api/install', {method: 'POST', headers: H, body: f});
+  const t = await r.text(); if (!r.ok) throw new Error(t);
+  const j = JSON.parse(t); $('#title').value = j.title; return 'installed ' + j.title;
+});
+</script>
+</body>
+</html>
