@@ -170,7 +170,7 @@ target_link_libraries(vitalab_app
   vita2d
   SceDisplay_stub SceGxm_stub SceSysmodule_stub SceCtrl_stub SceTouch_stub
   ScePgf_stub ScePvf_stub SceCommonDialog_stub SceAppUtil_stub
-  SceNet_stub SceNetCtl_stub ScePower_stub
+  SceNet_stub SceNetCtl_stub ScePower_stub SceSharedFb_stub SceAppMgr_stub
   png z m c
 )
 vita_create_self(eboot.bin vitalab_app UNSAFE)

@@ -24,7 +24,7 @@
 static SceUID lab_mutex = -1;
 static SceUID lab_thread = -1;
 static volatile int lab_running;
-static volatile uint32_t lab_fps, lab_flips, lab_fb_pid;
+static volatile uint32_t lab_fps, lab_flips, lab_fb_pid, lab_gpu_set;
 static uint32_t lab_row_in[LAB_MAX_WIDTH];
 static uint16_t lab_row_out[LAB_MAX_WIDTH];
 
@@ -201,9 +201,7 @@ int vitaLabKernelGetPerf(uint32_t *out_user)
     out[2] = lab_fb_pid;
     out[3] = (uint32_t)kscePowerGetArmClockFrequency();
     out[4] = (uint32_t)kscePowerGetBusClockFrequency();
-    SceInt32 core = 0, mp = 0;
-    kscePowerGetGpuClockFrequencyInternal(&core, &mp);
-    out[5] = (uint32_t)core;
+    out[5] = lab_gpu_set; /* the GPU clock can't be read on every SDK: report what Lab last set (0 = untouched) */
     out[6] = (uint32_t)kscePowerGetGpuXbarClockFrequency();
     out[7] = 0;
     int ret = ksceKernelCopyToUser(out_user, out, sizeof(out));
@@ -223,7 +221,10 @@ int vitaLabKernelSetClocks(int arm, int bus, int gpu, int xbar)
     if (bus > 0 && bus <= 222)
         ret |= kscePowerSetBusClockFrequency(bus);
     if (gpu > 0 && gpu <= 222)
+    {
         ret |= kscePowerSetGpuClockFrequency(gpu);
+        lab_gpu_set = (uint32_t)gpu;
+    }
     if (xbar > 0 && xbar <= 166)
         ret |= kscePowerSetGpuXbarClockFrequency(xbar);
     EXIT_SYSCALL(state);
