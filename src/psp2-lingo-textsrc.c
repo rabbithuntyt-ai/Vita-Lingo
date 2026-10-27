@@ -7,6 +7,7 @@
 #include "psp2-lingo-ocr.h"
 #include "psp2-lingo-reader.h"
 #include "psp2-lingo-textsrc.h"
+#include "psp2-lingo-tiles.h"
 #include "psp2-lingo-ui.h"
 
 #include <pthread.h>
@@ -29,7 +30,14 @@ static struct LingoRegions sRegions;
 static char sSystem[16], sKey[160], sBase[160];
 /* checking a guessed table against the dictionary */
 static int sJudged, sGood;
-static bool sTrusted, sNoAuto;
+static bool sTrusted, sNoAuto, sNoFont;
+/* reading the game's font (psp2-lingo-tiles.c) */
+static const uint8_t* sRom;
+static size_t sRomSize;
+static uint32_t sTilesNext;
+static volatile bool sTilesRunning;
+static struct LingoTable* sTilesScratch;
+static char sTilesWhy[200];
 static uint32_t sFrame;
 static int sSamples;
 static char sStatus[96];
@@ -85,13 +93,28 @@ static bool ensureBuffers(void) {
 }
 
 static bool guessed(void) {
-	return !strcmp(sTable->source, "found automatically") || !strcmp(sTable->source, "Shift-JIS");
+	return !strcmp(sTable->source, "found automatically") || !strcmp(sTable->source, "Shift-JIS") ||
+	       !strcmp(sTable->source, "read from its font");
+}
+
+static void markerPath(const char* ext, char* out, size_t n) {
+	char t[256];
+	tablePath(sKey, t, sizeof(t));
+	snprintf(out, n, "%.*s%s", (int) strlen(t) - 4, t, ext);
 }
 
 static void noAutoPath(char* out, size_t n) {
-	char t[256];
-	tablePath(sKey, t, sizeof(t));
-	snprintf(out, n, "%.*s.noauto", (int) strlen(t) - 4, t);
+	markerPath(".noauto", out, n);
+}
+
+static bool markerExists(const char* ext) {
+	char p[280];
+	markerPath(ext, p, sizeof(p));
+	FILE* f = fopen(p, "r");
+	if (f) {
+		fclose(f);
+	}
+	return f != NULL;
 }
 
 static void useTable(void) {
@@ -116,7 +139,7 @@ static int sjisMin(void) {
 			return 60;
 		}
 	}
-	if (!strcmp(sSystem, "md") || !strcmp(sSystem, "pce") || !sSystem[0]) {
+	if (!strcmp(sSystem, "md") || !strcmp(sSystem, "pce") || !strcmp(sSystem, "gba") || !sSystem[0]) {
 		return 200;
 	}
 	return 0;
@@ -136,14 +159,20 @@ void lingoTextSetGame(const char* system, const char* key, const char* baseName,
 		return;
 	}
 	/* a detection still running for the last game finishes into nothing */
+	lingoTilesStop = 1;
 	while (sBusy) {
 		/* rare and short: the thread checks no state of ours */
 	}
+	lingoTilesStop = 0;
 	sHave = false;
 	sFrame = 0;
 	sSamples = 0;
 	sLastWhy[0] = 0;
 	snprintf(sSystem, sizeof(sSystem), "%s", system ? system : "");
+	sRom = rom;
+	sRomSize = romSize;
+	sTilesNext = 240;
+	sTilesWhy[0] = 0;
 	snprintf(sKey, sizeof(sKey), "%s", key ? key : "game");
 	snprintf(sBase, sizeof(sBase), "%s", baseName ? baseName : "");
 	lingoReaderFree(&sReader);
@@ -176,6 +205,7 @@ void lingoTextSetGame(const char* system, const char* key, const char* baseName,
 		useTable();
 		return;
 	}
+	sNoFont = markerExists(".nofont");
 	/* a guess for this game turned out to be junk before: read the screen
 	 * (and let the player teach a line) instead of guessing again */
 	char na[280];
@@ -213,8 +243,10 @@ static void ocrCachePath(char* out, size_t n) {
 }
 
 void lingoTextGameUnloaded(void) {
+	lingoTilesStop = 1;
 	while (sBusy) {
 	}
+	lingoTilesStop = 0;
 	ocrWait();
 	if (sOcr) {
 		sceIoMkdir("ux0:data/lingo/glyphs", 0777);
@@ -397,6 +429,37 @@ static bool ocrStep(struct LingoText* out) {
 	return got;
 }
 
+/* consoles whose text is drawn with font tiles Lingo can read */
+static bool fontSystem(void) {
+	static const char* const F[] = { "fc", "gb", "sfc", "pce", "md", "gba", "ws", "msx" };
+	for (size_t i = 0; i < sizeof(F) / sizeof(F[0]); ++i) {
+		if (!strcmp(sSystem, F[i])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+static int tilesScore(const uint32_t* cp, int n, void* user) {
+	(void) user;
+	return lingoTilesWordScore(lingoDictGet(), cp, n);
+}
+
+static void* tilesThread(void* arg) {
+	(void) arg;
+	struct LingoRegions rs = sRegions;
+	char why[200];
+	int score = lingoTilesFind(sOcr, sSystem, &rs, sRom, sRomSize, tilesScore, NULL, sFound, sTilesScratch, why, sizeof(why));
+	snprintf(sTilesWhy, sizeof(sTilesWhy), "%s", why);
+	if (score > 0) {
+		snprintf(sLastWhy, sizeof(sLastWhy), "%s", why);
+	}
+	sResult = score > 0 ? 1 : -1;
+	sTilesRunning = false;
+	sBusy = 0;
+	return NULL;
+}
+
 static void* detectThread(void* arg) {
 	(void) arg;
 	char why[200];
@@ -461,7 +524,8 @@ static bool checkGuess(const struct LingoText* t) {
 		char path[256], na[280];
 		tablePath(sKey, path, sizeof(path));
 		sceIoRemove(path);
-		noAutoPath(na, sizeof(na));
+		bool font = !strcmp(sTable->source, "read from its font");
+		markerPath(font ? ".nofont" : ".noauto", na, sizeof(na));
 		sceIoMkdir("ux0:data/lingo", 0777);
 		sceIoMkdir(TABLES, 0777);
 		FILE* f = fopen(na, "w");
@@ -471,7 +535,11 @@ static bool checkGuess(const struct LingoText* t) {
 		}
 		lingoReaderFree(&sReader);
 		sHave = false;
-		sNoAuto = true;
+		if (font) {
+			sNoFont = true;
+		} else {
+			sNoAuto = true;
+		}
 		snprintf(sLastWhy, sizeof(sLastWhy), "Its memory didn't read as real words, so Lingo is reading the screen.");
 		return true;
 	}
@@ -489,11 +557,11 @@ bool lingoTextStep(struct LingoText* out) {
 	}
 	/* no table yet: read the screen meanwhile, and keep learning from memory */
 	bool screen = ocrStep(out);
-	if (!sDetect || !sRegions.n || sBusy) {
+	if (!sRegions.n || sBusy) {
 		return screen;
 	}
 	if (sResult == 1) {
-		/* the thread found a table: take it */
+		/* a thread found a table: take it */
 		sResult = 0;
 		memcpy(sTable, sFound, sizeof(*sTable));
 		saveTable();
@@ -501,6 +569,28 @@ bool lingoTextStep(struct LingoText* out) {
 		return screen;
 	}
 	sResult = 0;
+	/* cartridge consoles: read the font in video memory every few seconds
+	 * until it gives a table that reads the text on screen */
+	if (fontSystem() && !sNoFont && sFrame >= sTilesNext && ocrEnsure()) {
+		sTilesNext = sFrame + 300;
+		if (!sTilesScratch) {
+			sTilesScratch = malloc(sizeof(*sTilesScratch));
+		}
+		if (sTilesScratch) {
+			sBusy = 1;
+			sTilesRunning = true;
+			if (pthread_create(&sThread, NULL, tilesThread, NULL) == 0) {
+				pthread_detach(sThread);
+				sThreadStarted = true;
+			} else {
+				tilesThread(NULL);
+			}
+			return screen;
+		}
+	}
+	if (!sDetect) {
+		return screen;
+	}
 	if (sFrame % 6 == 0) {
 		lingoDetectSample(sDetect, &sRegions);
 		++sSamples;
@@ -528,6 +618,9 @@ const char* lingoTextStatus(float* progress, bool* reading) {
 		*reading = true;
 		*progress = 1;
 		snprintf(sStatus, sizeof(sStatus), "Reading the screen · %d letters learned", lingoOcrLearned(sOcr));
+	} else if (sTilesRunning) {
+		*progress = 0.5f;
+		snprintf(sStatus, sizeof(sStatus), "Reading the game's font…");
 	} else if (sNoAuto && sOcr) {
 		*reading = true;
 		*progress = 1;

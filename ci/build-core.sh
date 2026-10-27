@@ -4,6 +4,7 @@ set -euxo pipefail
 export PATH="$VITASDK/bin:$PATH"
 ID="$1"; OUT="$2"
 read -r _ REPO SHA DIR MK < <(grep -v '^#' retro/cores.txt | awk -v id="$ID" '$1==id')
+ROOT="$PWD"
 mkdir -p "$OUT" /tmp/core && cd /tmp/core
 rm -rf "$ID" && git init -q "$ID" && cd "$ID"
 git remote add origin "https://github.com/libretro/$REPO"
@@ -14,6 +15,9 @@ cd "$DIR"
 case "$ID" in
 	yabause) sed -i '1i #include <limits.h>\n#ifndef PATH_MAX\n#define PATH_MAX 1024\n#endif' libretro.c ;;
 esac
+# Lingo's own changes (exposing video memory), from retro/core-patches/<id>.sh
+P="$ROOT/retro/core-patches/$ID.sh"
+if [ -f "$P" ]; then bash "$P"; fi
 make -f "$MK" platform=vita -j"$(nproc)"
 LIB=$(find . -maxdepth 3 -name "*_libretro_vita.a" | head -1)
 test -n "$LIB"

@@ -639,12 +639,15 @@ struct Cand {
 };
 
 /* Best three distinct characters for a cell. */
-static int recognise(const struct LingoOcr* o, const struct Feat* f, struct Cand* out) {
+static int recogniseIn(const struct LingoOcr* o, const struct Feat* f, struct Cand* out, bool kanaOnly) {
 	/* shortlist by the 4x4 summary and the letter's height */
 	int best[K_COARSE];
 	unsigned bestD[K_COARSE];
 	int nb = 0;
 	for (int i = 0; i < o->n; ++i) {
+		if (kanaOnly && o->t[i].cp >= 0x4E00 && o->t[i].cp <= 0x9FFF) {
+			continue;
+		}
 		const struct Feat* t = &o->t[i].f;
 		unsigned d = (unsigned) abs(f->rel[3] - t->rel[3]) * 6 + (unsigned) abs(f->rel[2] - t->rel[2]) * 3;
 		for (int k = 0; k < 16; ++k) {
@@ -694,6 +697,28 @@ static int recognise(const struct LingoOcr* o, const struct Feat* f, struct Cand
 			out[k - 1] = tmp;
 			--k;
 		}
+	}
+	return n;
+}
+
+static int recognise(const struct LingoOcr* o, const struct Feat* f, struct Cand* out) {
+	return recogniseIn(o, f, out, false);
+}
+
+int lingoOcrClassify(const struct LingoOcr* o, const uint8_t* bits, int w, int h, bool kanaOnly, uint32_t* cp, float* score,
+                     int max) {
+	struct Feat f;
+	if (!o || !featFromBits(bits, w, h, &f)) {
+		return 0;
+	}
+	struct Cand c[3];
+	int n = recogniseIn(o, &f, c, kanaOnly);
+	if (n > max) {
+		n = max;
+	}
+	for (int i = 0; i < n; ++i) {
+		cp[i] = c[i].cp;
+		score[i] = c[i].score;
 	}
 	return n;
 }

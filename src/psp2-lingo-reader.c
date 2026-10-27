@@ -608,6 +608,11 @@ int lingoTableDecode(const struct LingoTable* t, const struct LingoRegion* r, ui
 		if (!cp) {
 			break;
 		}
+		if (cp == 0x200B) {
+			/* the other tiles of a big letter (see psp2-lingo-tiles.c): part of the text, nothing to show */
+			i += step;
+			continue;
+		}
 		if (cp == 0x3000) {
 			if (!spaces) {
 				spaceStart = i;

@@ -57,6 +57,12 @@ bool lingoOcrTeach(struct LingoOcr* o, const uint8_t* luma, int w, int h, const 
 typedef int (*LingoOcrScorer)(const uint32_t* cp, int n, void* user);
 void lingoOcrSetScorer(struct LingoOcr* o, LingoOcrScorer scorer, void* user);
 
+/* Recognises one letter drawn in bits (w x h, nonzero = ink): up to max
+ * candidates (3 at most), best first, with match scores 0..1. kanaOnly skips
+ * the kanji (faster, and fewer lookalikes). Returns how many. */
+int lingoOcrClassify(const struct LingoOcr* o, const uint8_t* bits, int w, int h, bool kanaOnly, uint32_t* cp, float* score,
+                     int max);
+
 /* Brightness from a frame in one of the shot formats (see psp2-lingo-shot.h:
  * 0 RGBX8888 bytes, 1 BGRX8888, 2 RGB565, 3 XRGB1555). */
 void lingoOcrLuma(const void* pixels, int w, int h, int stride, int format, uint8_t* out);

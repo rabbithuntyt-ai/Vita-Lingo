@@ -40,7 +40,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: cores-a/${{ matrix.core }}.a
-          key: core-${{ matrix.core }}-${{ steps.key.outputs.sha }}-v1
+          key: core-${{ matrix.core }}-${{ steps.key.outputs.sha }}-${{ hashFiles(format('retro/core-patches/{0}.sh', matrix.core), 'ci/build-core.sh') }}-v2
       - if: steps.built.outputs.cache-hit != 'true'
         run: bash ci/build-core.sh ${{ matrix.core }} "$PWD/cores-a" 2>&1 | tee core-log.txt; exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4

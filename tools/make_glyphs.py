@@ -29,7 +29,7 @@ N_KANJI = 1500
 def kana_set():
     out = [chr(c) for c in range(0x3041, 0x3095)]
     out += [chr(c) for c in range(0x30A1, 0x30FB)]
-    out += list("ー。、！？「」『』・…〜（）：＋－×＝％＆★☆♪→←↑↓○●◆■")
+    out += list("゛゜ー。、！？「」『』・…〜（）：＋－×＝％＆★☆♪→←↑↓○●◆■")
     out += [chr(c) for c in range(0xFF10, 0xFF1A)]  # ０-９
     out += [chr(c) for c in range(0xFF21, 0xFF3B)]  # Ａ-Ｚ
     out += [chr(c) for c in range(0xFF41, 0xFF5B)]  # ａ-ｚ

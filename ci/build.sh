@@ -57,6 +57,14 @@ python3 tests/make_ocr_frames.py /tmp/ocrframes $GF/dotgothic16/DotGothic16-Regu
 gcc -O2 -Wall -Wno-format-truncation -o /tmp/test_ocr tests/test_ocr.c src/psp2-lingo-ocr.c src/psp2-lingo-dict.c \
 	src/psp2-lingo-text.c $READER -lm
 /tmp/test_ocr assets/glyphs.bin /tmp/ocrframes assets/lingo.dic
+# reading a game's font from video memory, on fake console memory drawn with
+# fonts the reference glyphs don't include (Misaki 8x8 pixel font, Sawarabi Gothic)
+sudo apt-get install -y -q fonts-misaki >/dev/null 2>&1 || sudo apt-get update -q >/dev/null && sudo apt-get install -y -q fonts-misaki >/dev/null
+python3 tests/make_tile_dumps.py /tmp/tiledumps /usr/share/fonts/truetype/misaki/misaki_gothic.ttf \
+	$GF/sawarabigothic/SawarabiGothic-Regular.ttf
+gcc -O2 -Wall -Wno-format-truncation -Isrc -o /tmp/test_tiles tests/test_tiles.c src/psp2-lingo-tiles.c src/psp2-lingo-ocr.c \
+	src/psp2-lingo-dict.c src/psp2-lingo-text.c $READER -lm
+/tmp/test_tiles assets/glyphs.bin assets/lingo.dic /tmp/tiledumps
 cp art/*.png assets/
 cp LICENSES.txt assets/
 
