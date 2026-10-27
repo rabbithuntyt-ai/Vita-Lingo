@@ -173,6 +173,9 @@ target_link_libraries(vitalab_app
   SceNet_stub SceNetCtl_stub ScePower_stub SceAppMgr_stub
   png z m c
 )
+# vita_create_self is a macro: the plugins' "-e <exports.yml>" would leak into the app
+set(VITA_ELF_CREATE_FLAGS "")
+set(VITA_MAKE_FSELF_FLAGS "")
 vita_create_self(eboot.bin vitalab_app UNSAFE)
 add_dependencies(eboot.bin-self ${VITACOMPANION_MODULE_NAME}.suprx-self vitacompanion_kernel.skprx-self)
 vita_create_vpk(VitaLab.vpk VLAB00001 eboot.bin
