@@ -25,9 +25,10 @@ jobs:
           set -o pipefail
           export PATH="$VITASDK/bin:$PATH"
           # taiHEN headers/stubs and taipool, which the plugins use
-          if [ ! -f "$VITASDK/arm-vita-eabi/include/taihen.h" ] || [ ! -f "$VITASDK/arm-vita-eabi/lib/libtaipool.a" ]; then
-            vdpm install --noconfirm taihen taipool < /dev/null || vdpm install taihen taipool < <(yes) || true
-            ls "$VITASDK/arm-vita-eabi/include/taihen.h" "$VITASDK/arm-vita-eabi/lib/libtaipool.a"
+          L="$VITASDK/arm-vita-eabi/lib"
+          if [ ! -f "$VITASDK/arm-vita-eabi/include/taihen.h" ] || [ ! -f "$L/libtaipool.a" ] || [ ! -f "$L/libk.a" ]; then
+            vdpm install --noconfirm taihen taipool libk < /dev/null || vdpm install taihen taipool libk < <(yes) || true
+            ls "$VITASDK/arm-vita-eabi/include/taihen.h" "$L/libtaipool.a" "$L/libk.a"
           fi
           gcc -Wall -O1 -fsanitize=address -o /tmp/test_config lab/vita/app/test_config.c lab/vita/app/config.c
           /tmp/test_config
