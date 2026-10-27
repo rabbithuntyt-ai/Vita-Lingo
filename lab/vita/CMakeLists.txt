@@ -174,7 +174,7 @@ target_link_libraries(vitalab_app
   png z m c
 )
 vita_create_self(eboot.bin vitalab_app UNSAFE)
-add_dependencies(eboot.bin ${VITACOMPANION_MODULE_NAME}.suprx vitacompanion_kernel.skprx)
+add_dependencies(eboot.bin-self ${VITACOMPANION_MODULE_NAME}.suprx-self vitacompanion_kernel.skprx-self)
 vita_create_vpk(VitaLab.vpk VLAB00001 eboot.bin
   VERSION 01.00
   NAME "Vita Lab"
