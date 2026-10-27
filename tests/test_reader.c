@@ -449,6 +449,13 @@ static void testRubyWindow(void) {
 	uint32_t win = 0x1000; /* Window struct at IWRAM 0x03001000 */
 	uint32_t ptr = 0x08001000;
 	memcpy(iwram + win + 0x20, &ptr, 4);
+	/* the rest of the struct as the game fills it: tile data and tilemap in VRAM, template in ROM */
+	uint32_t tiles = 0x06000000, map = 0x0600E800, tmpl = 0x08000400;
+	memcpy(iwram + win + 0x24, &tiles, 4);
+	memcpy(iwram + win + 0x28, &map, 4);
+	memcpy(iwram + win + 0x2C, &tmpl, 4);
+	iwram[win] = 1;
+	iwram[win + 1] = 1;
 	uint32_t junk = 0x08004000;
 	for (int f = 0; f < 40; ++f) {
 		uint16_t idx = (uint16_t) (f < 16 ? f : 15);

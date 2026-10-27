@@ -47,12 +47,30 @@ void lingoUploadRun(void) {
 	uiInit();
 	static struct LingoUploadSystem sys[32];
 	int ns = 0;
-	for (int i = 0; i < LINGO_SYSTEM_COUNT && ns < 30; ++i) {
-		static char labels[32][96];
-		snprintf(labels[ns], sizeof(labels[ns]), "%s (%s)", LINGO_SYSTEMS[i].en, LINGO_SYSTEMS[i].jp);
-		sys[ns] = (struct LingoUploadSystem) { LINGO_SYSTEMS[i].id, labels[ns], LINGO_SYSTEMS[i].exts, NULL };
-		++ns;
+	/* every game goes in one folder, whatever the console: Lingo works out
+	 * which console a file is for when it lists them */
+	static char allExts[512];
+	allExts[0] = 0;
+	for (int i = 0; i < LINGO_SYSTEM_COUNT; ++i) {
+		const char* e = LINGO_SYSTEMS[i].exts;
+		/* skip extensions already listed */
+		for (const char* p = e; *p;) {
+			const char* q = strchr(p + 1, '.');
+			size_t len = q ? (size_t) (q - p) : strlen(p);
+			char one[16];
+			if (len < sizeof(one)) {
+				memcpy(one, p, len);
+				one[len] = 0;
+				char* hit = strstr(allExts, one);
+				bool dup = hit && (hit[len] == 0 || hit[len] == '.');
+				if (!dup && strlen(allExts) + len + 1 < sizeof(allExts)) {
+					strcat(allExts, one);
+				}
+			}
+			p += len;
+		}
 	}
+	sys[ns++] = (struct LingoUploadSystem) { "games", "A game, any console (ROM, disc image or .zip)", allExts, GAMES_ROOT };
 	/* not games: a game's character table, and a bigger speech model */
 	sys[ns++] = (struct LingoUploadSystem) { "tables", "Text table for a game (.tbl)", ".tbl", "ux0:data/lingo/tables" };
 	sys[ns++] = (struct LingoUploadSystem) { "models", "Speech model (whisper.cpp ggml .bin)", ".bin", "ux0:data/lingo/models" };

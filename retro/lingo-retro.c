@@ -1,5 +1,5 @@
 /* Lingo's libretro front end for the Vita. One copy is linked with each core
- * (app0:cores/<core>.self). Started from Lingo's title screen with
+ * (app0:/<core>.self). Started from Lingo's title screen with
  * argv[1] = game path and argv[2] = console id; returns to it on quit.
  *
  * Plays the game, and around it: the study panel (live text reading,
@@ -685,7 +685,7 @@ static void fatal(const char* title, const char* body) {
 		uiTextCentered(SCREEN_W / 2, 500, 15, C_SOFT, "Tap to go back to Lingo");
 		uiFrameEnd();
 		if (IN.released || uiBack() || uiOk()) {
-			sceAppMgrLoadExec("app0:eboot.bin", NULL, NULL);
+			sceAppMgrLoadExec("app0:/eboot.bin", NULL, NULL);
 			sceKernelExitProcess(0);
 		}
 	}
@@ -1237,7 +1237,7 @@ int main(int argc, char* argv[]) {
 	if (sLog) {
 		fclose(sLog);
 	}
-	sceAppMgrLoadExec("app0:eboot.bin", NULL, NULL);
+	sceAppMgrLoadExec("app0:/eboot.bin", NULL, NULL);
 	sceKernelExitProcess(0);
 	return 0;
 }

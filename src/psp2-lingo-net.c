@@ -21,6 +21,10 @@
 #include <psp2/net/netctl.h>
 #include <psp2/sysmodule.h>
 #include <curl/curl.h>
+#include <openssl/err.h>
+#include <openssl/pem.h>
+#include <openssl/ssl.h>
+#include <openssl/x509.h>
 #include <vita2d.h>
 
 #define COVERS "ux0:data/lingo/covers"
@@ -55,40 +59,96 @@ bool lingoNetUp(char* ip, size_t n) {
 
 #define CA_FILE "app0:lingo/cacert.pem"
 
-/* The certificate list, handed to OpenSSL from memory: reading it by file
- * name from app0: failed on the Vita ("unable to get local issuer
- * certificate"), so Lingo reads the file itself. */
-static char* sCa;
-static size_t sCaLen;
+/* The root certificates, read by Lingo itself one at a time and added to
+ * each connection's store from curl's SSL_CTX callback. Handing curl the
+ * whole list (as a file, then as a memory blob) failed on the Vita: one
+ * certificate its OpenSSL can't take aborted the lot ("error adding trust
+ * anchors"). One by one, a bad one is just skipped. */
+static X509** sRoots;
+static int sNRoots, sNRootsBad;
+static bool sRootsRead;
+
+static void readRoots(void) {
+	if (sRootsRead) {
+		return;
+	}
+	sRootsRead = true;
+	FILE* f = fopen(CA_FILE, "rb");
+	if (!f) {
+		return;
+	}
+	fseek(f, 0, SEEK_END);
+	long n = ftell(f);
+	fseek(f, 0, SEEK_SET);
+	char* d = n > 0 ? malloc((size_t) n + 1) : NULL;
+	if (!d || fread(d, 1, (size_t) n, f) != (size_t) n) {
+		free(d);
+		fclose(f);
+		return;
+	}
+	fclose(f);
+	d[n] = 0;
+	int cap = 0;
+	static const char BEGIN[] = "-----BEGIN CERTIFICATE-----", END[] = "-----END CERTIFICATE-----";
+	for (char* p = strstr(d, BEGIN); p; p = strstr(p, BEGIN)) {
+		char* e = strstr(p, END);
+		if (!e) {
+			break;
+		}
+		e += sizeof(END) - 1;
+		BIO* bio = BIO_new_mem_buf(p, (int) (e - p));
+		X509* x = bio ? PEM_read_bio_X509(bio, NULL, NULL, NULL) : NULL;
+		if (bio) {
+			BIO_free(bio);
+		}
+		if (x) {
+			if (sNRoots == cap) {
+				cap = cap ? cap * 2 : 160;
+				X509** r = realloc(sRoots, (size_t) cap * sizeof(*r));
+				if (!r) {
+					X509_free(x);
+					break;
+				}
+				sRoots = r;
+			}
+			sRoots[sNRoots++] = x;
+		} else {
+			++sNRootsBad;
+		}
+		ERR_clear_error();
+		p = e;
+	}
+	free(d);
+}
+
+static CURLcode addRoots(CURL* c, void* sslctx, void* user) {
+	(void) c;
+	(void) user;
+	X509_STORE* store = SSL_CTX_get_cert_store((SSL_CTX*) sslctx);
+	if (!store) {
+		return CURLE_OK;
+	}
+	for (int i = 0; i < sNRoots; ++i) {
+		X509_STORE_add_cert(store, sRoots[i]); /* "already there" is fine */
+	}
+	ERR_clear_error();
+	return CURLE_OK;
+}
 
 static void tls(CURL* c) {
-	if (!sCa) {
-		FILE* f = fopen(CA_FILE, "rb");
-		if (f) {
-			fseek(f, 0, SEEK_END);
-			long n = ftell(f);
-			fseek(f, 0, SEEK_SET);
-			sCa = n > 0 ? malloc((size_t) n) : NULL;
-			if (sCa && fread(sCa, 1, (size_t) n, f) == (size_t) n) {
-				sCaLen = (size_t) n;
-			} else {
-				free(sCa);
-				sCa = NULL;
-			}
-			fclose(f);
-		}
-	}
-	bool blob = false;
-	if (sCa) {
-		struct curl_blob b = { sCa, sCaLen, CURL_BLOB_NOCOPY };
-		blob = curl_easy_setopt(c, CURLOPT_CAINFO_BLOB, &b) == CURLE_OK;
-	}
-	if (!blob) {
-		curl_easy_setopt(c, CURLOPT_CAINFO, CA_FILE);
-	}
+	readRoots();
+	curl_easy_setopt(c, CURLOPT_CAINFO, NULL);
 	curl_easy_setopt(c, CURLOPT_CAPATH, NULL);
+	curl_easy_setopt(c, CURLOPT_SSL_CTX_FUNCTION, addRoots);
+	curl_easy_setopt(c, CURLOPT_SSL_CTX_DATA, NULL);
 	curl_easy_setopt(c, CURLOPT_SSL_VERIFYPEER, 1L);
 	curl_easy_setopt(c, CURLOPT_SSL_VERIFYHOST, 2L);
+}
+
+/* Is r a failure to check the site's certificate (as opposed to no network)? */
+static bool certTrouble(CURLcode r) {
+	return r == CURLE_PEER_FAILED_VERIFICATION || r == CURLE_SSL_CACERT_BADFILE || r == CURLE_SSL_CERTPROBLEM ||
+	       r == CURLE_SSL_CONNECT_ERROR || r == CURLE_SSL_ISSUER_ERROR;
 }
 
 static bool httpUp(void) {
@@ -173,7 +233,12 @@ static char* httpGet(const char* url, size_t* len) {
 	curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
 	curl_easy_cleanup(c);
 	if (r != CURLE_OK || code != 200 || b.failed) {
-		snprintf(sNetError, sizeof(sNetError), "%s (HTTP %ld)", err[0] ? err : curl_easy_strerror(r), code);
+		if (certTrouble(r)) {
+			snprintf(sNetError, sizeof(sNetError), "%s (%d certificates loaded, %d unreadable)", err[0] ? err : curl_easy_strerror(r),
+			         sNRoots, sNRootsBad);
+		} else {
+			snprintf(sNetError, sizeof(sNetError), "%s (HTTP %ld)", err[0] ? err : curl_easy_strerror(r), code);
+		}
 		free(b.d);
 		return NULL;
 	}

@@ -1,12 +1,12 @@
 #!/bin/bash
 # Links Lingo's libretro front end with every core built into ./cores-a
-# and adds them to out/Lingo.vpk as cores/<id>.self.
+# and adds them to out/Lingo.vpk as <id>.self at the root (the Vita only starts SELFs from app0:/).
 set -euxo pipefail
 export PATH="$VITASDK/bin:$PATH"
 ROOT="$PWD"
 CC=arm-vita-eabi-gcc
 CFLAGS="-O2 -Wall -Wno-unused-parameter -ffunction-sections -fdata-sections -D_GNU_SOURCE -I$ROOT/retro -I$ROOT/src -I$VITASDK/arm-vita-eabi/include/freetype2"
-B=/tmp/retro-build; rm -rf $B && mkdir -p $B/obj $B/self/cores
+B=/tmp/retro-build; rm -rf $B && mkdir -p $B/obj $B/self
 for f in src/*.c retro/retro-util.c retro/retro-zip.c retro/retro-options.c retro/retro-rewind.c retro/retro-voice.c; do
 	$CC $CFLAGS -c "$f" -o "$B/obj/$(basename "${f%.c}").o"
 done
@@ -64,7 +64,7 @@ for a in cores-a/*.a; do
 	for pad in 0 4096 12288; do
 		if $CC -Wl,-q -o $B/$id.elf $B/lingo-retro.o $B/pad$pad.o -Wl,--start-group "$a" $speech $B/liblingo.a $B/libretro-common.a $LIBS -Wl,--end-group \
 			> $B/$id.link.log 2>&1 && vita-elf-create $B/$id.elf $B/$id.velf >> $B/$id.link.log 2>&1 \
-			&& vita-make-fself -c $B/$id.velf $B/self/cores/$id.self >> $B/$id.link.log 2>&1; then
+			&& vita-make-fself -c $B/$id.velf $B/self/$id.self >> $B/$id.link.log 2>&1; then
 			ok=1
 			break
 		fi
@@ -73,12 +73,12 @@ for a in cores-a/*.a; do
 		built=$((built+1))
 		echo "linked $id (padding $pad)"
 	else
-		echo "LINK FAILED: $id"; tail -40 $B/$id.link.log; rm -f $B/self/cores/$id.self
+		echo "LINK FAILED: $id"; tail -40 $B/$id.link.log; rm -f $B/self/$id.self
 	fi
 done
-cd $B/self && zip -0 -r "$ROOT/out/Lingo.vpk" cores lingo
+cd $B/self && zip -0 -r "$ROOT/out/Lingo.vpk" *.self lingo
 cd "$ROOT"
-ls -la $B/self/cores
+ls -la $B/self
 echo "cores in VPK: $built"
 echo "Cores included: $built of $(ls cores-a/*.a | wc -l)" >> out/NOTES.md
 test "$built" -eq "$(ls cores-a/*.a | wc -l)"

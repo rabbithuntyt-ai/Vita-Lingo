@@ -64,6 +64,18 @@ static void testScanner(void) {
 	int m2 = encode("きみの　なまえは　なんて　いうの？", msg2);
 	rom[0x4FFF] = 0xFF;
 	memcpy(rom + 0x5000, msg2, m2);
+	/* the printer struct around the pointer: windowId, fontId, no callback, active */
+	ewram[printer - 0x02000000 + 4] = 0;
+	ewram[printer - 0x02000000 + 5] = 1;
+	ewram[printer - 0x02000000 + 0x1B] = 1;
+	/* a decoy: a music-track-like pointer walking a byte at a time over bytes
+	 * that read as kana, outside any text printer. It must never be reported. */
+	const uint32_t decoy = 0x03007100;
+	uint8_t msgD[256];
+	int mD = encode("ここは　ちがう　ぶんしょう　です。", msgD);
+	rom[0x6FFF] = 0xFF;
+	memcpy(rom + 0x7000, msgD, mD);
+	uint32_t decoyPtr = 0x08007000;
 	struct LingoText out;
 	int reports = 0, pages = 0;
 	char s[1024], last1[1024] = "", last2[1024] = "";
@@ -78,8 +90,12 @@ static void testScanner(void) {
 		if (f == 200) textPtr = 0x08005000; /* a new message from ROM */
 		if (f > 200 && f % 2 == 0 && textPtr < 0x08005000u + (uint32_t) m2 - 1) textPtr++;
 		*(uint32_t*) (ewram + (printer - 0x02000000)) = textPtr;
+		if (decoyPtr < 0x08007000u + (uint32_t) mD - 1) decoyPtr++;
+		else decoyPtr = 0x08007000;
+		*(uint32_t*) (iwram + (decoy - 0x03000000)) = decoyPtr;
 		if (lingoScannerStep(&sc, &mem, &out)) {
 			utf8(&out, s, sizeof s);
+			CHECK(!strstr(s, "ちがう"), "decoy pointer reported: %s", s);
 			/* the box types out live: one report per change, same start while it grows */
 			if (out.start != lastStart) {
 				++pages;
@@ -118,6 +134,50 @@ static void testScanner(void) {
 		}
 	}
 	CHECK(got, "skipped message not captured");
+}
+
+
+/* Ruby/Sapphire: a Window struct whose textIndex walks while its text pointer
+ * stays put; then a second message printed into the same buffer. */
+static void testRubyWindow(void) {
+	static uint8_t ewram[0x40000], iwram[0x8000], rom[0x10000];
+	static struct LingoScanner sc;
+	struct LingoMem mem = { ewram, iwram, rom, sizeof rom };
+	lingoScannerReset(&sc);
+	const uint32_t win = 0x02030100, buf = 0x02021FC4;
+	uint8_t* w = ewram + (win - 0x02000000);
+	w[0] = 1; w[1] = 1; w[2] = 1;
+	*(uint32_t*) (w + 0x20) = buf;
+	*(uint32_t*) (w + 0x24) = 0x06000000;
+	*(uint32_t*) (w + 0x28) = 0x0600E800;
+	*(uint32_t*) (w + 0x2C) = 0x08000400;
+	const char* texts[2] = { "おかあさん：　あら　おかえり！\nひっこしの　にもつは　かたづいた？", "２かいの　じぶんの　へやも\nみてきたら？" };
+	char last[2][1024] = { "", "" };
+	int which = -1, f = 0;
+	struct LingoText out;
+	char s[1024];
+	for (int m = 0; m < 2; ++m) {
+		uint8_t msg[512];
+		int n = encode(texts[m], msg);
+		memset(ewram + (buf - 0x02000000) - 8, 0xFF, 8);
+		memcpy(ewram + (buf - 0x02000000), msg, n);
+		ewram[buf - 0x02000000 + n] = 0xFF;
+		for (int idx = 0; idx <= n; ++f) {
+			/* nothing printing for a while between messages: the overworld */
+			if (f % 2 == 0 && (f > 30 || m == 0)) ++idx;
+			*(uint32_t*) (w + 0x1C) = ((uint32_t) (idx < n ? idx : n) << 16) | (uint32_t) (f & 0xFF);
+			if (lingoScannerStep(&sc, &mem, &out)) {
+				utf8(&out, s, sizeof s);
+				snprintf(last[m], sizeof last[m], "%s", s);
+				which = m;
+			}
+		}
+		f = 0;
+	}
+	printf("  ruby window: %s | %s\n", last[0], last[1]);
+	CHECK(which == 1, "second message in the same buffer not reported");
+	CHECK(!strcmp(last[0], texts[0]), "ruby first message: %s", last[0]);
+	CHECK(!strcmp(last[1], texts[1]), "ruby second message: %s", last[1]);
 }
 
 static void showTokens(const struct LingoDict* d, const char* text, const char* expect) {
@@ -187,7 +247,7 @@ static void testDict(const char* path) {
 
 int main(int argc, char** argv) {
 	printf("decode\n"); testDecode();
-	printf("scanner\n"); testScanner();
+	printf("scanner\n"); testScanner(); testRubyWindow();
 	if (argc > 1) { printf("dictionary\n"); testDict(argv[1]); }
 	printf(failures ? "%d FAILED\n" : "all passed\n", failures);
 	return failures != 0;
