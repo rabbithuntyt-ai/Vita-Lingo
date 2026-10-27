@@ -69,7 +69,7 @@ static char* readAll(const char* path, int* len) {
 }
 
 static bool writeAll(const char* path, const char* data, int len) {
-	char tmp[256];
+	char tmp[300];
 	snprintf(tmp, sizeof(tmp), "%s.vitalab-new", path);
 	SceUID fd = sceIoOpen(tmp, SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0666);
 	if (fd < 0) {
