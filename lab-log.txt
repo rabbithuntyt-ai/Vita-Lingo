@@ -1,0 +1,73 @@
+-- The C compiler identification is GNU 15.2.0
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/runner/vitasdk/bin/arm-vita-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The ASM compiler identification is GNU
+-- Found assembler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc
+-- Configuring done (1.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/build
+[  2%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita_io.c.obj
+[  5%] Building C object CMakeFiles/vitalab_app.dir/app/main.c.obj
+[  7%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/main.c.obj
+[ 10%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita.c.obj
+[ 12%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita_path.c.obj
+/home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/app/main.c: In function 'setConfig':
+/home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/app/main.c:73:39: warning: '.vitalab-new' directive output may be truncated writing 12 bytes into a region of size between 1 and 256 [-Wformat-truncation=]
+   73 |         snprintf(tmp, sizeof(tmp), "%s.vitalab-new", path);
+      |                                       ^~~~~~~~~~~~
+In function 'writeAll',
+    inlined from 'setConfig' at /home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/app/main.c:122:3:
+/home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/app/main.c:73:9: note: 'snprintf' output between 13 and 268 bytes into a destination of size 256
+   73 |         snprintf(tmp, sizeof(tmp), "%s.vitalab-new", path);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 15%] Building C object CMakeFiles/vitalab_app.dir/app/config.c.obj
+[ 17%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/reboot.c.obj
+[ 20%] Building ASM object CMakeFiles/vitacompanion_kernel.dir/kernel/threadmgr_event_flag_list.S.obj
+[ 22%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita_protocol.c.obj
+[ 25%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/touch_patch.c.obj
+[ 27%] Linking C executable vitalab_app
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_init_internal.part.0':
+(.text+0x7f0): undefined reference to `sceSharedFbClose'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: (.text+0x800): undefined reference to `_sceSharedFbOpen'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: (.text+0x816): undefined reference to `sceSharedFbGetInfo'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_init':
+(.text+0x8c2): undefined reference to `sceAppMgrGetBudgetInfo'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_init_advanced':
+(.text+0x970): undefined reference to `sceAppMgrGetBudgetInfo'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_init_advanced_with_msaa':
+(.text+0xa1a): undefined reference to `sceAppMgrGetBudgetInfo'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_fini':
+(.text+0xc6c): undefined reference to `sceSharedFbEnd'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: (.text+0xc72): undefined reference to `sceSharedFbClose'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: (.text+0xc7e): undefined reference to `sceSharedFbBegin'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_start_drawing':
+(.text+0xdaa): undefined reference to `sceSharedFbBegin'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_start_drawing_advanced':
+(.text+0xe9a): undefined reference to `sceSharedFbBegin'
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: /home/runner/vitasdk/bin/../lib/gcc/arm-vita-eabi/15.2.0/../../../../arm-vita-eabi/lib/libvita2d.a(vita2d.o): in function `vita2d_swap_buffers':
+(.text+0xcfa): undefined reference to `sceSharedFbEnd'
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/vitalab_app.dir/build.make:116: vitalab_app] Error 1
+make[1]: *** [CMakeFiles/Makefile2:451: CMakeFiles/vitalab_app.dir/all] Error 2
+make[1]: *** Waiting for unfinished jobs....
+[ 30%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/lab.c.obj
+/home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/kernel/lab.c: In function 'vitaLabKernelGetPerf':
+/home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/kernel/lab.c:205:5: error: implicit declaration of function 'kscePowerGetGpuClockFrequencyInternal'; did you mean 'kscePowerSetGpuClockFrequency'? [-Wimplicit-function-declaration]
+  205 |     kscePowerGetGpuClockFrequencyInternal(&core, &mp);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |     kscePowerSetGpuClockFrequency
+make[2]: *** [CMakeFiles/vitacompanion_kernel.dir/build.make:134: CMakeFiles/vitacompanion_kernel.dir/kernel/lab.c.obj] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [CMakeFiles/Makefile2:158: CMakeFiles/vitacompanion_kernel.dir/all] Error 2
+[ 32%] Linking C static library libftpvita.a
+[ 32%] Built target ftpvita
+make: *** [Makefile:91: all] Error 2
