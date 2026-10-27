@@ -1,0 +1,67 @@
+-- The C compiler identification is GNU 15.2.0
+-- The CXX compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /home/runner/vitasdk/bin/arm-vita-eabi-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The ASM compiler identification is GNU
+-- Found assembler: /home/runner/vitasdk/bin/arm-vita-eabi-gcc
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/Vita-Lingo/Vita-Lingo/lab/vita/build
+[  2%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita.c.obj
+[  5%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita_io.c.obj
+[  7%] Building C object CMakeFiles/vitalab_app.dir/app/main.c.obj
+[ 10%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/main.c.obj
+[ 12%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita_path.c.obj
+[ 15%] Building C object CMakeFiles/vitalab_app.dir/app/config.c.obj
+[ 17%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/reboot.c.obj
+[ 20%] Building ASM object CMakeFiles/vitacompanion_kernel.dir/kernel/threadmgr_event_flag_list.S.obj
+[ 22%] Building C object CMakeFiles/ftpvita.dir/vendor/libftpvita/ftpvita_protocol.c.obj
+[ 25%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/touch_patch.c.obj
+[ 27%] Linking C executable vitalab_app
+[ 27%] Built target vitalab_app
+[ 30%] Building C object CMakeFiles/vitacompanion_kernel.dir/kernel/lab.c.obj
+[ 32%] Converting to Sony ELF vitalab_app.velf
+[ 32%] Built target vitalab_app-velf
+[ 35%] Linking C executable vitacompanion_kernel
+[ 35%] Built target vitacompanion_kernel
+[ 37%] Generating imports YAML for vitacompanion_kernel
+[ 40%] Converting to Sony ELF vitacompanion_kernel.velf
+[ 42%] Building stubs vitacompanion_kernel_stubs
+[ 42%] Built target vitacompanion_kernel-velf
+make[3]: warning: jobserver unavailable: using -j1.  Add '+' to parent make rule.
+[ 45%] Creating SELF vitacompanion_kernel.skprx
+[ 45%] Built target vitacompanion_kernel.skprx-self
+[ 45%] Built target vitacompanion_kernel_stubs
+[ 45%] Built target libvitacompanion_kernel_stub.a
+[ 45%] Built target libvitacompanion_kernel_stub_weak.a
+[ 47%] Linking C static library libftpvita.a
+[ 47%] Built target ftpvita
+[ 50%] Building C object CMakeFiles/vitacompanion.dir/src/main.c.obj
+[ 52%] Building C object CMakeFiles/vitacompanion.dir/src/log.c.obj
+[ 55%] Building C object CMakeFiles/vitacompanion.dir/src/cmd.c.obj
+[ 57%] Building C object CMakeFiles/vitacompanion.dir/src/net.c.obj
+[ 60%] Building C object CMakeFiles/vitacompanion.dir/src/nosleep.c.obj
+[ 62%] Building C object CMakeFiles/vitacompanion.dir/src/parser.c.obj
+[ 65%] Building C object CMakeFiles/vitacompanion.dir/src/promote.c.obj
+[ 67%] Building C object CMakeFiles/vitacompanion.dir/src/promote_head_template.c.obj
+[ 70%] Building C object CMakeFiles/vitacompanion.dir/src/reboot.c.obj
+[ 72%] Building C object CMakeFiles/vitacompanion.dir/src/sha1.c.obj
+[ 75%] Building C object CMakeFiles/vitacompanion.dir/src/input.c.obj
+[ 77%] Building C object CMakeFiles/vitacompanion.dir/src/input_parse.c.obj
+[ 80%] Building C object CMakeFiles/vitacompanion.dir/src/version.c.obj
+[ 82%] Building C object CMakeFiles/vitacompanion.dir/src/cmd_definitions.c.obj
+[ 85%] Building C object CMakeFiles/vitacompanion.dir/src/lab.c.obj
+[ 87%] Linking C executable vitacompanion
+/home/runner/vitasdk/arm-vita-eabi/bin/ld: cannot find -lk: No such file or directory
+collect2: error: ld returned 1 exit status
+make[2]: *** [CMakeFiles/vitacompanion.dir/build.make:326: vitacompanion] Error 1
+make[1]: *** [CMakeFiles/Makefile2:353: CMakeFiles/vitacompanion.dir/all] Error 2
+make: *** [Makefile:91: all] Error 2
