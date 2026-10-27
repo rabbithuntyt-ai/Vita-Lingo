@@ -1178,8 +1178,9 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		if (rewinding) {
-			uiRound(SCREEN_W / 2 - 70, 20, 140, 34, 12, C_SHADE);
-			uiTextCentered(SCREEN_W / 2, 43, 16, C_YELLOW, "◀◀ Rewind");
+			/* top left, over the game rather than the panel's title */
+			uiRound(16, 14, 130, 34, 12, C_SHADE);
+			uiTextCentered(81, 37, 16, C_YELLOW, "◀◀ Rewind");
 		}
 		uiFrameEnd();
 

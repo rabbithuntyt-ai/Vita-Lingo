@@ -1453,12 +1453,14 @@ struct LingoDetect {
 	uint32_t size[LR_MAX_REGIONS];
 	long sjisChars;
 	int samples;
+	int sjisMin; /* Shift-JIS characters needed before believing it; 0 = never */
 	struct LingoTable sjis;
 };
 
 struct LingoDetect* lingoDetectNew(void) {
 	struct LingoDetect* d = calloc(1, sizeof(*d));
 	if (d) {
+		d->sjisMin = 60;
 		lingoTableInit(&d->sjis, LCM_SJIS, 0);
 	}
 	return d;
@@ -1581,6 +1583,12 @@ static void applyChoice(struct LingoTable* t, const struct Choice* c, const stru
 	}
 }
 
+void lingoDetectSjis(struct LingoDetect* d, int minChars) {
+	if (d) {
+		d->sjisMin = minChars;
+	}
+}
+
 bool lingoDetectFinish(struct LingoDetect* d, const struct LingoRegions* rs, struct LingoTable* out, char* why, size_t whyLen) {
 	if (!d) {
 		snprintf(why, whyLen, "Out of memory.");
@@ -1611,7 +1619,7 @@ bool lingoDetectFinish(struct LingoDetect* d, const struct LingoRegions* rs, str
 #endif
 	bool kanaGood = prim->m >= 0 && fitGood(&prim->fit, 30, 8 * 60);
 	/* Shift-JIS when it found real lines and no font layout explains more */
-	if (d->sjisChars >= 12 && (!kanaGood || d->sjisChars * 2 > prim->fit.pairs)) {
+	if (d->sjisMin > 0 && d->sjisChars >= d->sjisMin && (!kanaGood || d->sjisChars * 2 > prim->fit.pairs)) {
 		lingoTableInit(out, LCM_SJIS, 0);
 		snprintf(out->source, sizeof(out->source), "Shift-JIS");
 		snprintf(why, whyLen, "This game keeps its text in Shift-JIS, the standard Japanese encoding. Kanji included.");

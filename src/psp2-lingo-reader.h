@@ -152,6 +152,11 @@ void lingoDetectSample(struct LingoDetect* d, const struct LingoRegions* rs);
 /* How sure the detector is so far, 0..1 (for a progress bar). */
 float lingoDetectConfidence(const struct LingoDetect* d);
 /* Picks the best table. False (and a reason in why) when nothing reads like Japanese. */
+/* How many Shift-JIS characters detection needs to see before it decides a
+ * game uses Shift-JIS (default 60); 0 never does. Cartridge consoles stored
+ * their text in their own tile codes, and random bytes in their RAM look like
+ * a few Shift-JIS kana, so for them it is off. */
+void lingoDetectSjis(struct LingoDetect* d, int minChars);
 bool lingoDetectFinish(struct LingoDetect* d, const struct LingoRegions* rs, struct LingoTable* out, char* why, size_t whyLen);
 
 /* ---- teaching: the player types what is on screen ---- */

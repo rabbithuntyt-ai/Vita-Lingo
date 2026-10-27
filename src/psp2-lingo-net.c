@@ -16,12 +16,14 @@
 #include <psp2/io/fcntl.h>
 #include <psp2/io/stat.h>
 #include <psp2/kernel/processmgr.h>
+#include <psp2/kernel/rng.h>
 #include <psp2/kernel/threadmgr.h>
 #include <psp2/net/net.h>
 #include <psp2/net/netctl.h>
 #include <psp2/sysmodule.h>
 #include <curl/curl.h>
 #include <openssl/err.h>
+#include <openssl/rand.h>
 #include <openssl/pem.h>
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
@@ -151,6 +153,58 @@ static bool certTrouble(CURLcode r) {
 	       r == CURLE_SSL_CONNECT_ERROR || r == CURLE_SSL_ISSUER_ERROR;
 }
 
+/* OpenSSL looks for random numbers in /dev/urandom and the like, which the
+ * Vita doesn't have, so every secure connection failed with "insufficient
+ * randomness". Its random numbers come from the Vita's hardware generator
+ * instead (sceKernelGetRandomNumber, at most 64 bytes a call). */
+static int vitaRandom(unsigned char* out, int n) {
+	while (n > 0) {
+		int k = n > 64 ? 64 : n;
+		if (sceKernelGetRandomNumber(out, (SceSize) k) < 0) {
+			return 0;
+		}
+		out += k;
+		n -= k;
+	}
+	return 1;
+}
+
+static int vitaRandomSeed(const void* buf, int n) {
+	(void) buf;
+	(void) n;
+	return 1;
+}
+
+static int vitaRandomAdd(const void* buf, int n, double entropy) {
+	(void) buf;
+	(void) n;
+	(void) entropy;
+	return 1;
+}
+
+static int vitaRandomStatus(void) {
+	return 1;
+}
+
+static RAND_METHOD sVitaRand = {
+	.seed = vitaRandomSeed,
+	.bytes = vitaRandom,
+	.cleanup = NULL,
+	.add = vitaRandomAdd,
+	.pseudorand = vitaRandom,
+	.status = vitaRandomStatus,
+};
+
+static void seedRandom(void) {
+	RAND_set_rand_method(&sVitaRand);
+	/* and seed OpenSSL's own generator too, in case something bypasses the method */
+	unsigned char seed[256];
+	if (vitaRandom(seed, sizeof(seed))) {
+		RAND_seed(seed, sizeof(seed));
+	}
+	memset(seed, 0, sizeof(seed));
+}
+
 static bool httpUp(void) {
 	if (sHttp) {
 		return true;
@@ -158,9 +212,11 @@ static bool httpUp(void) {
 	if (!lingoNetUp(NULL, 0)) {
 		return false;
 	}
+	seedRandom();
 	if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK) {
 		return false;
 	}
+	seedRandom(); /* again: initialising OpenSSL can reset the method */
 	sHttp = true;
 	return true;
 }

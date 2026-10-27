@@ -428,27 +428,27 @@ static bool reportVisible(struct LingoScanner* s, const struct LingoMem* mem, ui
  * pointers, timers next to a pointer into the ROM), and with the Japanese
  * character set almost any bytes read as kana, so a match is only trusted
  * when the variable sits in the right kind of struct. */
-static bool romOrRam(uint32_t v) {
-	uint32_t r = v >> 24;
-	return r == 0x02 || r == 0x03 || r == 0x08 || r == 0x09;
-}
-
 /* Ruby/Sapphire struct Window: the word at +0x1C holds u16 textIndex (high
- * half); then +0x20 text, +0x24 tileData (VRAM or a RAM buffer), +0x28
- * tilemap (VRAM or RAM), +0x2C template (ROM or RAM). Word i is +0x1C. */
-static bool looksLikeWindow(const uint32_t* w, size_t i, size_t words) {
-	if (i < 7 || i + 4 >= words) {
+ * half), and +0x20 the text it indexes. The rest of the struct isn't checked:
+ * the Japanese release may lay it out differently from the English one the
+ * decompilation describes. What is checked: the index stays inside the
+ * message (a frame counter next to a pointer soon runs past the end). */
+static bool looksLikeWindow(const struct LingoMem* mem, const uint32_t* w, size_t i, size_t words) {
+	if (i + 1 >= words) {
 		return false;
 	}
-	uint32_t tileData = w[i + 2], tilemap = w[i + 3], tmpl = w[i + 4];
-	bool vramOrRam1 = (tileData >> 24) == 0x06 || (tileData >> 24) == 0x02;
-	bool vramOrRam2 = (tilemap >> 24) == 0x06 || (tilemap >> 24) == 0x02;
-	if (!vramOrRam1 || !vramOrRam2 || !romOrRam(tmpl)) {
+	uint32_t index = w[i] >> 16;
+	size_t avail;
+	const uint8_t* p = lingoResolve(mem, w[i + 1], &avail);
+	if (!p || index > avail || index >= LINGO_MAX_SCAN_BYTES) {
 		return false;
 	}
-	const uint8_t* b = (const uint8_t*) &w[i - 7];
-	/* textMode, fontNum and language are small numbers */
-	return b[0] < 16 && b[1] < 16 && b[2] < 16 && (w[i] >> 16) < LINGO_MAX_SCAN_BYTES;
+	for (uint32_t k = 0; k + 1 < index; ++k) {
+		if (p[k] == 0xFF) {
+			return false; /* past the end of the message */
+		}
+	}
+	return true;
 }
 
 /* Emerald/FireRed/LeafGreen struct TextPrinter: currentChar at +0, then
@@ -483,7 +483,7 @@ static bool scanRegion(struct LingoScanner* s, const struct LingoMem* mem, const
 		 * of this word) and, right after it, "const u8 *text". The index walks
 		 * forward while the pointer stays put. */
 		uint32_t di = (v >> 16) - (p >> 16);
-		if (!found && i + 1 < words && di >= 1 && di <= 8 && cur[i + 1] == prev[i + 1] && looksLikeWindow(cur, i, words)) {
+		if (!found && i + 1 < words && di >= 1 && di <= 8 && cur[i + 1] == prev[i + 1] && looksLikeWindow(mem, cur, i, words)) {
 			uint32_t text = cur[i + 1];
 			uint32_t region = text >> 24;
 			if ((region == 0x02 || region == 0x03 || region == 0x08 || region == 0x09) && plausiblePointer(s, mem, text + 1)) {

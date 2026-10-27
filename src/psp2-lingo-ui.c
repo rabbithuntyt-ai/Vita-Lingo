@@ -1533,12 +1533,22 @@ static bool chip(float x, float y, float w, float h, const char* label, const ch
 	bool held = uiHeld(x, y, w, h);
 	uiRound(x, y + (held ? 1 : 0), w, h, 10, held ? C_SHEET_HI : C_SHEET);
 	uiRoundOutline(x, y + (held ? 1 : 0), w, h, 10, 2, uiAlpha(col, 0.8f));
-	float tx = x + 10;
+	/* fit inside the chip: smaller text first, then drop the kana icon */
+	float px = 14;
+	float iconW = jp ? uiJpW(16, jp) + 6 : 0;
+	while (px > 10 && 20 + iconW + uiTextW(px, label) > w) {
+		px -= 1;
+	}
+	if (jp && 20 + iconW + uiTextW(px, label) > w) {
+		jp = NULL;
+		iconW = 0;
+	}
+	float tx = x + (w - iconW - uiTextW(px, label)) / 2;
 	if (jp) {
 		uiJp(tx, y + h / 2 + 8, 16, col, jp);
-		tx += uiJpW(16, jp) + 6;
+		tx += iconW;
 	}
-	uiText(tx, y + h / 2 + 6, 14, C_CHALK, label);
+	uiText(tx, y + h / 2 + 6, px, C_CHALK, label);
 	return uiTapped(x, y, w, h);
 }
 
@@ -1973,12 +1983,21 @@ static enum LingoPanelAction panelDraw(float gx, float gy, float gw, float gh, b
 
 	/* row 1: name and buttons */
 	uiText(px0, 32, 19, C_YELLOW, "LINGO");
-	if (system && system[0]) {
-		uiJp(px0 + 70, 32, 14, C_SOFT, system);
-	}
 	{
 		int nb = retro ? 3 : 2;
-		float bw = retro ? 84 : 100, bh = 30, gap = 6;
+		float bh = 30, gap = 6;
+		float titleEnd = px0 + uiTextW(19, "LINGO") + 10;
+		float sysW = system && system[0] ? uiJpW(14, system) + 10 : 0;
+		float room = SCREEN_W - 12 - titleEnd - (nb - 1) * gap;
+		float bw = fminf(retro ? 84 : 100, (room - sysW) / nb);
+		if (bw < 70) {
+			/* not enough room for the console's name too */
+			sysW = 0;
+			bw = fminf(retro ? 84 : 100, room / nb);
+		}
+		if (sysW > 0) {
+			uiJp(titleEnd, 32, 14, C_SOFT, system);
+		}
 		float bx = SCREEN_W - 12 - nb * bw - (nb - 1) * gap, by = 10;
 		if (chip(bx, by, bw, bh, "Look up", "あ", C_BLUE)) {
 			act = LPA_LOOKUP;

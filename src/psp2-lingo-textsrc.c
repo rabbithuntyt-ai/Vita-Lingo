@@ -27,6 +27,9 @@ static struct LingoReader sReader;
 static struct LingoDetect* sDetect;
 static struct LingoRegions sRegions;
 static char sSystem[16], sKey[160], sBase[160];
+/* checking a guessed table against the dictionary */
+static int sJudged, sGood;
+static bool sTrusted, sNoAuto;
 static uint32_t sFrame;
 static int sSamples;
 static char sStatus[96];
@@ -81,7 +84,19 @@ static bool ensureBuffers(void) {
 	return sTable && sFound;
 }
 
+static bool guessed(void) {
+	return !strcmp(sTable->source, "found automatically") || !strcmp(sTable->source, "Shift-JIS");
+}
+
+static void noAutoPath(char* out, size_t n) {
+	char t[256];
+	tablePath(sKey, t, sizeof(t));
+	snprintf(out, n, "%.*s.noauto", (int) strlen(t) - 4, t);
+}
+
 static void useTable(void) {
+	sJudged = sGood = 0;
+	sTrusted = !guessed();
 	lingoReaderFree(&sReader);
 	lingoReaderInit(&sReader, sTable);
 	sHave = true;
@@ -89,6 +104,31 @@ static void useTable(void) {
 		lingoDetectFree(sDetect);
 		sDetect = NULL;
 	}
+}
+
+/* Shift-JIS is how disc games and computers store text; cartridge consoles
+ * use their own tile codes. Mega Drive and PC Engine cover both (Mega CD,
+ * CD-ROM²), so they need more evidence. */
+static int sjisMin(void) {
+	static const char* const DISC[] = { "ps1", "ss", "msx" };
+	for (size_t i = 0; i < sizeof(DISC) / sizeof(DISC[0]); ++i) {
+		if (!strcmp(sSystem, DISC[i])) {
+			return 60;
+		}
+	}
+	if (!strcmp(sSystem, "md") || !strcmp(sSystem, "pce") || !sSystem[0]) {
+		return 200;
+	}
+	return 0;
+}
+
+/* A saved table that can't be right for this console: an automatic
+ * Shift-JIS guess on a cartridge (earlier versions made these) */
+static bool tableFits(void) {
+	if (sTable->mode == LCM_SJIS && sjisMin() == 0) {
+		return false;
+	}
+	return true;
 }
 
 void lingoTextSetGame(const char* system, const char* key, const char* baseName, const uint8_t* rom, size_t romSize) {
@@ -121,13 +161,13 @@ void lingoTextSetGame(const char* system, const char* key, const char* baseName,
 	}
 	char path[256];
 	tablePath(sKey, path, sizeof(path));
-	if (lingoTableLoad(sTable, path)) {
+	if (lingoTableLoad(sTable, path) && tableFits()) {
 		useTable();
 		return;
 	}
 	if (sBase[0]) {
 		tablePath(sBase, path, sizeof(path));
-		if (lingoTableLoad(sTable, path)) {
+		if (lingoTableLoad(sTable, path) && tableFits()) {
 			useTable();
 			return;
 		}
@@ -136,9 +176,24 @@ void lingoTextSetGame(const char* system, const char* key, const char* baseName,
 		useTable();
 		return;
 	}
+	/* a guess for this game turned out to be junk before: read the screen
+	 * (and let the player teach a line) instead of guessing again */
+	char na[280];
+	noAutoPath(na, sizeof(na));
+	FILE* f = fopen(na, "r");
+	sNoAuto = f != NULL;
+	if (f) {
+		fclose(f);
+		if (sDetect) {
+			lingoDetectFree(sDetect);
+			sDetect = NULL;
+		}
+		return;
+	}
 	if (!sDetect) {
 		sDetect = lingoDetectNew();
 	}
+	lingoDetectSjis(sDetect, sjisMin());
 }
 
 static void ocrWait(void) {
@@ -361,10 +416,76 @@ static void saveTable(void) {
 	lingoTableSave(sTable, path);
 }
 
+/* Share of a line's Japanese letters that make dictionary words. */
+static float knownShare(const struct LingoText* t, int* letters) {
+	int n = 0;
+	for (int i = 0; i < t->len; ++i) {
+		uint32_t c = t->cp[i];
+		n += (c >= 0x3041 && c <= 0x30FA) || (c >= 0x4E00 && c <= 0x9FFF);
+	}
+	*letters = n;
+	const struct LingoDict* d = lingoDictGet();
+	if (!d || !n) {
+		return 0;
+	}
+	static struct LingoToken tok[LINGO_MAX_TOKENS];
+	int k = lingoTokenize(d, t->cp, t->len, tok, LINGO_MAX_TOKENS);
+	int known = 0;
+	for (int i = 0; i < k; ++i) {
+		/* single letters match too easily to count */
+		if (tok[i].nIds && tok[i].len >= 2) {
+			known += tok[i].len;
+		}
+	}
+	return (float) known / n;
+}
+
+/* A table Lingo guessed must give real Japanese. If the lines it reads are
+ * mostly not words, drop it, remember not to guess for this game again, and
+ * read the screen instead. Returns true when the table was dropped. */
+static bool checkGuess(const struct LingoText* t) {
+	int letters;
+	float share = knownShare(t, &letters);
+	if (letters < 4) {
+		return false;
+	}
+	++sJudged;
+	if (share >= 0.5f) {
+		++sGood;
+	}
+	if (sGood >= 6 && sGood * 2 >= sJudged) {
+		sTrusted = true;
+		return false;
+	}
+	if (sJudged >= 8 && sGood * 3 < sJudged) {
+		char path[256], na[280];
+		tablePath(sKey, path, sizeof(path));
+		sceIoRemove(path);
+		noAutoPath(na, sizeof(na));
+		sceIoMkdir("ux0:data/lingo", 0777);
+		sceIoMkdir(TABLES, 0777);
+		FILE* f = fopen(na, "w");
+		if (f) {
+			fprintf(f, "the guessed table read %d of %d lines as real words\n", sGood, sJudged);
+			fclose(f);
+		}
+		lingoReaderFree(&sReader);
+		sHave = false;
+		sNoAuto = true;
+		snprintf(sLastWhy, sizeof(sLastWhy), "Its memory didn't read as real words, so Lingo is reading the screen.");
+		return true;
+	}
+	return false;
+}
+
 bool lingoTextStep(struct LingoText* out) {
 	++sFrame;
 	if (sHave) {
-		return lingoReaderStep(&sReader, &sRegions, out);
+		bool got = lingoReaderStep(&sReader, &sRegions, out);
+		if (got && !sTrusted && checkGuess(out)) {
+			return false;
+		}
+		return got;
 	}
 	/* no table yet: read the screen meanwhile, and keep learning from memory */
 	bool screen = ocrStep(out);
@@ -407,6 +528,10 @@ const char* lingoTextStatus(float* progress, bool* reading) {
 		*reading = true;
 		*progress = 1;
 		snprintf(sStatus, sizeof(sStatus), "Reading the screen · %d letters learned", lingoOcrLearned(sOcr));
+	} else if (sNoAuto && sOcr) {
+		*reading = true;
+		*progress = 1;
+		snprintf(sStatus, sizeof(sStatus), "Reading the screen · waiting for text");
 	} else if (sDetect) {
 		*progress = lingoDetectConfidence(sDetect);
 		snprintf(sStatus, sizeof(sStatus), sBusy ? "Checking what it has seen…" : "Learning how this game writes…");
