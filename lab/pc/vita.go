@@ -89,8 +89,8 @@ func (v *Vita) Shot(step int) (*Frame, error) {
 	if head[0] != binary.LittleEndian.Uint32([]byte("VLAB")) {
 		return nil, errors.New("the Vita answered with something other than a picture")
 	}
-	if int32(head[1]) < 0 {
-		return nil, fmt.Errorf("the Vita couldn't capture the screen (error %d); is the Vita Lab kernel plugin loaded?", int32(head[1]))
+	if code := int32(head[1]); code < 0 {
+		return nil, fmt.Errorf("the Vita couldn't capture the screen: %s", shotError(code))
 	}
 	f := &Frame{W: int(head[2]), H: int(head[3]), SrcW: int(head[4]), SrcH: int(head[5]), PID: head[6], Format: head[7],
 		FPS: head[8], Flips: head[9], At: time.Now()}
@@ -102,6 +102,22 @@ func (v *Vita) Shot(step int) (*Frame, error) {
 		return nil, fmt.Errorf("picture cut short: %w", err)
 	}
 	return f, nil
+}
+
+func shotError(code int32) string {
+	switch code {
+	case -1:
+		return "error -1: the plugin on the Vita is an older Vita Lab; install the new VitaLab.vpk, choose Reinstall plugins, and reboot"
+	case -102:
+		return "error -102: the kernel plugin's screen reader didn't start; reboot the Vita"
+	case -103:
+		return "error -103: the display reports no framebuffer (is the screen off or asleep?)"
+	case -105:
+		return "error -105: couldn't read the framebuffer of the app on screen"
+	case -106:
+		return "error -106: couldn't hand the picture to the plugin"
+	}
+	return fmt.Sprintf("display driver error 0x%08X", uint32(code))
 }
 
 // Discover asks the local network for Vitas running Vita Lab.

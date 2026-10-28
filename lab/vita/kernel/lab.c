@@ -119,44 +119,54 @@ static uint16_t to565(uint32_t abgr)
     return (uint16_t)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
 }
 
-/* info_user gets 8 words: out width, out height, source width, source height,
+/* Copies part of the screen: output rows from `row` on, as many as fit in
+ * dst_size bytes, scaled down by `step`, as RGB565. step_row packs both
+ * (step in the low 8 bits, row above them) because a syscall takes at most
+ * four arguments. Returns the number of rows written, or an error:
+ *   -102 the module didn't start   -103 nothing on screen (no framebuffer)
+ *   -105 couldn't read the app's framebuffer   -106 couldn't write the buffer
+ *   or the display driver's own error code.
+ * info_user gets 8 words: out width, out height, source width, source height,
  * owning pid, pixel format, frames per second, total flips. */
-int vitaLabKernelGetFrame(int step, void *dst_user, unsigned int dst_size, uint32_t *info_user)
+int vitaLabKernelGetFrame(int step_row, void *dst_user, unsigned int dst_size, uint32_t *info_user)
 {
     uint32_t state;
     SceDisplayFrameBufInfo fb;
     uint32_t info[8] = {0};
-    int ret = 0;
+    int ret = 0, step = step_row & 0xFF;
+    uint32_t row = (uint32_t)step_row >> 8;
 
     ENTER_SYSCALL(state);
     if (step < 1)
         step = 1;
     if (step > 8)
         step = 8;
-    if (lab_mutex < 0 || current_fb(&fb) < 0)
+    if (lab_mutex < 0)
     {
         EXIT_SYSCALL(state);
-        return -1;
+        return -102;
+    }
+    int fr = current_fb(&fb);
+    if (fr < 0)
+    {
+        EXIT_SYSCALL(state);
+        return fr == -1 ? -103 : fr;
     }
     ksceKernelLockMutex(lab_mutex, 1, NULL);
     uint32_t w = fb.framebuf.width, h = fb.framebuf.height, pitch = fb.framebuf.pitch;
     uint32_t fmt = fb.framebuf.pixelformat;
-    /* both display formats are 32 bits: A8B8G8R8, or A2B10G10R10 (HDR-ish, 10 bits a channel) */
+    /* both display formats are 32 bits: A8B8G8R8, or A2B10G10R10 (10 bits a channel) */
     int bpp = 4, ten = (fmt & 0xFFFF0000u) == SCE_DISPLAY_PIXELFORMAT_A2B10G10R10;
     if (w > LAB_MAX_WIDTH)
         w = LAB_MAX_WIDTH;
     uint32_t ow = w / (uint32_t)step, oh = h / (uint32_t)step;
-    if (ow * oh * 2 > dst_size)
-    {
-        ret = -2;
-        goto out;
-    }
-    for (uint32_t oy = 0; oy < oh; ++oy)
+    uint32_t rows = 0;
+    for (uint32_t oy = row; oy < oh && (rows + 1) * ow * 2 <= dst_size; ++oy, ++rows)
     {
         const uint8_t *src = (const uint8_t *)fb.framebuf.base + (size_t)oy * step * pitch * bpp;
         if (ksceKernelCopyFromUserProc(fb.pid, lab_row_in, src, w * bpp) < 0)
         {
-            ret = -3;
+            ret = -105;
             goto out;
         }
         for (uint32_t ox = 0; ox < ow; ++ox)
@@ -166,12 +176,13 @@ int vitaLabKernelGetFrame(int step, void *dst_user, unsigned int dst_size, uint3
                 p = ((p >> 2) & 0xFF) | (((p >> 12) & 0xFF) << 8) | (((p >> 22) & 0xFF) << 16);
             lab_row_out[ox] = to565(p);
         }
-        if (ksceKernelCopyToUser((uint8_t *)dst_user + (size_t)oy * ow * 2, lab_row_out, ow * 2) < 0)
+        if (ksceKernelCopyToUser((uint8_t *)dst_user + (size_t)rows * ow * 2, lab_row_out, ow * 2) < 0)
         {
-            ret = -4;
+            ret = -106;
             goto out;
         }
     }
+    ret = (int)rows;
     info[0] = ow;
     info[1] = oh;
     info[2] = w;

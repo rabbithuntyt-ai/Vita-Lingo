@@ -18,15 +18,13 @@
 #include <string.h>
 #include <vitacompanion_kernel.h>
 
-#define LAB_VERSION "1.0"
+#define LAB_VERSION "1.1"
 #define SCREEN_PORT 1339
 #define DISCOVERY_PORT 1340
-#define SHOT_BYTES (960 * 544 * 2)
 
 extern volatile int run;
 
-static SceUID shot_block = -1;
-static void *shot_buf;
+static uint8_t shot_buf[32 * 1024]; /* 16 rows of 960 pixels */
 static SceUID screen_thid = -1, disc_thid = -1;
 static volatile int screen_sock = -1, disc_sock = -1;
 static volatile int lab_up;
@@ -180,16 +178,29 @@ static int screen_thread(SceSize args, void *argp)
         req[got] = 0;
         int step = 1;
         sscanf(req, "shot %d", &step);
+        if (step < 1 || step > 8)
+            step = 1;
+        /* the picture goes out a few rows at a time through a small buffer:
+         * SceShell, which this plugin lives in, has little memory to spare */
         uint32_t info[8] = {0};
-        int r = shot_buf ? vitaLabKernelGetFrame(step, shot_buf, SHOT_BYTES, info) : -1;
+        int r = vitaLabKernelGetFrame(step, shot_buf, sizeof(shot_buf), info);
         uint32_t head[10];
         memcpy(head, "VLAB", 4);
         head[1] = r < 0 ? (uint32_t)r : 1; /* version, or the error */
         memcpy(&head[2], info, sizeof(info));
         if (r < 0)
             head[2] = head[3] = 0;
-        if (send_all(c, head, sizeof(head)) == 0 && r >= 0)
-            send_all(c, shot_buf, info[0] * info[1] * 2);
+        if (send_all(c, head, sizeof(head)) == 0 && r > 0)
+        {
+            uint32_t ow = info[0], oh = info[1], row = 0;
+            while (r > 0 && send_all(c, shot_buf, (unsigned int)r * ow * 2) == 0)
+            {
+                row += (uint32_t)r;
+                if (row >= oh)
+                    break;
+                r = vitaLabKernelGetFrame(step | (int)(row << 8), shot_buf, sizeof(shot_buf), NULL);
+            }
+        }
         sceNetSocketClose(c);
     }
     return 0;
@@ -247,12 +258,6 @@ void lab_net_up(void)
 {
     if (lab_up)
         return;
-    if (shot_block < 0)
-    {
-        shot_block = sceKernelAllocMemBlock("vitalab_shot", SCE_KERNEL_MEMBLOCK_TYPE_USER_RW, 0x100000, NULL);
-        if (shot_block >= 0)
-            sceKernelGetMemBlockBase(shot_block, &shot_buf);
-    }
     lab_up = 1;
     screen_sock = listen_on("vitalab_screen", SCE_NET_SOCK_STREAM, SCREEN_PORT);
     disc_sock = listen_on("vitalab_disc", SCE_NET_SOCK_DGRAM, DISCOVERY_PORT);
@@ -303,10 +308,4 @@ void lab_net_down(void)
 void lab_end(void)
 {
     lab_net_down();
-    if (shot_block >= 0)
-    {
-        sceKernelFreeMemBlock(shot_block);
-        shot_block = -1;
-        shot_buf = NULL;
-    }
 }

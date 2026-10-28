@@ -180,7 +180,7 @@ set(VITA_MAKE_FSELF_FLAGS "")
 vita_create_self(eboot.bin vitalab_app UNSAFE)
 add_dependencies(eboot.bin-self ${VITACOMPANION_MODULE_NAME}.suprx-self vitacompanion_kernel.skprx-self)
 vita_create_vpk(VitaLab.vpk VLAB00001 eboot.bin
-  VERSION 01.00
+  VERSION 01.01
   NAME "Vita Lab"
   FILE ${CMAKE_CURRENT_BINARY_DIR}/${VITACOMPANION_MODULE_NAME}.suprx plugins/vitacompanion.suprx
   FILE ${CMAKE_CURRENT_BINARY_DIR}/vitacompanion_kernel.skprx plugins/vitacompanion_kernel.skprx
